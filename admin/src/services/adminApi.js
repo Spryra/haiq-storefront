@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const adminApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://haiq-api.onrender.com/v1',
   withCredentials: false,
 })
 
