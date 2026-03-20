@@ -6,7 +6,7 @@ yarn-error.log
 # ── Environment files — NEVER commit these ────────────────────
 .env
 .env.local
-.env.production
+# .env.production
 .env.development
 .env.*.local
 backend/.env
