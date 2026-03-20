@@ -38,4 +38,6 @@ const query = (text, params) => pool.query(text, params);
 
 const getClient = () => pool.connect();
 
-module.exports = { query, getClient, pool };
+const testConnection = () => pool.query('SELECT 1');
+
+module.exports = { query, getClient, pool, testConnection };
