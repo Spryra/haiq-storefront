@@ -1,0 +1,51 @@
+# ── Node ──────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# ── Environment files — NEVER commit these ────────────────────
+.env
+.env.local
+.env.production
+.env.development
+.env.*.local
+backend/.env
+frontend/.env
+frontend/.env.local
+admin/.env
+admin/.env.local
+
+# ── Build outputs ─────────────────────────────────────────────
+dist/
+build/
+.cache/
+
+# ── Vite ──────────────────────────────────────────────────────
+frontend/dist/
+admin/dist/
+
+# ── OS files ──────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Logs ──────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Test coverage ─────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Misc ──────────────────────────────────────────────────────
+*.pem
+*.key

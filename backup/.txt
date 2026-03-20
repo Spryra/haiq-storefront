@@ -1,0 +1,65 @@
+I have a few changes that i would like to incooperate:
+
+firstly, i would like to have some test data that i can see in the admin dashboard, give me data for all the modules within the dashboard
+
+I want you to specialize the products. Below are the actual and only products i have. the bakery only sells cookies as seen below:
+Venom (Chocolate Cookies) - Rich, and irresistibly smooth - a deep cocoa flavor for true chocolate lovers, with a Fine centre and slightly curvy crunchy edge (UGX 5000)
+Coconut Cookies - Delicately crisp on the outside and inside, these golden coconut cookies are tropical, buttery, and perfectly SWEET, a Choice you won't regret (UGX 5000)
+The Unboxing - A smooth black box that makes you blush arrives at your door. This isnt just a delivery, it's a statement. Go on, embrace the moment and opne the box to unveil your individual wrapped masterpieces (UGX 40000)
+Crimson Sin (Red Velvet) - Red Velvet Dough, Cocoa, White chocolate. Deep red, soft-baked velvet with a quiet cocoa bitterness, broken open by pools of melting white chocolate. Smooth, rich, and slightly dangerous. This is indulgance you lean into, slow bites, closed eyes, no explanations. A cookie for when restraint is no longer the goal. (UGX 5000)
+Campfire After Dark (S'mores) - Toasted marshmallow, Milk chocolate, buttery dough. Golden dough wrapped around molten chocolate and soft basted marshmallow that stretches and sticks. Sweet, smocky and intimate. It tastes like late nights, low voices, and staying longer than you planned. Messy, nostalgic, and completely intentional. (UGX 5000)
+Blackout (Double Chocolate) - Dark cocoa dough, Chocolate chunks, Chocolate chips. Dense, fudgy cocoa dough packed with layers of chocolate that melt into one heavy, indulgent bite. Dark, intense, and consuming. This isn't a casual cookie, its a full stop. Everything else fades, and you let it. (UGX 5000)
+
+For the cookie descriptions, try your best to use them to the best of your ability. make sure to keep the cool names running for all.
+
+also, the boxes are only available for purchase on special days in the year, events, holidays, and such. make it an option in the admin dashboard to excempt it from the normal orptions. In the case that one wants to order a box on any other days than the ones that it should be available which is specified by the admin. then we shall be setting the price to double which makes it UGX 80000
+
+I shall provide you images that you will analyse and try your best to extract the image of the cookie only and incooperate what you have into the respective cookie selection options, For those that you notice have no images provides, try to imagine the look and use your imaginated image in the place for it
+
+These images are within the zip file i shall provide. and other images of cookies are listed as cookie_image_1, 2, 3, 4 and so on. analyse those for more reference in creating the final image we are looking for every type of cookie 
+
+
+Note that for every one of the cookies metioned apart from the box which is to be built. The are a standard of 4 cookies and nothing else
+
+I liked the original look of the homepage, remove that gradient and for now, let us not set up a frontend\public\placeholder-product.webp for now andstick to just the original logo that i have already provided
+
+As for the layout of the website, my client told me to look to the bugatti.com website and try to incoorperate some of the look and layout smoothly into what we have, i want you to find the best way to do that and when done, list the incooperation points you have made
+
+i would also like to update the color pallete for the website, and even the admin dashboard using the colors from the logo directly, the colors are attached in my zip file as HAIQPallette.png , get the direct hex values for those colors and use them as the basepoint for the final color pallette. and use it everywhere, both admin dashboard and also the frontend
+
+There are lots of other picture that i shall provide in my zip folder. i want you to go image by image, and use some for a page that shows customer interactions, and the others for also story of how it is made, and then the others for the reference while generating the prime images for each individual product. ensure that you only use or pick the ones that apply to each category specified
+
+During the improvement of the color pallette, i want you to make sure that the pages are striking, so apply the colors in a very striking way once you have gotten them from the image i have provided and specified earlier
+
+I want to also have a new slogan, my client confirmed that his slogan is "Made For You", replace anything else we have been using. and make sure that you make it used properly in every place that it cana dn should apply
+
+My client also told me that he wanted to have an image of a crown as his secodary logo. the image of the crown is present in the zip folder as well as "C:\Users\USER\Downloads\Haiqupdate\Crown_image.jpeg". extract it, analyse it and use only the crown itself without the background of the image. make sure to use it less than the main logo. you could try to use it in the same way that the lastcrumb.com uses the image of the emogi face with x eyes. try to incooperate it on the same way the best you can.
+
+Within the admin dashboard i want you to add customer performance in that the top customers are also listed. which shall be used as reference for the admin to gift them in the future for their continued support.
+This option is not viewable or known to the client from the frontend
+
+I want the list of the clients who apply for the newsletter to be listed in the admin dashboard as well. as well as kept in the DB for reference. I also want the person to recieve a quick email from the HAIQ email account which you have. make the email as quick to th point as posible, thanking them for subscribing and also make the email look like a the website theme we shall have in the end
+
+For the account setup, we want it easy and quick so that the person can get straight to ordering as soon as possible. only collect:
+
+Full Name, no nicknames
+Phone number
+email address
+
+
+I also want to note that the client confirmed that they dont give discounts at all. Apart from the Box on the special days which they specify. so remove any mentions of the discounts
+
+Lastly, in place of the "Gift Boxes" my client would like to use a loyalty program where there shall be a card and They help you attain vip access and make you a priority customer to the company
+
+For the FAQ, they are below as well as the answers:
+
+Do you have weed cookies: No we do not
+
+Is delivery free: No it is not
+
+Do you give discounts: We do not give discounts
+
+How many are in a box and how many are in a pack: Pack has 4, box has 4 as well
+
+
+
