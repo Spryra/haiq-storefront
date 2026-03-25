@@ -19,6 +19,11 @@ import LoginPage             from './pages/LoginPage'
 import RegisterPage          from './pages/RegisterPage'
 import { ForgotPasswordPage, ResetPasswordPage } from './pages/PasswordResetPages'
 
+// Each route explicitly wraps with Layout — avoids the Outlet vs children issue
+const withLayout = (Page) => (
+  <Layout><Page /></Layout>
+)
+
 export default function App() {
   return (
     <HelmetProvider>
@@ -26,28 +31,25 @@ export default function App() {
         <CartProvider>
           <BrowserRouter>
             <Routes>
-              {/* Full-layout pages */}
-              <Route element={<Layout />}>
-                <Route path="/"                element={<HomePage />} />
-                <Route path="/shop"            element={<ShopPage />} />
-                <Route path="/shop/:category"  element={<ShopPage />} />
-                <Route path="/products/:slug"  element={<ProductDetailPage />} />
-                <Route path="/moments"         element={<MomentsPage />} />
-                <Route path="/faq"             element={<FAQPage />} />
-                <Route path="/contact"         element={<ContactPage />} />
-                <Route path="/build-your-box"  element={<BuildYourBoxPage />} />
-                <Route path="/account"         element={<AccountPage />} />
-                <Route path="/track"           element={<TrackOrderPage />} />
-                <Route path="/track/:token"    element={<TrackOrderPage />} />
-                <Route path="/login"           element={<LoginPage />} />
-                <Route path="/register"        element={<RegisterPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/reset-password"  element={<ResetPasswordPage />} />
-              </Route>
+              <Route path="/"                element={withLayout(HomePage)} />
+              <Route path="/shop"            element={withLayout(ShopPage)} />
+              <Route path="/shop/:category"  element={withLayout(ShopPage)} />
+              <Route path="/products/:slug"  element={withLayout(ProductDetailPage)} />
+              <Route path="/moments"         element={withLayout(MomentsPage)} />
+              <Route path="/faq"             element={withLayout(FAQPage)} />
+              <Route path="/contact"         element={withLayout(ContactPage)} />
+              <Route path="/build-your-box"  element={withLayout(BuildYourBoxPage)} />
+              <Route path="/account"         element={withLayout(AccountPage)} />
+              <Route path="/track"           element={withLayout(TrackOrderPage)} />
+              <Route path="/track/:token"    element={withLayout(TrackOrderPage)} />
+              <Route path="/login"           element={withLayout(LoginPage)} />
+              <Route path="/register"        element={withLayout(RegisterPage)} />
+              <Route path="/forgot-password" element={withLayout(ForgotPasswordPage)} />
+              <Route path="/reset-password"  element={withLayout(ResetPasswordPage)} />
 
-              {/* Checkout — no navbar/footer */}
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/order-confirmation/:token" element={<OrderConfirmationPage />} />
+              {/* Checkout — full screen, no navbar/footer */}
+              <Route path="/checkout"                    element={<CheckoutPage />} />
+              <Route path="/order-confirmation/:token"   element={<OrderConfirmationPage />} />
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

@@ -1,267 +1,258 @@
-const { query, getClient } = require('../config/db');
-const { logger } = require('../config/logger');
-const { generateTrackingToken, generateOrderNumber } = require('../utils/tokenGenerator');
-const { calculateDeliveryFee } = require('../utils/ugxFormat');
-const { STATUS_LABELS, SSE_HEARTBEAT_MS } = require('../config/constants');
-const paymentService = require('../services/payment.service');
-const emailService = require('../services/email.service');
+// backend/src/controllers/orders.controller.js
+// KEY FIX: prices come from the database, never from the client request
+// This ensures what admin sees = what customer paid
+'use strict'
 
-// Active SSE clients: Map<trackingToken, Set<res>>
-const sseClients = new Map();
+const { query, getClient } = require('../config/db')
+const { logger } = require('../config/logger')
+const { generateOrderNumber, generateTrackingToken } = require('../utils/tokenGenerator')
+const emailService  = require('../services/email.service')
+const paymentService = require('../services/payment.service')
+
+const DELIVERY_FEE = 0  // Delivery is confirmed separately — no fixed fee
 
 async function create(req, res, next) {
-  const client = await getClient();
+  const client = await getClient()
   try {
-    await client.query('BEGIN');
+    await client.query('BEGIN')
 
     const {
       first_name, last_name, email, phone,
       delivery_address, delivery_note, gift_note,
       items, payment_method, payer_phone, consent_given,
-    } = req.body;
+    } = req.body
 
-    // Validate and price all items
-    let subtotal = 0;
-    const resolvedItems = [];
+    const user_id = req.user?.id || null
+
+    // Validate: one email per account (if not guest)
+    if (user_id) {
+      const { rows: [existing] } = await client.query(
+        'SELECT id FROM users WHERE email = $1 AND id != $2',
+        [email.toLowerCase(), user_id]
+      )
+      if (existing) {
+        await client.query('ROLLBACK')
+        return res.status(409).json({
+          success: false,
+          error:   'This email is linked to another account.',
+        })
+      }
+    }
+
+    // Validate and price items — PRICES FROM DATABASE ONLY
+    let subtotal = 0
+    const resolvedItems = []
 
     for (const item of items) {
       const { rows: [variant] } = await client.query(`
-        SELECT pv.id, pv.price, pv.label, pv.stock_qty, p.id AS product_id, p.name AS product_name
-        FROM product_variants pv
-        JOIN products p ON p.id = pv.product_id
-        WHERE pv.id = $1 AND pv.product_id = $2 AND p.is_active = true
-      `, [item.variant_id, item.product_id]);
+        SELECT pv.id, pv.price, pv.label, pv.stock_qty,
+               p.id AS product_id, p.name AS product_name, p.is_active
+        FROM   product_variants pv
+        JOIN   products p ON p.id = pv.product_id
+        WHERE  pv.id = $1 AND pv.product_id = $2
+      `, [item.variant_id, item.product_id])
 
       if (!variant) {
-        await client.query('ROLLBACK');
+        await client.query('ROLLBACK')
         return res.status(400).json({
           success: false,
-          error: `Product variant not found for item with product_id ${item.product_id}`,
-        });
+          error:   `Product not found for item ${item.product_id}`,
+        })
+      }
+      if (variant.is_active === false) {
+        await client.query('ROLLBACK')
+        return res.status(400).json({ success: false, error: `${variant.product_name} is not available.` })
       }
       if (variant.stock_qty < item.quantity) {
-        await client.query('ROLLBACK');
-        return res.status(400).json({
-          success: false,
-          error: `Insufficient stock for "${variant.product_name}" — only ${variant.stock_qty} available`,
-        });
+        await client.query('ROLLBACK')
+        return res.status(400).json({ success: false, error: `Not enough stock for ${variant.product_name}.` })
       }
 
-      const line_total = parseFloat(variant.price) * item.quantity;
-      subtotal += line_total;
-      resolvedItems.push({ ...variant, quantity: item.quantity, line_total });
+      // Price is ALWAYS from the database
+      const unit_price  = parseFloat(variant.price)
+      const line_total  = unit_price * item.quantity
+      subtotal         += line_total
+
+      resolvedItems.push({
+        product_id:    variant.product_id,
+        variant_id:    variant.id,
+        product_name:  variant.product_name,
+        variant_label: variant.label,
+        unit_price,
+        quantity:      item.quantity,
+        line_total,
+        stock_qty:     variant.stock_qty,
+      })
     }
 
-    const delivery_fee = calculateDeliveryFee(delivery_address);
-    const total = subtotal + delivery_fee;
-    const order_number   = generateOrderNumber();
-    const tracking_token = generateTrackingToken();
-    const user_id = req.user?.id || null;
+    const total         = subtotal + DELIVERY_FEE
+    const order_number  = generateOrderNumber()
+    const tracking_token = generateTrackingToken()
 
     // Create order
     const { rows: [order] } = await client.query(`
       INSERT INTO orders (
-        order_number, tracking_token, user_id, first_name, last_name, email, phone,
-        delivery_address, delivery_note, gift_note, subtotal, delivery_fee, total,
+        order_number, tracking_token, user_id,
+        first_name, last_name, email, phone,
+        delivery_address, delivery_note, gift_note,
+        subtotal, delivery_fee, total,
         payment_method, consent_given
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
       RETURNING id, order_number, tracking_token, total
     `, [
-      order_number, tracking_token, user_id, first_name, last_name,
-      email.toLowerCase(), phone, delivery_address,
-      delivery_note || null, gift_note || null,
-      subtotal, delivery_fee, total, payment_method, consent_given,
-    ]);
+      order_number, tracking_token, user_id,
+      first_name, last_name, email.toLowerCase(), phone,
+      delivery_address, delivery_note || null, gift_note || null,
+      subtotal, DELIVERY_FEE, total,
+      payment_method, consent_given,
+    ])
 
-    // Insert order items
+    // Insert order items with DB-sourced prices
     for (const item of resolvedItems) {
       await client.query(`
-        INSERT INTO order_items (order_id, product_id, variant_id, product_name, variant_label, unit_price, quantity, line_total)
+        INSERT INTO order_items
+          (order_id, product_id, variant_id, product_name, variant_label, unit_price, quantity, line_total)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
       `, [
-        order.id, item.product_id, item.id,
-        item.product_name, item.label, item.price,
-        item.quantity, item.line_total,
-      ]);
+        order.id, item.product_id, item.variant_id,
+        item.product_name, item.variant_label,
+        item.unit_price, item.quantity, item.line_total,
+      ])
+
+      // Decrement stock
+      await client.query(
+        'UPDATE product_variants SET stock_qty = stock_qty - $1 WHERE id = $2',
+        [item.quantity, item.variant_id]
+      )
     }
 
     // Log creation event
     await client.query(`
       INSERT INTO order_events (order_id, event_type, new_value, actor_type, note)
-      VALUES ($1, 'order_created', 'pending', 'customer', $2)
-    `, [order.id, `Order created via ${payment_method}`]);
+      VALUES ($1, 'status_change', 'pending', 'system', $2)
+    `, [order.id, `Order created via ${payment_method}`])
 
-    await client.query('COMMIT');
+    await client.query('COMMIT')
 
-    // Initiate payment (async, after commit)
-    let payment_intent = {};
+    // Initiate payment
+    let payment_intent = {}
     try {
       payment_intent = await paymentService.initiate({
-        order_id:    order.id,
-        amount:      total,
-        method:      payment_method,
-        payer_phone: payer_phone || phone,
+        order_id:     order.id,
+        amount:       total,
+        method:       payment_method,
+        payer_phone:  payer_phone || phone,
         order_number: order_number,
-      });
+      })
     } catch (payErr) {
-      logger.error('Payment initiation failed after order creation', {
-        order_id: order.id, error: payErr.message,
-      });
+      logger.error('Payment initiation failed', { order_id: order.id, error: payErr.message })
     }
 
-    // Send confirmation email (non-blocking)
-    emailService.sendOrderConfirmation({ ...order, email, first_name, items: resolvedItems })
-      .catch(err => logger.error('Order email failed', { error: err.message }));
+    // Send order confirmation email (non-blocking)
+    emailService.sendOrderConfirmation({
+      order_number:    order_number,
+      tracking_token:  tracking_token,
+      email:           email,
+      first_name:      first_name,
+      total:           total,
+    }).catch(err => logger.error('Order email failed', { error: err.message }))
 
     res.status(201).json({
-      success: true,
-      order_id:       order.id,
-      order_number:   order.order_number,
-      tracking_token: order.tracking_token,
+      success:         true,
+      order_number,
+      tracking_token,
       total,
-      currency: 'UGX',
       payment_intent,
-    });
+    })
   } catch (err) {
-    await client.query('ROLLBACK').catch(() => {});
-    next(err);
+    await client.query('ROLLBACK')
+    next(err)
   } finally {
-    client.release();
+    client.release()
   }
 }
 
 async function track(req, res, next) {
   try {
     const { rows: [order] } = await query(`
-      SELECT
-        o.order_number, o.status, o.estimated_delivery, o.created_at,
-        o.payment_status,
-        COUNT(oi.id) AS items_count
+      SELECT o.id, o.order_number, o.tracking_token, o.status, o.payment_status,
+             o.first_name, o.last_name, o.delivery_address, o.subtotal, o.delivery_fee,
+             o.total, o.created_at, o.cancellation_reason, o.cancelled_by,
+             (SELECT json_agg(json_build_object(
+               'product_name', oi.product_name,
+               'variant_label', oi.variant_label,
+               'unit_price', oi.unit_price,
+               'quantity', oi.quantity,
+               'line_total', oi.line_total
+             )) FROM order_items oi WHERE oi.order_id = o.id) AS items
       FROM orders o
-      LEFT JOIN order_items oi ON oi.order_id = o.id
       WHERE o.tracking_token = $1
-      GROUP BY o.id
-    `, [req.params.token]);
+    `, [req.params.token])
 
-    if (!order) {
-      return res.status(404).json({ success: false, error: 'Order not found' });
-    }
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found.' })
 
-    const { rows: events } = await query(`
-      SELECT event_type, new_value, created_at
-      FROM order_events
-      WHERE order_id = (SELECT id FROM orders WHERE tracking_token = $1)
-        AND event_type = 'status_change'
-      ORDER BY created_at ASC
-    `, [req.params.token]);
-
-    const statusTimestamps = {};
-    for (const ev of events) {
-      statusTimestamps[ev.new_value] = ev.created_at;
-    }
-    statusTimestamps['pending'] = order.created_at; // always set
-
-    const allStatuses = ['pending', 'freshly_kneaded', 'ovenbound', 'on_the_cart', 'en_route', 'delivered'];
-    const currentIdx = allStatuses.indexOf(order.status);
-
-    const timeline = allStatuses.map((s, idx) => {
-      const meta = STATUS_LABELS[s];
-      return {
-        status:    s,
-        label:     `${meta.label} ${meta.emoji}`,
-        timestamp: statusTimestamps[s] || null,
-        done:      idx <= currentIdx && order.status !== 'cancelled',
-      };
-    });
-
-    const statusMeta = STATUS_LABELS[order.status] || STATUS_LABELS['pending'];
-
-    res.json({
-      success: true,
-      order_number:       order.order_number,
-      status:             order.status,
-      status_label:       `${statusMeta.label} ${statusMeta.emoji}`,
-      payment_status:     order.payment_status,
-      timeline,
-      estimated_delivery: order.estimated_delivery,
-      items_count:        parseInt(order.items_count),
-    });
-  } catch (err) { next(err); }
-}
-
-// Server-Sent Events for real-time tracking
-function statusStream(req, res, next) {
-  const { token } = req.params;
-
-  res.setHeader('Content-Type',  'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection',    'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no');
-  res.flushHeaders();
-
-  if (!sseClients.has(token)) sseClients.set(token, new Set());
-  sseClients.get(token).add(res);
-
-  // Send initial heartbeat
-  res.write(': connected\n\n');
-
-  const heartbeat = setInterval(() => {
-    res.write(': heartbeat\n\n');
-  }, SSE_HEARTBEAT_MS);
-
-  req.on('close', () => {
-    clearInterval(heartbeat);
-    sseClients.get(token)?.delete(res);
-    if (sseClients.get(token)?.size === 0) sseClients.delete(token);
-  });
-}
-
-/**
- * Broadcast a status update to all SSE listeners for a tracking token
- */
-function broadcastStatusUpdate(tracking_token, payload) {
-  const clients = sseClients.get(tracking_token);
-  if (!clients || clients.size === 0) return;
-  const data = JSON.stringify(payload);
-  clients.forEach(client => {
-    try {
-      client.write(`event: status_update\ndata: ${data}\n\n`);
-    } catch (_) {}
-  });
+    res.json({ success: true, order })
+  } catch (err) { next(err) }
 }
 
 async function listMine(req, res, next) {
   try {
-    const page  = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(50, parseInt(req.query.limit) || 10);
-
-    const { rows } = await query(`
+    const { page = 1, limit = 20 } = req.query
+    const { rows: orders } = await query(`
       SELECT id, order_number, tracking_token, status, payment_status,
-             total, created_at, items_count
-      FROM orders,
-        LATERAL (SELECT COUNT(*) AS items_count FROM order_items oi WHERE oi.order_id = orders.id) _
+             total, created_at, cancellation_reason,
+             (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = orders.id)::int AS items_count
+      FROM orders
       WHERE user_id = $1
       ORDER BY created_at DESC
       LIMIT $2 OFFSET $3
-    `, [req.user.id, limit, (page - 1) * limit]);
+    `, [req.user.id, limit, (page - 1) * limit])
 
-    res.json({ success: true, orders: rows });
-  } catch (err) { next(err); }
+    res.json({ success: true, orders })
+  } catch (err) { next(err) }
 }
 
 async function getOne(req, res, next) {
   try {
-    const { rows: [order] } = await query(
-      'SELECT * FROM orders WHERE id = $1', [req.params.id]
-    );
-    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
-    if (order.user_id !== req.user.id) return res.status(403).json({ success: false, error: 'Access denied' });
+    const { rows: [order] } = await query(`
+      SELECT o.*,
+        (SELECT json_agg(json_build_object(
+          'id', oi.id, 'product_name', oi.product_name,
+          'variant_label', oi.variant_label,
+          'unit_price', oi.unit_price,
+          'quantity', oi.quantity,
+          'line_total', oi.line_total
+        ) ORDER BY oi.id) FROM order_items oi WHERE oi.order_id = o.id) AS items
+      FROM orders o
+      WHERE o.id = $1 AND o.user_id = $2
+    `, [req.params.id, req.user.id])
 
-    const { rows: items } = await query(
-      'SELECT * FROM order_items WHERE order_id = $1', [order.id]
-    );
-    res.json({ success: true, order: { ...order, items } });
-  } catch (err) { next(err); }
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found.' })
+    res.json({ success: true, order })
+  } catch (err) { next(err) }
 }
 
-module.exports = { create, track, statusStream, listMine, getOne, broadcastStatusUpdate };
+async function statusStream(req, res, next) {
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+  res.setHeader('X-Accel-Buffering', 'no')
+
+  const sendEvent = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`)
+
+  const poll = async () => {
+    try {
+      const { rows: [order] } = await query(
+        'SELECT status, payment_status FROM orders WHERE tracking_token = $1',
+        [req.params.token]
+      )
+      if (order) sendEvent(order)
+    } catch {}
+  }
+
+  await poll()
+  const interval = setInterval(poll, 10000)
+  req.on('close', () => clearInterval(interval))
+}
+
+module.exports = { create, track, listMine, getOne, statusStream }

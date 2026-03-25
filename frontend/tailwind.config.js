@@ -4,23 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── HAIQ Palette — extracted directly from HAIQPallette.png ──────────
-        'haiq-amber':    '#B8752A',  // col 1 — warm copper/amber
-        'haiq-tan':      '#D4A574',  // col 2 — golden tan
-        'haiq-cream':    '#F2EAD8',  // col 3 — off-white cream
-        'haiq-espresso': '#1A0A00',  // col 4 — near-black espresso
-        'haiq-brown':    '#3D1A00',  // col 5 — deep dark brown
-        'haiq-mocha':    '#8C7355',  // col 6 — warm taupe/mocha
-        'haiq-gold':     '#E8C88A',  // col 7 — light golden wheat
-        'haiq-sienna':   '#7A3B1E',  // col 8 — rich burnt sienna
+        // 60% — dominant dark backgrounds
+        dark:    '#1A0A00',
+        dark2:   '#0E0600',
 
-        // ── Semantic aliases used throughout ─────────────────────────────────
+        // 30% — secondary surfaces and text
+        surface: '#2A1200',
+        light:   '#F2EAD8',
+        muted:   '#8C7355',
+        border:  'rgba(184,117,42,0.2)',
+
+        // 10% — amber accent (CTAs, highlights, active states)
         primary:   '#B8752A',
         secondary: '#D4A574',
-        light:     '#F2EAD8',
-        dark:      '#1A0A00',
-        dark2:     '#3D1A00',
-        muted:     '#8C7355',
         gold:      '#E8C88A',
         sienna:    '#7A3B1E',
       },
@@ -28,29 +24,24 @@ export default {
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
         sans:  ['Inter', 'system-ui', 'sans-serif'],
       },
-      keyframes: {
-        scrollDot: {
-          '0%':   { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(200%)' },
-        },
-        fadeUp: {
-          '0%':   { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        shimmer: {
-          '0%':   { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
-        bannerFade: {
-          '0%,100%': { opacity: '0' },
-          '10%,90%': { opacity: '1' },
-        },
+      fontSize: {
+        '2xs': '0.625rem',
       },
       animation: {
-        scrollDot:  'scrollDot 1.8s ease-in-out infinite',
-        fadeUp:     'fadeUp 0.6s ease forwards',
-        shimmer:    'shimmer 2s linear infinite',
-        bannerFade: 'bannerFade 4s ease-in-out infinite',
+        scrollDot: 'scrollDot 1.8s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.3s ease-out',
+      },
+      keyframes: {
+        scrollDot: {
+          '0%':   { transform: 'translateY(-100%)', opacity: '0' },
+          '30%':  { opacity: '1' },
+          '70%':  { opacity: '1' },
+          '100%': { transform: 'translateY(200%)', opacity: '0' },
+        },
+        fadeIn: {
+          '0%':   { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },
