@@ -71,11 +71,11 @@ export function ForgotPasswordPage() {
 
 // ──────────────────────────────────────────────────────────────────────────────
 
-// ResetPasswordPage.jsx
-import { useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import Crown from '../components/shared/Crown'
+// // ResetPasswordPage.jsx
+// import { useState } from 'react'
+// import { useSearchParams, useNavigate } from 'react-router-dom'
+// import { useAuth } from '../context/AuthContext'
+// import Crown from '../components/shared/Crown'
 
 export function ResetPasswordPage() {
   const [searchParams] = useSearchParams()
