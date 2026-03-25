@@ -1,183 +1,80 @@
-const router = require('express').Router();
-const { z } = require('zod');
-const { validate } = require('../middleware/validate');
-const { authLimiter } = require('../middleware/rateLimiter');
-const { requireAuth } = require('../middleware/auth');
-const authCtrl = require('../controllers/auth.controller');
+// backend/src/routes/auth.routes.js
+const router = require('express').Router()
+const ctrl   = require('../controllers/auth.controller')
+const { requireAuth } = require('../middleware/auth')
+const { z } = require('zod')
+const { validate } = require('../middleware/validate')
+const { query } = require('../config/db')
+const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
+const emailService = require('../services/email.service')
+const { logger } = require('../config/logger')
 
-const registerSchema = z.object({
-  email:      z.string().email(),
-  password:   z.string().min(8, 'Password must be at least 8 characters'),
-  first_name: z.string().min(1).max(100),
-  last_name:  z.string().min(1).max(100),
-  phone:      z.string().regex(/^\+?[0-9]{9,15}$/).optional(),
-});
+// Existing routes
+router.post('/register',       ctrl.register)
+router.post('/login',          ctrl.login)
+router.post('/logout',         ctrl.logout)
+router.post('/refresh',        ctrl.refresh)
+router.get('/me',   requireAuth, ctrl.getMe)
+router.put('/profile',  requireAuth, ctrl.updateProfile)
+router.put('/password', requireAuth, ctrl.changePassword)
 
-const loginSchema = z.object({
-  email:    z.string().email(),
-  password: z.string().min(1),
-});
+// ── Forgot password ───────────────────────────────────────────────────────────
+router.post('/forgot-password', async (req, res, next) => {
+  try {
+    const { email } = req.body
+    if (!email) return res.status(400).json({ success: false, error: 'Email required.' })
 
-const forgotSchema  = z.object({ email: z.string().email() });
-const resetSchema   = z.object({ token: z.string(), password: z.string().min(8) });
+    const { rows: [user] } = await query(
+      'SELECT id, email, first_name FROM users WHERE email = $1 AND is_guest = false',
+      [email.trim().toLowerCase()]
+    )
 
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     tags: [Auth]
- *     summary: Register a new customer account
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/RegisterRequest'
- *     responses:
- *       201:
- *         description: Account created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success: { type: boolean, example: true }
- *                 message: { type: string, example: "Account created. Check your email to verify." }
- *                 user:
- *                   type: object
- *                   properties:
- *                     id: { type: string, format: uuid }
- *                     email: { type: string }
- *       409:
- *         description: Email already registered
- *       422:
- *         $ref: '#/components/responses/ValidationError'
- *       429:
- *         $ref: '#/components/responses/TooManyRequests'
- */
-router.post('/register', authLimiter, validate(registerSchema), authCtrl.register);
+    // Always respond success to avoid email enumeration
+    if (!user) return res.json({ success: true, message: 'If that email exists, a reset link has been sent.' })
 
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     tags: [Auth]
- *     summary: Login and receive JWT tokens
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LoginRequest'
- *     responses:
- *       200:
- *         description: Login successful
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/AuthResponse'
- *       401:
- *         description: Invalid credentials
- *       429:
- *         $ref: '#/components/responses/TooManyRequests'
- */
-router.post('/login', authLimiter, validate(loginSchema), authCtrl.login);
+    // Generate token — 1 hour expiry
+    const token    = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
 
-/**
- * @swagger
- * /auth/logout:
- *   post:
- *     tags: [Auth]
- *     summary: Logout and revoke current token
- *     security:
- *       - CustomerAuth: []
- *     responses:
- *       200:
- *         description: Logged out successfully
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-router.post('/logout', requireAuth, authCtrl.logout);
+    await query(
+      `INSERT INTO password_reset_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id) DO UPDATE SET token = $2, expires_at = $3, used = false`,
+      [user.id, token, expiresAt]
+    )
 
-/**
- * @swagger
- * /auth/refresh:
- *   post:
- *     tags: [Auth]
- *     summary: Refresh access token using refresh token cookie
- *     responses:
- *       200:
- *         description: New access token issued
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 access_token: { type: string }
- *       401:
- *         description: Refresh token missing or invalid
- */
-router.post('/refresh', authCtrl.refresh);
+    await emailService.sendPasswordReset(user.email, token)
 
-/**
- * @swagger
- * /auth/forgot-password:
- *   post:
- *     tags: [Auth]
- *     summary: Request a password reset email
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email]
- *             properties:
- *               email: { type: string, format: email }
- *     responses:
- *       200:
- *         description: Reset email sent if account exists
- */
-router.post('/forgot-password', authLimiter, validate(forgotSchema), authCtrl.forgotPassword);
+    res.json({ success: true, message: 'If that email exists, a reset link has been sent.' })
+  } catch (err) { next(err) }
+})
 
-/**
- * @swagger
- * /auth/reset-password:
- *   post:
- *     tags: [Auth]
- *     summary: Apply new password with reset token
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [token, password]
- *             properties:
- *               token: { type: string }
- *               password: { type: string, minLength: 8 }
- *     responses:
- *       200:
- *         description: Password reset successfully
- *       400:
- *         description: Token invalid or expired
- */
-router.post('/reset-password', authLimiter, validate(resetSchema), authCtrl.resetPassword);
+// ── Reset password ────────────────────────────────────────────────────────────
+router.post('/reset-password', async (req, res, next) => {
+  try {
+    const { token, new_password } = req.body
+    if (!token || !new_password) return res.status(400).json({ success: false, error: 'Token and new password required.' })
+    if (new_password.length < 6) return res.status(400).json({ success: false, error: 'Password must be at least 6 characters.' })
 
-/**
- * @swagger
- * /auth/me:
- *   get:
- *     tags: [Auth]
- *     summary: Get current user profile
- *     security:
- *       - CustomerAuth: []
- *     responses:
- *       200:
- *         description: User profile
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-router.get('/me', requireAuth, authCtrl.getMe);
+    const { rows: [record] } = await query(
+      `SELECT user_id, expires_at, used FROM password_reset_tokens
+       WHERE token = $1`,
+      [token]
+    )
 
-module.exports = router;
+    if (!record)         return res.status(400).json({ success: false, error: 'Invalid or expired reset link.' })
+    if (record.used)     return res.status(400).json({ success: false, error: 'This link has already been used.' })
+    if (new Date() > record.expires_at)
+                         return res.status(400).json({ success: false, error: 'This link has expired. Request a new one.' })
+
+    const hash = await bcrypt.hash(new_password, 12)
+
+    await query('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, record.user_id])
+    await query('UPDATE password_reset_tokens SET used = true WHERE token = $1', [token])
+
+    res.json({ success: true, message: 'Password updated successfully.' })
+  } catch (err) { next(err) }
+})
+
+module.exports = router

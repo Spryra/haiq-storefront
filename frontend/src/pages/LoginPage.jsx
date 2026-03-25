@@ -13,7 +13,6 @@ export default function LoginPage() {
   const [error,    setError]    = useState(null)
   const [loading,  setLoading]  = useState(false)
 
-  // Redirect to where they came from, or account page
   const from = location.state?.from?.pathname || '/account'
 
   const handleSubmit = async (e) => {
@@ -24,30 +23,32 @@ export default function LoginPage() {
       await login(email.trim().toLowerCase(), password)
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Invalid email or password.')
+      const msg = err.response?.data?.error || err.response?.data?.message || 'Invalid email or password.'
+      setError(msg)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="bg-dark min-h-[85vh] flex items-center justify-center px-6 py-16">
+    <div style={{ background: '#1A0A00', minHeight: '85vh' }} className="flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
 
-        <Crown size={20} color="#B8752A" className="mb-6 opacity-55" />
+        {/* 10% — amber accent mark */}
+        <Crown size={20} color="#B8752A" className="mb-6 opacity-60" />
 
-        <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-2">
+        {/* 30% — label text */}
+        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>
           Welcome Back
         </p>
-        <h1 className="font-serif font-bold text-light text-3xl mb-2">
-          Sign In
-        </h1>
-        <div className="w-8 h-px bg-primary mb-8" />
+
+        {/* 60% — dominant headline on dark */}
+        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F2EAD8' }}>Sign In</h1>
+        <div className="w-8 h-px mb-8" style={{ background: '#B8752A' }} />
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-
           <div>
-            <label className="block text-[10px] font-semibold text-muted uppercase tracking-[0.2em] mb-1.5">
+            <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
               Email Address
             </label>
             <input
@@ -57,27 +58,38 @@ export default function LoginPage() {
               placeholder="you@example.com"
               required
               autoComplete="email"
-              className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
+              className="w-full px-4 py-3 text-sm focus:outline-none"
+              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }}
+              onFocus={e => e.target.style.borderColor = '#B8752A'}
+              onBlur={e => e.target.style.borderColor = 'rgba(184,117,42,0.25)'}
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-semibold text-muted uppercase tracking-[0.2em] mb-1.5">
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8C7355' }}>
+                Password
+              </label>
+              <Link to="/forgot-password" className="text-[10px] hover:underline transition" style={{ color: '#B8752A' }}>
+                Forgot password?
+              </Link>
+            </div>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Password"
               required
               autoComplete="current-password"
-              className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
+              className="w-full px-4 py-3 text-sm focus:outline-none"
+              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }}
+              onFocus={e => e.target.style.borderColor = '#B8752A'}
+              onBlur={e => e.target.style.borderColor = 'rgba(184,117,42,0.25)'}
             />
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-400 text-sm">
+            <div className="px-4 py-3 text-sm" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
               {error}
             </div>
           )}
@@ -85,17 +97,21 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-dark py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            className="w-full py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase transition disabled:opacity-50"
+            style={{ background: '#B8752A', color: '#1A0A00' }}
           >
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-light/30 text-xs text-center mt-6">
+        <p className="text-xs text-center mt-6" style={{ color: 'rgba(242,234,216,0.35)' }}>
           Don't have an account?{' '}
-          <Link to="/register" className="text-primary hover:text-secondary transition-colors">
-            Create one
-          </Link>
+          <Link to="/register" style={{ color: '#B8752A' }} className="hover:underline">Create one</Link>
+        </p>
+
+        {/* One email per account notice */}
+        <p className="text-[10px] text-center mt-3" style={{ color: 'rgba(242,234,216,0.2)' }}>
+          One account per email address.
         </p>
       </div>
     </div>

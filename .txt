@@ -64,3 +64,61 @@ How many are in a box and how many are in a pack: Pack has 4, box has 4 as well
 
 Once you have understood my instructions please let me know when you are ready to recieve the zip file for analysis
 Be sure to let know everything that you have handled after the new incooperation
+
+
+
+
+  ============================================
+  COPY THESE INTO RENDER ENV VARS
+  ============================================
+
+  JWT_SECRET
+  a1d95d9b9acc55df4c3f0267447b75df7710462ca3ffe617520207b451a53102d5cc310e2f36c5ff5e34b35006bb805dfe91b0de4b98d1d494d31d91e825ca54
+
+  REFRESH_TOKEN_SECRET
+  925664bdea1c1b98818e05e70427fd2956b676d0e4f5feb720481c2d876f6eb6ed2c2a93ad1977a3c86c0e021aec99d2a1d5a636530a397d9869c13ac1dc05bf
+
+  ADMIN_JWT_SECRET
+  108d5d24a9d48b15ce4a111e0921a4d2c84baac78cb404779002e318c5882a3eb45b16c2d72c0fa6d17f8cde9e2f2e54fddd4502afcada7177e3cfc0e9c17c3a
+
+  CLOUDINARY_CLOUD_NAME:    ddu7dsoml
+  CLOUDINARY_API_KEY:       REDACTED_CLOUDINARY_API_KEY
+  CLOUDINARY_API_SECRET:    REDACTED_CLOUDINARY_API_SECRET
+
+  ============================================
+
+  NEXT STEPS:
+  1. Go to neon.tech - create project, copy connection string
+     Paste it into: backend\.env  as DATABASE_URL
+
+  2. Go to resend.com - copy your API key
+     Paste it into: backend\.env  as RESEND_API_KEY
+
+  3. Go to render.com - New Web Service from HAIQ_web repo
+     Root directory: backend
+     Start command:  node src/server.js
+     Paste ALL the env vars shown above into Render
+
+  4. Go to vercel.com - New Project from HAIQ_web
+     First deploy: root directory = frontend
+     Second deploy: root directory = admin
+
+  5. Delete this script - it contains your GitHub token.
+
+
+  postgresql://neondb_owner:REDACTED_NEON_PASSWORD@REDACTED_NEON_HOST/neondb?sslmode=require&channel_binding=require
+
+  postgresql://neondb_owner:REDACTED_NEON_PASSWORD@REDACTED_NEON_HOST/neondb?sslmode=require&channel_binding=require
+
+
+
+# Run all migrations in order
+$db = "postgresql://neondb_owner:REDACTED_NEON_PASSWORD@REDACTED_NEON_HOST/neondb?sslmode=require&channel_binding=require"
+
+psql $db -f "backend\src\db\migrations\001_initial_schema.sql"
+psql $db -f "backend\src\db\migrations\002_indexes.sql"
+psql $db -f "backend\src\db\migrations\003_seed_products.sql"
+psql $db -f "backend\src\db\migrations\004_reviews.sql"
+psql $db -f "backend\src\db\migrations\005_loyalty_newsletter_specialdays.sql"
+psql $db -f "backend\src\db\migrations\005b_addendum.sql"
+psql $db -f "backend\src\db\migrations\006_updates.sql"

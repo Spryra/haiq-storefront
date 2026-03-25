@@ -1,146 +1,67 @@
-const router = require('express').Router();
-const { z } = require('zod');
-const { validate } = require('../../middleware/validate');
-const { requireStaff } = require('../../middleware/adminAuth');
-const adminOrdersCtrl = require('../../controllers/admin/admin.orders.controller');
-const { ORDER_STATUSES } = require('../../config/constants');
+// backend/src/routes/admin/admin.orders.routes.js
+const router = require('express').Router()
+const { z } = require('zod')
+const { validate } = require('../../middleware/validate')
+const { requireStaff } = require('../../middleware/adminAuth')
+const adminOrdersCtrl = require('../../controllers/admin/admin.orders.controller')
+const { ORDER_STATUSES } = require('../../config/constants')
+const { query } = require('../../config/db')
+const emailService = require('../../services/email.service')
+const { logger } = require('../../config/logger')
 
 const updateStatusSchema = z.object({
   status: z.enum(Object.values(ORDER_STATUSES)),
   note:   z.string().max(500).optional(),
-});
+})
 
-/**
- * @swagger
- * /admin/orders:
- *   get:
- *     tags: [Admin Orders]
- *     summary: List all orders with filters
- *     security:
- *       - AdminAuth: []
- *     parameters:
- *       - in: query
- *         name: status
- *         schema: { type: string, enum: [pending, freshly_kneaded, ovenbound, on_the_cart, en_route, delivered, cancelled] }
- *       - in: query
- *         name: payment_status
- *         schema: { type: string, enum: [unpaid, pending, paid, failed] }
- *       - in: query
- *         name: payment_method
- *         schema: { type: string, enum: [mtn_momo, airtel, bank_transfer] }
- *       - in: query
- *         name: search
- *         schema: { type: string }
- *         description: Search by name, email, or order number
- *       - in: query
- *         name: date_from
- *         schema: { type: string, format: date }
- *       - in: query
- *         name: date_to
- *         schema: { type: string, format: date }
- *       - in: query
- *         name: page
- *         schema: { type: integer, default: 1 }
- *       - in: query
- *         name: limit
- *         schema: { type: integer, default: 20 }
- *     responses:
- *       200:
- *         description: Orders list
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-router.get('/', requireStaff, adminOrdersCtrl.list);
+router.get('/',     requireStaff, adminOrdersCtrl.list)
+router.get('/:id',  requireStaff, adminOrdersCtrl.getOne)
+router.patch('/:id/status', requireStaff, validate(updateStatusSchema), adminOrdersCtrl.updateStatus)
 
-/**
- * @swagger
- * /admin/orders/{id}:
- *   get:
- *     tags: [Admin Orders]
- *     summary: Get full order detail (items + payments + messages + events)
- *     security:
- *       - AdminAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema: { type: string, format: uuid }
- *     responses:
- *       200:
- *         description: Full order detail
- *       404:
- *         $ref: '#/components/responses/NotFound'
- */
-router.get('/:id', requireStaff, adminOrdersCtrl.getOne);
+// ── Admin cancel order with reason ────────────────────────────────────────────
+router.post('/:id/cancel', requireStaff, async (req, res, next) => {
+  try {
+    const { reason } = req.body
+    if (!reason || String(reason).trim().length < 3) {
+      return res.status(400).json({ success: false, error: 'Cancellation reason required.' })
+    }
 
-/**
- * @swagger
- * /admin/orders/{id}/status:
- *   patch:
- *     tags: [Admin Orders]
- *     summary: Update order status (themed transitions)
- *     description: |
- *       Valid transitions:
- *       - `pending` → `freshly_kneaded` | `cancelled`
- *       - `freshly_kneaded` → `ovenbound` | `cancelled`
- *       - `ovenbound` → `on_the_cart` | `cancelled`
- *       - `on_the_cart` → `en_route` | `cancelled`
- *       - `en_route` → `delivered`
- *     security:
- *       - AdminAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema: { type: string, format: uuid }
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [status]
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [pending, freshly_kneaded, ovenbound, on_the_cart, en_route, delivered, cancelled]
- *               note: { type: string, example: "Driver assigned: Okello Moses" }
- *     responses:
- *       200:
- *         description: Status updated
- *       400:
- *         description: Invalid status transition
- *       404:
- *         $ref: '#/components/responses/NotFound'
- */
-router.patch('/:id/status', requireStaff, validate(updateStatusSchema), adminOrdersCtrl.updateStatus);
+    const { rows: [order] } = await query(
+      'SELECT id, status, email, first_name, order_number FROM orders WHERE id = $1',
+      [req.params.id]
+    )
 
-/**
- * @swagger
- * /admin/orders/{id}/messages:
- *   post:
- *     tags: [Admin Orders]
- *     summary: Admin reply to customer on an order thread
- *     security:
- *       - AdminAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema: { type: string, format: uuid }
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [body]
- *             properties:
- *               body: { type: string, maxLength: 2000 }
- *     responses:
- *       201:
- *         description: Message sent
- */
-router.post('/:id/messages', requireStaff, adminOrdersCtrl.sendMessage);
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found.' })
 
-module.exports = router;
+    if (['delivered','cancelled'].includes(order.status)) {
+      return res.status(400).json({
+        success: false,
+        error: `Cannot cancel an order with status "${order.status}".`,
+      })
+    }
+
+    await query(
+      `UPDATE orders
+       SET status = 'cancelled', cancellation_reason = $1, cancelled_by = 'admin', updated_at = NOW()
+       WHERE id = $2`,
+      [reason.trim(), order.id]
+    )
+
+    await query(
+      `INSERT INTO order_events (order_id, event_type, old_value, new_value, actor_type, actor_id, note)
+       VALUES ($1, 'status_change', $2, 'cancelled', 'admin', $3, $4)`,
+      [order.id, order.status, req.admin.id, `Admin cancelled: ${reason.trim()}`]
+    )
+
+    // Notify customer
+    emailService.sendStatusUpdate({
+      email:      order.email,
+      first_name: order.first_name,
+      status:     'cancelled',
+    }).catch(e => logger.warn('Cancel email failed', { error: e.message }))
+
+    res.json({ success: true, message: 'Order cancelled.' })
+  } catch (err) { next(err) }
+})
+
+module.exports = router
