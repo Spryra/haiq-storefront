@@ -1,4 +1,4 @@
-// frontend/src/pages/PasswordResetPages.jsx
+// frontend/src/pages/PasswordResetPages.jsx - fixed
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
