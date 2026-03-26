@@ -213,4 +213,75 @@ async function getMe(req, res, next) {
   } catch (err) { next(err); }
 }
 
+
+// ── Update Profile ─────────────────────────────────────────────────────────────
+async function updateProfile(req, res, next) {
+  try {
+    const { full_name, first_name, last_name, phone } = req.body;
+    const userId = req.user.id;
+
+    // Resolve full_name if not provided directly
+    let finalFullName = full_name;
+    if (!finalFullName && (first_name || last_name)) {
+      finalFullName = `${first_name || ''} ${last_name || ''}`.trim();
+    }
+
+    // Update user record
+    const { rows: [user] } = await query(
+      `UPDATE users
+       SET full_name = COALESCE(module.exports = { register, login, logout, refresh, forgotPassword, resetPassword, getMe }, full_name),
+           first_name = COALESCE($2, first_name),
+           last_name = COALESCE($3, last_name),
+           phone = COALESCE($4, phone),
+           updated_at = NOW()
+       WHERE id = $5
+       RETURNING id, email, first_name, last_name, full_name, phone`,
+      [finalFullName, first_name || null, last_name || null, phone || null, userId]
+    );
+
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+      },
+    });
+  } catch (err) { next(err); }
+}
+
+// ── Change Password ────────────────────────────────────────────────────────────
+async function changePassword(req, res, next) {
+  try {
+    const { current_password, new_password } = req.body;
+    const userId = req.user.id;
+
+    // Get current hash
+    const { rows: [user] } = await query(
+      'SELECT password_hash FROM users WHERE id = module.exports = { register, login, logout, refresh, forgotPassword, resetPassword, getMe }',
+      [userId]
+    );
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+
+    // Verify current password
+    const valid = await bcrypt.compare(current_password, user.password_hash);
+    if (!valid) {
+      return res.status(400).json({ success: false, error: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const hash = await bcrypt.hash(new_password, 12);
+
+    // Update
+    await query('UPDATE users SET password_hash = module.exports = { register, login, logout, refresh, forgotPassword, resetPassword, getMe }, updated_at = NOW() WHERE id = $2', [hash, userId]);
+
+    res.json({ success: true, message: 'Password updated successfully' });
+  } catch (err) { next(err); }
+}
+
 module.exports = { register, login, logout, refresh, forgotPassword, resetPassword, getMe };
