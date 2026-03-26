@@ -49,3 +49,10 @@ coverage/
 # ── Misc ──────────────────────────────────────────────────────
 *.pem
 *.key
+
+codedump/
+exclude/
+codedump.txt
+progress.md
+lumpsum/
+backup/

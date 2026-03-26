@@ -1,6 +1,6 @@
-// ForgotPasswordPage.jsx
+// frontend/src/pages/PasswordResetPages.jsx
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
 
@@ -69,18 +69,10 @@ export function ForgotPasswordPage() {
   )
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-
-// ResetPasswordPage.jsx
-import { useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import Crown from '../components/shared/Crown'
-
 export function ResetPasswordPage() {
+  const { resetPassword } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { resetPassword } = useAuth()
   const token = searchParams.get('token')
 
   const [password,  setPassword]  = useState('')

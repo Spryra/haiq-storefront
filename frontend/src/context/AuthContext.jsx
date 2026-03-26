@@ -12,14 +12,14 @@ export function AuthProvider({ children }) {
 
   // Restore session on mount
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY)
+    const token = window.__haiq_access_token
     if (!token) { setLoading(false); return }
 
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`
     api.get('/auth/me')
       .then(res => setUser(res.data.user))
       .catch(() => {
-        localStorage.removeItem(TOKEN_KEY)
+        window.__haiq_access_token = null
         delete api.defaults.headers.common['Authorization']
       })
       .finally(() => setLoading(false))
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
     const res = await api.post('/auth/login', { email, password })
     const { access_token, user } = res.data
 
-    localStorage.setItem(TOKEN_KEY, access_token)
+    window.__haiq_access_token = access_token
     api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
     setUser(user)
     return user
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     try { await api.post('/auth/logout') } catch (_) {}
-    localStorage.removeItem(TOKEN_KEY)
+    window.__haiq_access_token = null
     delete api.defaults.headers.common['Authorization']
     setUser(null)
   }, [])

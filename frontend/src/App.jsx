@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider }  from './context/AuthContext'
 import { CartProvider }  from './context/CartContext'
-import { HelmetProvider } from 'react-helmet-async'
 import Layout            from './components/layout/Layout'
 
 import HomePage              from './pages/HomePage'
@@ -26,8 +25,7 @@ const withLayout = (Page) => (
 
 export default function App() {
   return (
-    <HelmetProvider>
-      <AuthProvider>
+    <AuthProvider>
         <CartProvider>
           <BrowserRouter>
             <Routes>
@@ -56,6 +54,5 @@ export default function App() {
           </BrowserRouter>
         </CartProvider>
       </AuthProvider>
-    </HelmetProvider>
   )
 }
