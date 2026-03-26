@@ -1,61 +1,76 @@
-// frontend/src/context/AuthContext.jsx
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import api from '../services/api'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import api from '../services/api';
 
-const AuthContext = createContext(null)
-
-const TOKEN_KEY = 'haiq_access_token'
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user,    setUser]    = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Restore session on mount
+  // Restore session on mount – try to refresh token
   useEffect(() => {
-    const token = window.__haiq_access_token
-    if (!token) { setLoading(false); return }
-
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    api.get('/auth/me')
-      .then(res => setUser(res.data.user))
-      .catch(() => {
-        window.__haiq_access_token = null
-        delete api.defaults.headers.common['Authorization']
-      })
-      .finally(() => setLoading(false))
-  }, [])
+    const restoreSession = async () => {
+      if (window.__haiq_access_token) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${window.__haiq_access_token}`;
+        try {
+          const res = await api.get('/auth/me');
+          setUser(res.data.user);
+          setLoading(false);
+          return;
+        } catch {
+          window.__haiq_access_token = null;
+          delete api.defaults.headers.common['Authorization'];
+        }
+      }
+      // Attempt refresh
+      try {
+        const res = await api.post('/auth/refresh', {}, { withCredentials: true });
+        const newToken = res.data.access_token;
+        if (newToken) {
+          window.__haiq_access_token = newToken;
+          api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+          const me = await api.get('/auth/me');
+          setUser(me.data.user);
+        }
+      } catch (e) {
+        // No valid refresh token – stay logged out
+      } finally {
+        setLoading(false);
+      }
+    };
+    restoreSession();
+  }, []);
 
   const login = useCallback(async (email, password) => {
-    const res = await api.post('/auth/login', { email, password })
-    const { access_token, user } = res.data
-
-    window.__haiq_access_token = access_token
-    api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
-    setUser(user)
-    return user
-  }, [])
+    const res = await api.post('/auth/login', { email, password });
+    const { access_token, user } = res.data;
+    window.__haiq_access_token = access_token;
+    api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+    setUser(user);
+    return user;
+  }, []);
 
   const register = useCallback(async (data) => {
-    const res = await api.post('/auth/register', data)
-    return res.data
-  }, [])
+    const res = await api.post('/auth/register', data);
+    return res.data;
+  }, []);
 
   const logout = useCallback(async () => {
-    try { await api.post('/auth/logout') } catch (_) {}
-    window.__haiq_access_token = null
-    delete api.defaults.headers.common['Authorization']
-    setUser(null)
-  }, [])
+    try { await api.post('/auth/logout'); } catch (_) {}
+    window.__haiq_access_token = null;
+    delete api.defaults.headers.common['Authorization'];
+    setUser(null);
+  }, []);
 
   const requestPasswordReset = useCallback(async (email) => {
-    const res = await api.post('/auth/forgot-password', { email })
-    return res.data
-  }, [])
+    const res = await api.post('/auth/forgot-password', { email });
+    return res.data;
+  }, []);
 
   const resetPassword = useCallback(async (token, newPassword) => {
-    const res = await api.post('/auth/reset-password', { token, new_password: newPassword })
-    return res.data
-  }, [])
+    const res = await api.post('/auth/reset-password', { token, new_password: newPassword });
+    return res.data;
+  }, []);
 
   return (
     <AuthContext.Provider value={{
@@ -66,11 +81,11 @@ export function AuthProvider({ children }) {
     }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be inside AuthProvider')
-  return ctx
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be inside AuthProvider');
+  return ctx;
 }
