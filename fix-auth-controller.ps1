@@ -1,3 +1,9 @@
+# fix-auth-controller.ps1
+# Run from D:\Junior Reactive Projects\HAIQ
+
+$controllerPath = "backend\src\controllers\auth.controller.js"
+
+$newController = @'
 // auth.controller.js — updated to accept full_name from frontend
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
@@ -284,3 +290,12 @@ module.exports = {
   updateProfile,
   changePassword,
 };
+'@
+
+Set-Content -Path $controllerPath -Value $newController -NoNewline
+Write-Host "✅ Replaced auth.controller.js with full version (including updateProfile/changePassword)"
+
+Write-Host "`nNow commit and push:" -ForegroundColor Cyan
+Write-Host "  git add -A"
+Write-Host "  git commit -m 'fix: add missing profile and password routes'"
+Write-Host "  git push"
