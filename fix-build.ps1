@@ -1,3 +1,31 @@
+# fix-build.ps1
+# Run from: D:\Junior Reactive Projects\HAIQ
+
+Write-Host "Fixing build errors..." -ForegroundColor Cyan
+
+# -----------------------------------------------------------------------------
+# 1. Fix index.css – move @import to the top
+# -----------------------------------------------------------------------------
+Write-Host "1. Fixing index.css..." -ForegroundColor Yellow
+
+$indexCss = "frontend\src\index.css"
+$cssContent = Get-Content $indexCss -Raw
+# Remove any existing @import lines and prepend them
+$importLine = '@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap");'
+# Remove all @import lines from content
+$cssContent = $cssContent -replace '@import\s+url\([^)]+\);?\s*', ''
+# Put import at the very top
+$newCss = "$importLine`n`n$cssContent"
+Set-Content -Path $indexCss -Value $newCss -NoNewline
+Write-Host "   Fixed index.css"
+
+# -----------------------------------------------------------------------------
+# 2. Replace CartContext.jsx with a clean version (no self-import)
+# -----------------------------------------------------------------------------
+Write-Host "2. Replacing CartContext.jsx..." -ForegroundColor Yellow
+
+$cartContextPath = "frontend\src\context\CartContext.jsx"
+$cleanCartContext = @'
 import { createContext, useContext, useState, useCallback } from 'react';
 
 const CartContext = createContext(null);
@@ -147,3 +175,10 @@ export function useCart() {
   if (!ctx) throw new Error('useCart must be inside CartProvider');
   return ctx;
 }
+'@
+
+Set-Content -Path $cartContextPath -Value $cleanCartContext -NoNewline
+Write-Host "   Replaced CartContext.jsx (no self-import)"
+
+Write-Host "`n✅ Fixes applied." -ForegroundColor Green
+Write-Host "`nNow restart your frontend dev server and test." -ForegroundColor Cyan

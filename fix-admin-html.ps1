@@ -1,3 +1,7 @@
+# fix-admin-html.ps1
+$adminIndex = "admin\index.html"
+
+$cleanHtml = @'
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,3 +17,7 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+'@
+
+Set-Content -Path $adminIndex -Value $cleanHtml -NoNewline
+Write-Host "✅ Fixed admin/index.html"
