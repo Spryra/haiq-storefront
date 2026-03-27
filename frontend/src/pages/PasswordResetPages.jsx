@@ -1,6 +1,6 @@
-// frontend/src/pages/PasswordResetPages.jsx - corrected
+// frontend/src/pages/PasswordResetPages.jsx
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
 
