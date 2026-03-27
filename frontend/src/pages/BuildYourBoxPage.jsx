@@ -59,7 +59,7 @@ export default function BuildYourBoxPage() {
     })
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = () => {`n    console.log("Add to Cart clicked, selections:", selectionsList, "boxPrice:", BOX_PRICE);
     const selectionsList = products
       .filter(p => (selections[p.id]||0) > 0)
       .map(p => {
