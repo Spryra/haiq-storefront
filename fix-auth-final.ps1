@@ -1,3 +1,7 @@
+# fix-auth-final.ps1
+$controllerPath = "backend\src\controllers\auth.controller.js"
+
+$correctController = @'
 // auth.controller.js — complete with profile and password routes
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
@@ -284,3 +288,12 @@ module.exports = {
   updateProfile,
   changePassword,
 };
+'@
+
+Set-Content -Path $controllerPath -Value $correctController -NoNewline
+Write-Host "✅ Replaced auth.controller.js with full version (including updateProfile/changePassword)"
+
+Write-Host "`nNow commit and push:" -ForegroundColor Cyan
+Write-Host "  git add -A"
+Write-Host "  git commit -m 'fix: add missing profile and password routes'"
+Write-Host "  git push"
