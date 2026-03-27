@@ -7,7 +7,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimiter');
 const routes = require('./routes');
 
-const app = express();
+const app = express();`n`n// trust proxy for rate limiting behind Render`napp.set(`"trust proxy`", 1);
 
 // ─── Security Headers ──────────────────────────────────────────
 app.use(helmet({
