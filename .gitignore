@@ -56,3 +56,5 @@ codedump.txt
 progress.md
 lumpsum/
 backup/
+
+*.ps1
