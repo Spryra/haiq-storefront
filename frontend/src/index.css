@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap");
+
+0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,4 +91,4 @@ a { color: inherit; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ── Font imports ── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
