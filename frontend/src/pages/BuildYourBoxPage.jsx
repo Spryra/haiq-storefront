@@ -20,6 +20,7 @@ export default function BuildYourBoxPage() {
   const { addBox, openDrawer } = useCart()
 
   const [products,    setProducts]    = useState([])
+  const [boxProduct,  setBoxProduct]  = useState(null)
   const [loading,     setLoading]     = useState(true)
   const [selections,  setSelections]  = useState({})
   const [isSpecialDay,setIsSpecialDay]= useState(false)
@@ -39,13 +40,17 @@ export default function BuildYourBoxPage() {
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     api.get('/products?limit=50')
       .then(res => {
         const cookies = (res.data.products || [])
           .filter(p => COOKIE_SLUGS.includes(p.slug) && p.is_active !== false)
           .sort((a,b) => COOKIE_SLUGS.indexOf(a.slug) - COOKIE_SLUGS.indexOf(b.slug))
         setProducts(cookies)
+        // Fetch box product separately
+        return api.get('/products/box-office')
       })
+      .then(boxRes => setBoxProduct(boxRes.data.product))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -59,14 +64,18 @@ export default function BuildYourBoxPage() {
     })
   }
 
-  const handleAddToCart = () => {`n    console.log("Add to Cart clicked, selections:", selectionsList, "boxPrice:", BOX_PRICE);
+  const handleAddToCart = () => {
+    if (!boxProduct) return
+    const defaultVariant = boxProduct.variants.find(v => v.is_default) ?? boxProduct.variants[0]
+    if (!defaultVariant) return
+
     const selectionsList = products
       .filter(p => (selections[p.id]||0) > 0)
       .map(p => {
         const variant = p.variants?.find(v => v.is_default) ?? p.variants?.[0]
         return { product: p, variant, count: selections[p.id] }
       })
-    addBox(selectionsList, BOX_PRICE)
+    addBox(selectionsList, BOX_PRICE, boxProduct.id, defaultVariant.id)
     openDrawer()
   }
 

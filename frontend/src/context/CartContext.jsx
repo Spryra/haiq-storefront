@@ -13,7 +13,7 @@ const CartContext = createContext(null);
  *   { key, productId: null, variantId: null, name: 'Box Office',
  *     price: <total box price>, quantity: 1, itemType: 'box',
  *     boxId, boxContents: [{ name, quantity, productId, variantId }],
- *     orderItems }
+ *     boxProductId, boxVariantId }
  */
 
 const parsePrice = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
@@ -52,7 +52,7 @@ export function CartProvider({ children }) {
   }, []);
 
   // addBox – adds a box as one cart line item (name always "Box Office")
-  const addBox = useCallback((selections, boxPrice) => {
+  const addBox = useCallback((selections, boxPrice, boxProductId, boxVariantId) => {
     const boxId = `box-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const displayName = 'Box Office';
     const price = parsePrice(boxPrice);
@@ -68,14 +68,6 @@ export function CartProvider({ children }) {
         variantId: s.variant?.id,
       }));
 
-    const orderItems = selections
-      .filter(s => s.count > 0)
-      .map(s => ({
-        product_id: s.product.id,
-        variant_id: s.variant?.id,
-        quantity: s.count,
-      }));
-
     setItems(prev => [...prev, {
       key: boxId,
       productId: null,
@@ -89,7 +81,8 @@ export function CartProvider({ children }) {
       itemType: 'box',
       boxId,
       boxContents,
-      orderItems,
+      boxProductId,
+      boxVariantId,
     }]);
   }, []);
 
@@ -113,8 +106,8 @@ export function CartProvider({ children }) {
   const toOrderItems = () => {
     const result = [];
     items.forEach(item => {
-      if (item.itemType === 'box' && item.orderItems) {
-        result.push(...item.orderItems);
+      if (item.itemType === 'box' && item.boxProductId) {
+        result.push({ product_id: item.boxProductId, variant_id: item.boxVariantId, quantity: 1 });
       } else if (item.productId && item.variantId) {
         result.push({ product_id: item.productId, variant_id: item.variantId, quantity: item.quantity });
       }
