@@ -1,4 +1,4 @@
-// auth.controller.js — complete with profile and password routes
+// auth.controller.js — full version with updateProfile & changePassword
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const { query } = require('../config/db');
