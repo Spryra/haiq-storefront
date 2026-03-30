@@ -13,9 +13,6 @@ const LOCAL_IMGS = {
   'blackout':            '/images/products/blackout.jpg',
 }
 
-const DEFAULT_PRICE    = 80000  // off-peak
-const SPECIAL_DAY_PRICE = 40000  // on special days
-
 export default function BuildYourBoxPage() {
   const { addBox, openDrawer } = useCart()
 
@@ -26,12 +23,14 @@ export default function BuildYourBoxPage() {
   const [isSpecialDay,setIsSpecialDay]= useState(false)
   const [checkingDay, setCheckingDay] = useState(true)
 
-  const BOX_PRICE = isSpecialDay ? SPECIAL_DAY_PRICE : DEFAULT_PRICE
+  const [boxPrice, setBoxPrice] = useState(80000)
+  const originalPrice = 80000
+  const specialPrice  = 40000
+
   const total     = Object.values(selections).reduce((s,n) => s+n, 0)
   const isFull    = total === BOX_SIZE
   const pct       = Math.round((total / BOX_SIZE) * 100)
 
-  // Check if today is a special day — determines the box price
   useEffect(() => {
     api.get('/special-days/active-today')
       .then(res => setIsSpecialDay(res.data.isSpecialDay === true || res.data.active === true))
@@ -47,13 +46,23 @@ export default function BuildYourBoxPage() {
           .filter(p => COOKIE_SLUGS.includes(p.slug) && p.is_active !== false)
           .sort((a,b) => COOKIE_SLUGS.indexOf(a.slug) - COOKIE_SLUGS.indexOf(b.slug))
         setProducts(cookies)
-        // Fetch box product separately
         return api.get('/products/box-office')
       })
-      .then(boxRes => setBoxProduct(boxRes.data.product))
+      .then(boxRes => {
+        const box = boxRes.data.product
+        setBoxProduct(box)
+        setBoxPrice(box.off_peak_price || 80000)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (boxProduct) {
+      const newPrice = isSpecialDay ? (boxProduct.base_price || 40000) : (boxProduct.off_peak_price || 80000)
+      setBoxPrice(newPrice)
+    }
+  }, [isSpecialDay, boxProduct])
 
   const add = (id) => { if (!isFull) setSelections(s => ({ ...s, [id]: (s[id]||0)+1 })) }
   const rem = (id) => {
@@ -66,7 +75,7 @@ export default function BuildYourBoxPage() {
 
   const handleAddToCart = () => {
     if (!boxProduct) return
-    const defaultVariant = boxProduct.variants.find(v => v.is_default) ?? boxProduct.variants[0]
+    const defaultVariant = boxProduct.variants?.find(v => v.is_default) ?? boxProduct.variants?.[0]
     if (!defaultVariant) return
 
     const selectionsList = products
@@ -75,14 +84,13 @@ export default function BuildYourBoxPage() {
         const variant = p.variants?.find(v => v.is_default) ?? p.variants?.[0]
         return { product: p, variant, count: selections[p.id] }
       })
-    addBox(selectionsList, BOX_PRICE, boxProduct.id, defaultVariant.id)
+    addBox(selectionsList, boxPrice, boxProduct.id, defaultVariant.id)
     openDrawer()
   }
 
   return (
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
 
-      {/* Header */}
       <div className="border-b py-14 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
         <div className="flex items-center gap-3 mb-4">
           <Crown size={20} color="#B8752A" />
@@ -98,23 +106,26 @@ export default function BuildYourBoxPage() {
           Pick exactly 4 cookies. Any combination.
         </p>
 
-        {/* Box price — live from special day check */}
         {!checkingDay && (
           <div className="mt-5 inline-flex items-center gap-3 px-4 py-2.5"
             style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.3)' }}>
             <p className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: '#8C7355' }}>Box Price</p>
-            <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>
-              UGX {BOX_PRICE.toLocaleString()}
-            </p>
-            {isSpecialDay && (
-              <span className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider"
-                style={{ background: '#B8752A', color: '#1A0A00' }}>Special Day</span>
+            {isSpecialDay ? (
+              <div className="flex items-center gap-2">
+                <span className="font-serif font-bold text-lg line-through" style={{ color: '#8C7355' }}>UGX {originalPrice.toLocaleString()}</span>
+                <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>UGX {specialPrice.toLocaleString()}</p>
+                <span className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider"
+                  style={{ background: '#B8752A', color: '#1A0A00' }}>Special Day</span>
+              </div>
+            ) : (
+              <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>
+                UGX {originalPrice.toLocaleString()}
+              </p>
             )}
           </div>
         )}
       </div>
 
-      {/* Sticky progress */}
       <div className="sticky top-0 z-30 border-b"
         style={{ background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(184,117,42,0.2)', backdropFilter: 'blur(8px)' }}>
         <div className="container mx-auto px-6 md:px-16 py-3">
@@ -143,7 +154,6 @@ export default function BuildYourBoxPage() {
         </div>
       </div>
 
-      {/* Cookie grid */}
       <div className="container mx-auto px-6 md:px-16 py-12">
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
@@ -193,7 +203,6 @@ export default function BuildYourBoxPage() {
         )}
       </div>
 
-      {/* Bottom bar when full */}
       {isFull && (
         <div className="fixed bottom-0 left-0 right-0 z-40 py-4 px-6"
           style={{ background: '#1A0A00', borderTop: '1px solid rgba(184,117,42,0.4)' }}>
@@ -210,7 +219,7 @@ export default function BuildYourBoxPage() {
             <button onClick={handleAddToCart}
               className="px-8 py-3 font-bold text-[11px] tracking-[0.25em] uppercase whitespace-nowrap"
               style={{ background: '#B8752A', color: '#1A0A00' }}>
-              Add to Cart · UGX {BOX_PRICE.toLocaleString()}
+              Add to Cart · UGX {boxPrice.toLocaleString()}
             </button>
           </div>
         </div>

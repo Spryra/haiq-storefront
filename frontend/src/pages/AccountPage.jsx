@@ -1,13 +1,11 @@
-// frontend/src/pages/AccountPage.jsx
-// Full file — MessagesTab uses real-time polling hook
-import { useState, useEffect, useRef } from 'react'
+// frontend/src/pages/AccountPage.jsx — without Messages tab
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useRealtimeMessages } from '../hooks/useRealtimeMessages'
 import api from '../services/api'
 import Crown from '../components/shared/Crown'
 
-// ── Profile Tab ───────────────────────────────────────────────────────────────
+// ── Profile Tab ───────────────────────────────────────────────
 function ProfileTab({ user, onUpdated }) {
   const fullName = user?.full_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim()
   const [form,    setForm]    = useState({ full_name: fullName, phone: user?.phone || '' })
@@ -84,7 +82,7 @@ function ProfileTab({ user, onUpdated }) {
   )
 }
 
-// ── Orders Tab ────────────────────────────────────────────────────────────────
+// ── Orders Tab ────────────────────────────────────────────────
 function OrdersTab() {
   const [orders, setOrders]  = useState([])
   const [loading, setLoading] = useState(true)
@@ -130,7 +128,7 @@ function OrdersTab() {
   )
 }
 
-// ── Loyalty Card Tab ──────────────────────────────────────────────────────────
+// ── Loyalty Card Tab ──────────────────────────────────────────
 function LoyaltyTab({ user }) {
   const [card,      setCard]      = useState(null)
   const [loading,   setLoading]   = useState(true)
@@ -167,7 +165,6 @@ function LoyaltyTab({ user }) {
 
   return (
     <div className="max-w-lg space-y-5">
-      {/* Card display */}
       <div className="p-6 relative overflow-hidden" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
         <div className="absolute -top-4 -right-4 opacity-[0.04] pointer-events-none">
           <Crown size={120} color="#E8C88A" />
@@ -199,7 +196,6 @@ function LoyaltyTab({ user }) {
         )}
       </div>
 
-      {/* Application form */}
       {applyOpen && (
         <div className="p-5" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.3)' }}>
           <p className="font-serif font-bold text-lg mb-4" style={{ color: '#F2EAD8' }}>Apply for HAIQ Card</p>
@@ -230,90 +226,11 @@ function LoyaltyTab({ user }) {
   )
 }
 
-// ── Messages Tab — REAL-TIME (3-second polling) ───────────────────────────────
-function MessagesTab() {
-  const { messages, loading, send } = useRealtimeMessages('/messages/direct/me', true)
-  const [body,    setBody]    = useState('')
-  const [sending, setSending] = useState(false)
-  const bottomRef = useRef(null)
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  const handleSend = async () => {
-    if (!body.trim()) return
-    setSending(true)
-    try {
-      await send(body.trim())
-      setBody('')
-    } catch {} finally { setSending(false) }
-  }
-
-  return (
-    <div className="max-w-lg flex flex-col" style={{ height: 'calc(100vh - 280px)', minHeight: '400px' }}>
-      <div className="flex items-center justify-between mb-3">
-        <p className="font-serif font-bold text-xl" style={{ color: '#F2EAD8' }}>Message HAIQ</p>
-        {/* Live indicator */}
-        <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-400" style={{ animation: 'pulse 2s infinite' }} />
-          <span className="text-[10px]" style={{ color: '#8C7355' }}>Live</span>
-        </div>
-      </div>
-      <p className="text-sm mb-4" style={{ color: 'rgba(242,234,216,0.4)' }}>
-        Messages update automatically.
-      </p>
-
-      {/* Thread */}
-      <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
-        {loading ? (
-          <div className="py-8 text-center text-sm" style={{ color: '#8C7355' }}>Loading messages...</div>
-        ) : messages.length === 0 ? (
-          <div className="py-8 text-center text-sm" style={{ color: '#8C7355' }}>
-            No messages yet. Say hello — we respond.
-          </div>
-        ) : messages.map(m => (
-          <div key={m.id} className={`flex ${m.sender_type === 'admin' ? 'justify-start' : 'justify-end'}`}>
-            <div className="px-4 py-3 text-sm max-w-[85%] leading-relaxed"
-              style={{
-                background: m.sender_type === 'admin' ? '#2A1200' : '#1A0A00',
-                border:     `1px solid ${m.sender_type === 'admin' ? 'rgba(184,117,42,0.3)' : 'rgba(61,32,0,0.8)'}`,
-                color:      '#F2EAD8',
-              }}>
-              <p>{m.body}</p>
-              <p className="text-[10px] mt-1.5" style={{ color: '#8C7355' }}>
-                {m.sender_type === 'admin' ? 'HAIQ' : 'You'} &middot; {new Date(m.created_at).toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' })}
-              </p>
-            </div>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="flex gap-2">
-        <input value={body} onChange={e => setBody(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-          placeholder="Your message..."
-          className="flex-1 px-4 py-3 text-sm focus:outline-none"
-          style={{ background: '#1A0A00', border: '1px solid rgba(184,117,42,0.2)', color: '#F2EAD8' }} />
-        <button onClick={handleSend} disabled={sending || !body.trim()}
-          className="px-5 py-3 font-bold text-[11px] tracking-wider uppercase disabled:opacity-40"
-          style={{ background: '#B8752A', color: '#1A0A00' }}>
-          {sending ? '...' : 'Send'}
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────
 const TABS = [
   { key: 'profile',  label: 'Profile'      },
   { key: 'orders',   label: 'Orders'       },
   { key: 'loyalty',  label: 'Loyalty Card' },
-  { key: 'messages', label: 'Messages'     },
 ]
 
 export default function AccountPage() {
@@ -335,7 +252,6 @@ export default function AccountPage() {
 
   return (
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
-      {/* 60% dark header, 10% amber label, 30% cream headline */}
       <div className="border-b px-6 md:px-16 py-12 md:py-16" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-2" style={{ color: '#B8752A' }}>Made For You</p>
         <h1 className="font-serif font-bold" style={{ fontSize: 'clamp(2rem,5vw,4rem)', color: '#F2EAD8' }}>
@@ -344,7 +260,6 @@ export default function AccountPage() {
       </div>
 
       <div className="px-6 md:px-16 py-8">
-        {/* Tab strip — scrollable on mobile */}
         <div className="flex border-b mb-8 overflow-x-auto scrollbar-hide" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
           {TABS.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
@@ -362,7 +277,6 @@ export default function AccountPage() {
         {tab === 'profile'  && <ProfileTab user={user} onUpdated={() => {}} />}
         {tab === 'orders'   && <OrdersTab />}
         {tab === 'loyalty'  && <LoyaltyTab user={user} />}
-        {tab === 'messages' && <MessagesTab />}
       </div>
     </div>
   )

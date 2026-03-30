@@ -7,8 +7,7 @@ import CartDrawer from './CartDrawer'
 const PROMO_MESSAGES = [
   'Made For You — Baked Fresh Every Morning in Kampala',
   'Venom · Coconut · Crimson Sin · Campfire After Dark · Blackout',
-  'The Unboxing — Order yours.',
-]
+  ]
 
 export default function Navbar() {
   const [scrolled,    setScrolled]    = useState(false)
