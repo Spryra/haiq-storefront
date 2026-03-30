@@ -37,7 +37,7 @@ function ProductCard({ product }) {
     <div className="group flex flex-col" style={{ background: '#1A0A00', border: '1px solid rgba(184,117,42,0.12)' }}>
 
       {/* Image */}
-      <Link to={`/products/${product.slug}`} className="block relative overflow-hidden" style={{ aspectRatio: '1' }}>
+      <Link to={product.is_box_item ? "/build-your-box" : `/products/${product.slug}`} className="block relative overflow-hidden" style={{ aspectRatio: '1' }}>
         {image ? (
           <img
             src={image}
