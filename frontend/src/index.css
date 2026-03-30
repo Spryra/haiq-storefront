@@ -87,3 +87,11 @@ a { color: inherit; }
 /* ── Utility: hide scrollbar but keep scrolling ── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Primary button style */
+.btn-primary {
+  @apply bg-primary text-dark font-bold uppercase tracking-wide transition-all duration-200;
+}
+.btn-primary:hover {
+  @apply bg-secondary;
+}

@@ -22,7 +22,6 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // addItem – for single cookie orders
   const addItem = useCallback((product, variant, quantity = 1, options = {}) => {
     const { itemType = 'single' } = options;
     if (itemType === 'single') {
@@ -51,7 +50,6 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // addBox – adds a box as one cart line item (name always "Box Office")
   const addBox = useCallback((selections, boxPrice, boxProductId, boxVariantId) => {
     const boxId = `box-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const displayName = 'Box Office';
@@ -91,7 +89,7 @@ export function CartProvider({ children }) {
   }, []);
 
   const updateQty = useCallback((item, qty) => {
-    if (item.itemType === 'box') return; // box quantity is always 1
+    if (item.itemType === 'box') return;
     if (qty < 1) setItems(prev => prev.filter(i => i.key !== item.key));
     else setItems(prev => prev.map(i => i.key === item.key ? { ...i, quantity: qty } : i));
   }, []);

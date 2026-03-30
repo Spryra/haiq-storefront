@@ -11,4 +11,6 @@ router.use('/loyalty',     require('./admin.loyalty.routes'));
 router.use('/newsletter',   require('./admin.newsletter.routes'));
 router.use('/special-days', require('./admin.special_days.routes'));
 
+router.use('/reviews', require('./admin.reviews.routes'));
+
 module.exports = router;
