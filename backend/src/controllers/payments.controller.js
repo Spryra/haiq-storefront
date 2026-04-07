@@ -1,3 +1,36 @@
+
+async function confirm(req, res, next) {
+  try {
+    const { internal_ref, status } = req.body;
+
+    const result = await paymentsService.confirm({
+      internal_ref,
+      status
+    });
+
+    res.json({ success: true, ...result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function initiate(req, res, next) {
+  try {
+    const { order_id, amount, method, payer_phone, order_number } = req.body;
+
+    const result = await paymentsService.initiate({
+      order_id,
+      amount,
+      method,
+      payer_phone,
+      order_number
+    });
+
+    res.json({ success: true, ...result });
+  } catch (err) {
+    next(err);
+  }
+}
 // backend/src/controllers/payments.controller.js
 
 const { query } = require('../config/db');
@@ -149,8 +182,13 @@ async function uploadBankProof(req, res, next) {
   } catch (err) { next(err); }
 }
 
-module.exports = {
-  initiateMTN, statusMTN, webhookMTN,
-  initiateAirtel, statusAirtel, webhookAirtel,
-  bankDetails, uploadBankProof
+module.exports = { initiate, confirm,
+  initiateMTN,
+  statusMTN,
+  webhookMTN,
+  initiateAirtel,
+  statusAirtel,
+  webhookAirtel,
+  bankDetails,
+  uploadBankProof
 };
