@@ -153,20 +153,7 @@ export default function ContactPage() {
               <p className="text-primary text-xs font-bold tracking-widest uppercase mb-3">
                 Order Hours
               </p>
-              <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-light/60">Monday – Friday</span>
-                  <span className="font-medium">7:00 AM – 8:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-light/60">Saturday</span>
-                  <span className="font-medium">8:00 AM – 9:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-light/60">Sunday</span>
-                  <span className="font-medium">9:00 AM – 6:00 PM</span>
-                </div>
-              </div>
+              <p>Working Hours: 24/7</p>
               <p className="text-light/40 text-xs mt-3">
                 Order before noon for same-day delivery in Kampala.
               </p>

@@ -11,13 +11,17 @@ const emailService = require('../services/email.service')
 const { logger } = require('../config/logger')
 
 // Existing routes
-router.post('/register',       ctrl.register)
-router.post('/login',          ctrl.login)
-router.post('/logout',         ctrl.logout)
-router.post('/refresh',        ctrl.refresh)
-router.get('/me',   requireAuth, ctrl.getMe)
-router.put('/profile',  requireAuth, ctrl.updateProfile)
-router.put('/password', requireAuth, ctrl.changePassword)
+router.post('/register', ctrl.register);
+router.post('/login', ctrl.login);
+router.post('/logout', ctrl.logout);
+
+// ✅ SINGLE SOURCE OF TRUTH
+router.post('/refresh', ctrl.refresh);
+router.get('/refresh', ctrl.refresh);
+
+router.get('/me', requireAuth, ctrl.getMe);
+router.put('/profile', requireAuth, ctrl.updateProfile);
+router.put('/password', requireAuth, ctrl.changePassword);
 
 // ── Forgot password ───────────────────────────────────────────────────────────
 router.post('/forgot-password', async (req, res, next) => {

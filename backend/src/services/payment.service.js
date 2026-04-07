@@ -1,13 +1,31 @@
-// payment.service.js — Payment orchestrator
-// Added: cash_on_delivery support (no external API call needed)
+// payments.service.js — Payment orchestrator with simulation support
 const mtnService    = require('./mtn.service');
 const airtelService = require('./airtel.service');
 const { generatePaymentRef, generateBankRef } = require('../utils/tokenGenerator');
 const { query } = require('../config/db');
 
+const PAYMENT_MODE = process.env.PAYMENT_MODE || 'production';
+
 async function initiate({ order_id, amount, method, payer_phone, order_number }) {
   const internal_ref = generatePaymentRef();
 
+  // ── Simulation mode ─────────────────────────────
+  if (PAYMENT_MODE === 'simulation') {
+    await query(
+      `INSERT INTO payments (order_id, payment_method, internal_ref, amount, payer_phone, status)
+       VALUES ($1, $2, $3, $4, $5, 'pending')`,
+      [order_id, method, internal_ref, amount, payer_phone]
+    );
+    await query(`UPDATE orders SET payment_status = 'pending' WHERE id = $1`, [order_id]);
+
+    return {
+      type: method,
+      internal_ref,
+      message: `Simulation: Payment for ${method} is now pending.`,
+    };
+  }
+
+  // ── Real payment flows ──────────────────────────
   if (method === 'mtn_momo') {
     await query(
       `INSERT INTO payments (order_id, payment_method, internal_ref, amount, payer_phone, status)
@@ -59,8 +77,6 @@ async function initiate({ order_id, amount, method, payer_phone, order_number })
   }
 
   if (method === 'cash_on_delivery') {
-    // No payment record or external API call needed.
-    // Order stays at payment_status = 'unpaid' — admin marks paid on delivery.
     return {
       type: 'cash_on_delivery',
       internal_ref: null,
@@ -71,4 +87,15 @@ async function initiate({ order_id, amount, method, payer_phone, order_number })
   throw new Error(`Unsupported payment method: ${method}`);
 }
 
-module.exports = { initiate };
+// ── Confirm payment (simulation only) ─────────────
+async function confirm({ internal_ref, status }) {
+  if (!internal_ref || !status) throw new Error('internal_ref and status are required');
+  const res = await query(
+    `UPDATE payments SET status=$1, updated_at=now() WHERE internal_ref=$2 RETURNING *`,
+    [status, internal_ref]
+  );
+  if (res.rows.length === 0) throw new Error('Payment not found');
+  return res.rows[0];
+}
+
+module.exports = { initiate, confirm };

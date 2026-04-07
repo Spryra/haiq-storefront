@@ -87,53 +87,50 @@ async function getOne(req, res, next) {
 }
 
 async function updateStatus(req, res, next) {
-  const client = await getClient();
   try {
-    const { status, note } = req.body;
+    const { id } = req.params;
+    const { status } = req.body;
 
-    const { rows: [order] } = await client.query(
-      'SELECT id, status, tracking_token, email, first_name FROM orders WHERE id = $1 FOR UPDATE',
-      [req.params.id]
-    );
-    if (!order) { await client.query('ROLLBACK'); return res.status(404).json({ success: false, error: 'Order not found' }); }
+    const allowedStatuses = ['pending', 'en_route', 'delivered', 'cancelled'];
 
-    const allowed = STATUS_TRANSITIONS[order.status] || [];
-    if (!allowed.includes(status)) {
+    if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        error: `Cannot transition from "${order.status}" to "${status}". Allowed: ${allowed.join(', ') || 'none'}`,
+        error: 'Invalid status provided'
       });
     }
 
-    await client.query('BEGIN');
-    await client.query(
-      'UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2',
-      [status, order.id]
-    );
-    await client.query(`
-      INSERT INTO order_events (order_id, event_type, old_value, new_value, actor_type, actor_id, note)
-      VALUES ($1, 'status_change', $2, $3, 'admin', $4, $5)
-    `, [order.id, order.status, status, req.admin.id, note || null]);
-    await client.query('COMMIT');
+    const order = await db('orders').where({ id }).first();
 
-    // Broadcast to SSE listeners
-    const meta = STATUS_LABELS[status];
-    broadcastStatusUpdate(order.tracking_token, {
-      status,
-      label:     `${meta.label} ${meta.emoji}`,
-      timestamp: new Date().toISOString(),
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
+    }
+
+    await db('orders')
+      .where({ id })
+      .update({ status });
+
+    // ✅ COD auto-payment logic
+    if (order.payment_method === 'cash_on_delivery' && status === 'delivered') {
+      await db('orders')
+        .where({ id })
+        .update({ payment_status: 'paid' });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Order status updated successfully'
     });
 
-    // Email customer (non-blocking)
-    emailService.sendStatusUpdate({ email: order.email, first_name: order.first_name, status, meta })
-      .catch(err => logger.error('Status email failed', { error: err.message }));
-
-    res.json({ success: true, order_id: order.id, status, updated_at: new Date().toISOString() });
-  } catch (err) {
-    await client.query('ROLLBACK').catch(() => {});
-    next(err);
-  } finally {
-    client.release();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to update order status'
+    });
   }
 }
 

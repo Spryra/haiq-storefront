@@ -2,9 +2,6 @@ module.exports = {
   // Order statuses (themed)
   ORDER_STATUSES: {
     PENDING:           'pending',
-    FRESHLY_KNEADED:   'freshly_kneaded',
-    OVENBOUND:         'ovenbound',
-    ON_THE_CART:       'on_the_cart',
     EN_ROUTE:          'en_route',
     DELIVERED:         'delivered',
     CANCELLED:         'cancelled',

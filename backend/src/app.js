@@ -9,7 +9,7 @@ const routes = require('./routes');
 
 const app = express();
 
-// trust proxy for rate limiting behind Render
+// ✅ TRUST PROXY (Render / production safe)
 app.set('trust proxy', 1);
 
 // ─── Security Headers ──────────────────────────────────────────
@@ -18,7 +18,7 @@ app.use(helmet({
   contentSecurityPolicy: false,
 }));
 
-// ─── CORS ──────────────────────────────────────────────────────
+// ─── CORS (FIXED + SAFE) ───────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map(o => o.trim())
@@ -26,16 +26,21 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error(`CORS: origin ${origin} not allowed`));
+    // allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return cb(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return cb(null, true);
+    }
+
+    console.warn(`❌ Blocked by CORS: ${origin}`);
+    return cb(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Idempotency-Key'],
 }));
 
 // ─── Body Parsing ──────────────────────────────────────────────
-// Keep raw body for webhook HMAC verification
+// Keep raw body for webhook verification
 app.use((req, res, next) => {
   if (req.path.includes('/webhook')) {
     express.raw({ type: 'application/json' })(req, res, next);

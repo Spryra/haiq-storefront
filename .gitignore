@@ -58,3 +58,6 @@ lumpsum/
 backup/
 
 *.ps1
+fix-admin-html.ps1
+
+final_implementation.md
