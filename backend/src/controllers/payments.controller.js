@@ -3,8 +3,8 @@
 const { query } = require('../config/db');
 const { logger } = require('../config/logger');
 const { verifySignature, isTimestampFresh } = require('../utils/crypto');
-const paymentsService = require('../services/payments.service');
-
+// backend/src/controllers/payments.controller.js
+const paymentsService = require('../services/payments.service'); // now matches filename
 async function initiateMTN(req, res, next) {
   try {
     const { order_id, payer_phone } = req.body;
