@@ -27,8 +27,8 @@ const confirmSchema = z.object({
 
 const safe = (fn, name) => {
   if (!fn) {
-    console.error(❌ Missing controller function: );
-    throw new Error(Missing controller function: );
+    console.error('❌ Missing controller function:');
+    throw new Error('Missing controller function: ');
   }
   return fn;
 };
