@@ -56,7 +56,9 @@ codedump.txt
 progress.md
 lumpsum/
 backup/
+special_days_migration.sql
 
+haiq_final_implementation_apply.ps1
 *.ps1
 fix-admin-html.ps1
 
