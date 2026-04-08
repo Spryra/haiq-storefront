@@ -5,8 +5,6 @@ const { paymentLimiter } = require('../middleware/rateLimiter');
 const { idempotencyMiddleware } = require('../utils/idempotency');
 const paymentsCtrl = require('../controllers/payments.controller');
 
-console.log('paymentsCtrl:', paymentsCtrl);
-
 const initiateSchema = z.object({
   order_id: z.string().uuid(),
   amount: z.number(),

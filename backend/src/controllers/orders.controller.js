@@ -7,7 +7,7 @@ const { query, getClient } = require('../config/db')
 const { logger } = require('../config/logger')
 const { generateOrderNumber, generateTrackingToken } = require('../utils/tokenGenerator')
 const emailService  = require('../services/email.service')
-const paymentService = require('../services/payments.service')
+const paymentsService = require('../services/payments.service')
 
 const DELIVERY_FEE = 0  // Delivery is confirmed separately — no fixed fee
 
@@ -137,7 +137,7 @@ async function create(req, res, next) {
     // Initiate payment
     let payment_intent = {}
     try {
-      payment_intent = await paymentService.initiate({
+      payment_intent = await paymentsService.initiate({
         order_id:     order.id,
         amount:       total,
         method:       payment_method,
