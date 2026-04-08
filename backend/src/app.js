@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const compression = require('compression');
 const { requestLogger } = require('./middleware/requestLogger');
@@ -49,6 +50,9 @@ app.use((req, res, next) => {
   }
 });
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ─── Cookie Parsing ────────────────────────────────────────────
+app.use(cookieParser());
 
 // ─── Compression ───────────────────────────────────────────────
 app.use(compression());
