@@ -2,24 +2,18 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import adminApi from '../services/adminApi'
 
-const ORDER_STATUSES = ['pending','freshly_kneaded','ovenbound','on_the_cart','en_route','delivered','cancelled']
+const ORDER_STATUSES = ['pending','en_route','delivered','cancelled']
 const STATUS_NEXT = {
-  pending:         ['freshly_kneaded', 'cancelled'],
-  freshly_kneaded: ['ovenbound', 'cancelled'],
-  ovenbound:       ['on_the_cart', 'cancelled'],
-  on_the_cart:     ['en_route', 'cancelled'],
-  en_route:        ['delivered'],
-  delivered:       [],
-  cancelled:       [],
+  pending:   ['en_route', 'cancelled'],
+  en_route:  ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
 }
 const STATUS_COLORS = {
-  pending:         '#E8C88A',
-  freshly_kneaded: '#60a5fa',
-  ovenbound:       '#fb923c',
-  on_the_cart:     '#a78bfa',
-  en_route:        '#D4A574',
-  delivered:       '#4ade80',
-  cancelled:       '#f87171',
+  pending:   '#E8C88A',
+  en_route:  '#D4A574',
+  delivered: '#4ade80',
+  cancelled: '#f87171',
 }
 
 // Admin cancellation reasons
