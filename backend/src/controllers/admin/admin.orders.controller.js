@@ -1,5 +1,5 @@
 const { query, getClient } = require('../../config/db');
-const { STATUS_TRANSITIONS, STATUS_LABELS } = require('../../config/constants');
+const { STATUS_TRANSITIONS, STATUS_LABELS, ORDER_STATUSES } = require('../../config/constants');
 const { broadcastStatusUpdate } = require('../orders.controller');
 const emailService = require('../../services/email.service');
 const { logger } = require('../../config/logger');
@@ -91,7 +91,7 @@ async function updateStatus(req, res, next) {
     const { id } = req.params;
     const { status } = req.body;
 
-    const allowedStatuses = ['pending', 'en_route', 'delivered', 'cancelled'];
+    const allowedStatuses = Object.values(ORDER_STATUSES);
 
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
