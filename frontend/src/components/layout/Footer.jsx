@@ -55,7 +55,7 @@ export default function Footer() {
               {[
                 ['All Cookies',    '/shop'],
                 ['Build Your Box', '/build-your-box'],
-                ['The Unboxing',   '/products/the-unboxing'],
+
                 ['Moments',        '/moments'],
               ].map(([label, href]) => (
                 <li key={href}>

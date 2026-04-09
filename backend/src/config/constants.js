@@ -1,34 +1,25 @@
 module.exports = {
-  // Order statuses (themed)
+  // Order statuses (simplified)
   ORDER_STATUSES: {
-    PENDING:           'pending',
-    FRESHLY_KNEADED:   'freshly_kneaded',
-    OVENBOUND:         'ovenbound',
-    ON_THE_CART:       'on_the_cart',
-    EN_ROUTE:          'en_route',
-    DELIVERED:         'delivered',
-    CANCELLED:         'cancelled',
+    PENDING:      'pending',
+    EN_ROUTE:     'en_route',
+    DELIVERED:    'delivered',
+    CANCELLED:    'cancelled',
   },
 
   STATUS_LABELS: {
-    pending:           { label: 'Order Received',      emoji: '📋' },
-    freshly_kneaded:   { label: 'Freshly Kneaded',     emoji: '🤲' },
-    ovenbound:         { label: 'Ovenbound',           emoji: '🔥' },
-    on_the_cart:       { label: 'On The Cart',         emoji: '🛒' },
-    en_route:          { label: 'En Route',            emoji: '🚴' },
-    delivered:         { label: 'Delivered Delight',   emoji: '🎉' },
-    cancelled:         { label: 'Order Cancelled',     emoji: '❌' },
+    pending:      { label: 'Order Received',    emoji: '📋' },
+    en_route:     { label: 'En Route',          emoji: '🚴' },
+    delivered:    { label: 'Delivered Delight', emoji: '🎉' },
+    cancelled:    { label: 'Order Cancelled',   emoji: '❌' },
   },
 
   // Valid status transitions
   STATUS_TRANSITIONS: {
-    pending:           ['freshly_kneaded', 'cancelled'],
-    freshly_kneaded:   ['ovenbound', 'cancelled'],
-    ovenbound:         ['on_the_cart', 'cancelled'],
-    on_the_cart:       ['en_route', 'cancelled'],
-    en_route:          ['delivered'],
-    delivered:         [],
-    cancelled:         [],
+    pending:      ['en_route', 'cancelled'],
+    en_route:     ['delivered', 'cancelled'],
+    delivered:    [],
+    cancelled:    [],
   },
 
   // Payment methods

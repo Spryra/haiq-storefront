@@ -57,16 +57,7 @@ const PRODUCTS = [
     items: ['Dark cocoa dough', 'Chocolate chunks', 'Chocolate chips'],
     variant_label: '4-Pack', stock_qty: 35,
   },
-  {
-    name: 'The Unboxing', slug: 'the-unboxing', subtitle: 'Signature Gift Box',
-    description: "A smooth black box that makes you blush arrives at your door. This isn't just a delivery — it's a statement. Go on, embrace the moment and open the box to unveil your individually wrapped masterpieces.",
-    tasting_notes: 'Choose your 4 cookies · Individually wrapped · Signature black box',
-    base_price: 40000, is_featured: true, is_limited: false,
-    is_box_item: true, off_peak_price: 80000,
-    image_url: '/images/products/unboxing.jpg',
-    items: ['4 individually wrapped cookies of your choice', 'Signature black box', 'Custom gift note option'],
-    variant_label: 'Box of 4', stock_qty: 20,
-  },
+
 ];
 
 async function run() {

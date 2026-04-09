@@ -29,7 +29,7 @@ function ProductCard({ product }) {
     'crimson-sin':         '/images/products/crimson_sin.jpg',
     'campfire-after-dark': '/images/products/campfire.jpg',
     'blackout':            '/images/products/blackout.jpg',
-    'the-unboxing':        '/images/products/unboxing.jpg',
+
   }
   const image = localImgMap[product.slug] || imgSrc
 
