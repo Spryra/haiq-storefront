@@ -1,5 +1,6 @@
 const { query, getClient } = require('../../config/db');
 const cloudinary = require('../../config/cloudinary');
+const { logger } = require('../../config/logger');
 
 async function list(req, res, next) {
   try {
@@ -43,7 +44,18 @@ async function create(req, res, next) {
 
     await client.query('COMMIT');
     res.status(201).json({ success: true, product });
-  } catch (err) { await client.query('ROLLBACK'); next(err); } finally { client.release(); }
+  } catch (err) { 
+    try { await client.query('ROLLBACK'); } catch (rollbackErr) {}
+    logger.error('Product create error:', { 
+      error: err.message,
+      code: err.code,
+      detail: err.detail,
+      body: req.body
+    });
+    next(err); 
+  } finally { 
+    client.release(); 
+  }
 }
 
 async function update(req, res, next) {
