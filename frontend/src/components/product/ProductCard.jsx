@@ -127,8 +127,8 @@ export default function ProductCard({ product, index = 0 }) {
                 <p className="text-muted text-xs line-clamp-1 mb-2">
                   {product.subtitle || '\u00A0'}
                 </p>
-                {/* Show "4 of [Product Name]" for individual cookies */}
-                {!product.is_box_item && product.variant_label === '4-Pack' && (
+                {/* Show "4 of [Product Name]" for individual cookies with 4-Pack variant */}
+                {!product.is_box_item && product.variants?.[0]?.label === '4-Pack' && (
                   <p className="text-primary font-semibold text-xs mb-1.5 tracking-wide">
                     4 {product.name}
                   </p>
