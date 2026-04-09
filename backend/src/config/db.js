@@ -12,7 +12,7 @@ const pool = new Pool(
         ssl: { rejectUnauthorized: false },
         max: 10,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
+        connectionTimeoutMillis: 30000,  // Increased from 5s to 30s for cloud environments
       }
     : {
         host:     process.env.DB_HOST     || 'localhost',
@@ -22,7 +22,7 @@ const pool = new Pool(
         password: process.env.DB_PASSWORD || 'haiq_password_2024',
         max: 10,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
+        connectionTimeoutMillis: 30000,  // Increased from 5s to 30s for cloud environments
       }
 );
 

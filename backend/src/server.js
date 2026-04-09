@@ -7,8 +7,29 @@ const { testConnection } = require('./config/db');
 const PORT = process.env.PORT || 3001;
 
 async function start() {
-  // Test DB connection before accepting traffic
-  await testConnection();
+  try {
+    // Test DB connection before accepting traffic
+    logger.info('🔗 Testing database connection...');
+    await testConnection();
+    logger.info('✅ Database connection successful');
+  } catch (err) {
+    logger.error('❌ Database connection failed', {
+      error: err.message,
+      code: err.code,
+      host: process.env.DB_HOST || 'from DATABASE_URL',
+    });
+    logger.info('🔄 Retrying database connection in 2 seconds...');
+    
+    // Retry once after 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      await testConnection();
+      logger.info('✅ Database connection successful on retry');
+    } catch (retryErr) {
+      logger.error('❌ Database connection failed on retry', { error: retryErr.message });
+      process.exit(1);
+    }
+  }
 
   const server = http.createServer(app);
 
