@@ -100,7 +100,11 @@ async function updateStatus(req, res, next) {
       });
     }
 
-    const order = await db('orders').where({ id }).first();
+    // Get the order first
+    const { rows: [order] } = await query(
+      'SELECT id, payment_method FROM orders WHERE id = $1',
+      [id]
+    );
 
     if (!order) {
       return res.status(404).json({
@@ -109,15 +113,12 @@ async function updateStatus(req, res, next) {
       });
     }
 
-    await db('orders')
-      .where({ id })
-      .update({ status });
+    // Update order status
+    await query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
 
-    // ✅ COD auto-payment logic
+    // ✅ COD auto-payment logic: auto-mark as paid when delivered
     if (order.payment_method === 'cash_on_delivery' && status === 'delivered') {
-      await db('orders')
-        .where({ id })
-        .update({ payment_status: 'paid' });
+      await query('UPDATE orders SET payment_status = $1 WHERE id = $2', ['paid', id]);
     }
 
     return res.json({
@@ -126,7 +127,7 @@ async function updateStatus(req, res, next) {
     });
 
   } catch (error) {
-    console.error(error);
+    logger.error('updateStatus error:', { error: error.message, orderId: req.params.id });
     return res.status(500).json({
       success: false,
       error: 'Failed to update order status'
