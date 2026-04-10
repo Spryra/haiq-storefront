@@ -29,7 +29,7 @@ const PAYMENT_METHODS = {
   },
   cash_on_delivery: {
     label: 'Cash on Delivery',
-    icon: '🛍️',
+    icon: '�',
     description: 'Pay when your order arrives',
     color: '#8B7355',
   },

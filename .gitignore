@@ -48,6 +48,12 @@ coverage/
 
 # ── Misc ──────────────────────────────────────────────────────
 *.pem
+cookies.txt
+cookie.txt
+
+# ── Local testing scripts ──────────────────────────────────────
+test-*.js
+test-*.ps1
 *.key
 
 codedump/
