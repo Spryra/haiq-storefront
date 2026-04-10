@@ -211,8 +211,14 @@ export default function CheckoutPage() {
   const upd = f => e => setDetails(d => ({ ...d, [f]: e.target.value }))
 
   useEffect(() => {
+    // Redirect if not authenticated
+    if (!user) {
+      navigate('/login', { replace: true })
+      return
+    }
+    // Redirect if cart is empty
     if (items.length === 0) navigate('/shop', { replace: true })
-  }, [items, navigate])
+  }, [items, navigate, user])
 
   const detailsValid =
     details.first_name.trim() && details.last_name.trim() &&
