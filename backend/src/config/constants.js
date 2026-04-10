@@ -26,7 +26,7 @@ module.exports = {
   PAYMENT_METHODS: {
     MTN_MOMO:       'mtn_momo',
     AIRTEL:         'airtel',
-    BANK_TRANSFER:  'bank_transfer',
+    COD:            'cash_on_delivery',
   },
 
   // Payment statuses

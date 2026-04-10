@@ -19,7 +19,7 @@ async function create(req, res, next) {
     const {
       first_name, last_name, email, phone,
       delivery_address, delivery_note, gift_note,
-      items, payment_method, payer_phone, consent_given,
+      items, payment_method, consent_given,
     } = req.body
 
     const user_id = req.user?.id || null
@@ -141,7 +141,7 @@ async function create(req, res, next) {
         order_id:     order.id,
         amount:       total,
         method:       payment_method,
-        payer_phone:  payer_phone || phone,
+        payer_phone:  phone,
         order_number: order_number,
       })
     } catch (payErr) {

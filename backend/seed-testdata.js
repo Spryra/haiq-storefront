@@ -31,7 +31,7 @@ const ADDRESSES = [
 const STATUSES_EARLY    = ['pending', 'freshly_kneaded'];
 const STATUSES_MID      = ['ovenbound', 'on_the_cart', 'en_route'];
 const STATUSES_COMPLETE = ['delivered'];
-const PAY_METHODS       = ['mtn_momo', 'airtel', 'bank_transfer'];
+const PAY_METHODS       = ['mtn_momo', 'airtel', 'cash_on_delivery'];
 
 const CUSTOMERS = [
   { first_name:'Amara',  last_name:'Nakato',    email:'amara@example.com',  phone:'+256701000001', points:1720, tier:'Crown'   },

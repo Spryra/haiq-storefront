@@ -7,6 +7,34 @@ import api from '../services/api'
 // Delivery notice instead of a hardcoded fee
 const DELIVERY_NOTICE = 'Delivery pricing varies by location and will be confirmed by our team before dispatch. Estimated from UGX 5,000 within Kampala.'
 
+// Payment methods configuration
+const PAYMENT_METHODS = {
+  mtn_momo: {
+    label: 'MTN Mobile Money',
+    code: '165',
+    merchantCode: '170010',
+    ussd: '*165*3#',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/MTN_logo.svg/1200px-MTN_logo.svg.png',
+    color: '#FFD700',
+    description: 'Dial *165*3# to complete payment',
+  },
+  airtel: {
+    label: 'Airtel Money',
+    code: '185',
+    merchantCode: '100010',
+    ussd: '*185*9#',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Airtel_logo_2010-2022.svg/1200px-Airtel_logo_2010-2022.svg.png',
+    color: '#DC143C',
+    description: 'Dial *185*9# to complete payment',
+  },
+  cash_on_delivery: {
+    label: 'Cash on Delivery',
+    icon: '🛍️',
+    description: 'Pay when your order arrives',
+    color: '#8B7355',
+  },
+}
+
 function StepBar({ step }) {
   const steps = ['Order', 'Details', 'Payment', 'Confirm']
   return (
@@ -106,24 +134,56 @@ function OrderSummary({ items, subtotal }) {
   )
 }
 
-function PayBtn({ value, label, desc, icon, selected, onSelect }) {
+function PayBtn({ method, selected, onSelect }) {
+  const config = PAYMENT_METHODS[method]
+  const isLogoMethod = method === 'mtn_momo' || method === 'airtel'
+  
   return (
-    <button onClick={() => onSelect(value)}
-      className="w-full flex items-center gap-4 p-4 text-left transition-all"
+    <button onClick={() => onSelect(method)}
+      className="w-full text-left transition-all overflow-hidden"
       style={{
-        background: selected ? 'rgba(184,117,42,0.1)' : 'rgba(42,18,0,0.5)',
-        border:     selected ? '1px solid #B8752A' : '1px solid rgba(61,32,0,0.8)',
+        background: selected ? 'rgba(184,117,42,0.15)' : 'rgba(42,18,0,0.5)',
+        border:     selected ? '2px solid #B8752A' : '1px solid rgba(61,32,0,0.8)',
+        borderRadius: '12px',
       }}>
-      <span className="text-2xl">{icon}</span>
-      <div className="flex-1">
-        <p className="text-sm font-bold" style={{ color: '#F2EAD8' }}>{label}</p>
-        <p className="text-[10px]" style={{ color: '#8C7355' }}>{desc}</p>
+      <div className="p-4">
+        <div className="flex items-center gap-4 mb-3">
+          {isLogoMethod ? (
+            <img src={config.logo} alt={config.label} className="h-12 w-auto object-contain bg-white rounded px-2 py-1" />
+          ) : (
+            <span className="text-4xl">{config.icon}</span>
+          )}
+          <div className="flex-1">
+            <p className="text-sm font-bold" style={{ color: '#F2EAD8' }}>{config.label}</p>
+            <p className="text-[10px]" style={{ color: '#8C7355' }}>{config.description}</p>
+          </div>
+          <div className="w-5 h-5 rounded-full flex-shrink-0 transition-all flex items-center justify-center"
+            style={{
+              border:     `2px solid ${selected ? '#B8752A' : '#3D2000'}`,
+              background: selected ? '#B8752A' : 'transparent',
+            }}>
+            {selected && <span style={{ color: '#1A0A00', fontSize: '12px', fontWeight: 'bold' }}>✓</span>}
+          </div>
+        </div>
+        
+        {isLogoMethod && (
+          <div className="pl-2 pt-2 border-t border-opacity-20" style={{ borderColor: 'rgba(184,117,42,0.3)' }}>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: '#8C7355' }}>Merchant Code</p>
+                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#B8752A' }}>{config.merchantCode}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: '#8C7355' }}>USSD Code</p>
+                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#B8752A' }}>{config.ussd}</p>
+              </div>
+            </div>
+            <p className="text-[10px] mt-3 px-3 py-2 rounded" style={{ background: 'rgba(184,117,42,0.1)', color: '#8C7355' }}>
+              📞 Dial <strong>{config.ussd}</strong> from your {config.label.split(' ')[0]} line to complete payment
+            </p>
+          </div>
+        )}
       </div>
-      <div className="w-4 h-4 rounded-full flex-shrink-0 transition-all"
-        style={{
-          border:     `2px solid ${selected ? '#B8752A' : '#3D2000'}`,
-          background: selected ? '#B8752A' : 'transparent',
-        }} />
     </button>
   )
 }
@@ -143,7 +203,6 @@ export default function CheckoutPage() {
     delivery_note:    '',
   })
   const [payMethod,   setPayMethod]   = useState('')
-  const [payerPhone,  setPayerPhone]  = useState(user?.phone || '')
   const [consent,     setConsent]     = useState(false)
   const [submitting,  setSubmitting]  = useState(false)
   const [submitError, setSubmitError] = useState(null)
@@ -159,10 +218,7 @@ export default function CheckoutPage() {
     details.email.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email) &&
     details.phone.trim() && details.delivery_address.trim().length >= 5
 
-  const paymentValid =
-    payMethod !== '' &&
-    (payMethod === 'cash_on_delivery' || payMethod === 'bank_transfer' ||
-     payerPhone.replace(/\D/g,'').length >= 9)
+  const paymentValid = payMethod !== ''
 
   const handleSubmit = async () => {
     if (!consent) { setSubmitError('Please confirm your agreement.'); return }
@@ -179,10 +235,19 @@ export default function CheckoutPage() {
         payment_method:   payMethod,
         consent_given:    true,
       }
-      if (payMethod === 'mtn_momo' || payMethod === 'airtel') body.payer_phone = payerPhone.trim()
+      
       const { data } = await api.post('/orders', body)
       clearCart()
-      navigate(`/order-confirmation/${data.tracking_token || data.order?.tracking_token}`)
+      
+      // For mobile money, redirect to payment verification page
+      if (payMethod === 'mtn_momo' || payMethod === 'airtel') {
+        navigate(`/payment-confirmation/${data.tracking_token || data.order?.tracking_token}`, {
+          state: { paymentMethod: payMethod, orderId: data.id || data.order?.id }
+        })
+      } else {
+        // For COD, go directly to order confirmation
+        navigate(`/order-confirmation/${data.tracking_token || data.order?.tracking_token}`)
+      }
     } catch (err) {
       setSubmitError(err.response?.data?.error || err.response?.data?.message || 'Something went wrong. Please try again.')
     } finally { setSubmitting(false) }
@@ -280,30 +345,29 @@ export default function CheckoutPage() {
             {/* Step 3 - Payment */}
             {step === 3 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Payment Method</h2>
-                <div className="space-y-3 mb-6">
-                  <PayBtn value="mtn_momo"        label="MTN Mobile Money"  desc="Approve the prompt on your MTN line."       icon="phone" selected={payMethod==='mtn_momo'}        onSelect={setPayMethod}/>
-                  <PayBtn value="airtel"           label="Airtel Money"      desc="Approve the prompt on your Airtel line."    icon="phone" selected={payMethod==='airtel'}           onSelect={setPayMethod}/>
-                  <PayBtn value="bank_transfer"    label="Bank Transfer"     desc="Transfer and upload proof of payment."      icon="bank"  selected={payMethod==='bank_transfer'}    onSelect={setPayMethod}/>
-                  <PayBtn value="cash_on_delivery" label="Cash on Delivery"  desc="Pay in cash when your order arrives."      icon="cash"  selected={payMethod==='cash_on_delivery'} onSelect={setPayMethod}/>
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Choose Payment Method</h2>
+                <p className="text-sm mb-6" style={{ color: '#8C7355' }}>
+                  Select how you'd like to pay for your order.
+                </p>
+                <div className="space-y-4 mb-6">
+                  <PayBtn method="mtn_momo" selected={payMethod === 'mtn_momo'} onSelect={setPayMethod} />
+                  <PayBtn method="airtel" selected={payMethod === 'airtel'} onSelect={setPayMethod} />
+                  <PayBtn method="cash_on_delivery" selected={payMethod === 'cash_on_delivery'} onSelect={setPayMethod} />
                 </div>
-                {(payMethod==='mtn_momo'||payMethod==='airtel') && (
-                  <div className="mb-5">
-                    {lbl(`${payMethod==='mtn_momo'?'MTN':'Airtel'} number to charge`,true)}
-                    <input type="tel" className={inputCls} style={inputSty} value={payerPhone} onChange={e=>setPayerPhone(e.target.value)} placeholder="+256 700 000 000"/>
+
+                {(payMethod === 'mtn_momo' || payMethod === 'airtel') && (
+                  <div className="mb-6 p-4" style={{ background: 'rgba(184,117,42,0.1)', border: '1px solid rgba(184,117,42,0.3)', borderRadius: '8px' }}>
+                    <p className="text-[10px] font-semibold uppercase tracking-wide mb-2" style={{ color: '#B8752A' }}>📲 Next Steps</p>
+                    <ol className="text-xs space-y-2" style={{ color: '#8C7355', listStyleType: 'decimal', marginLeft: '20px' }}>
+                      <li>Click "Confirm Order" below</li>
+                      <li>Dial <strong style={{ color: '#B8752A', fontFamily: 'monospace' }}>{PAYMENT_METHODS[payMethod].ussd}</strong> from your phone</li>
+                      <li>Enter the merchant code: <strong style={{ color: '#B8752A', fontFamily: 'monospace' }}>{PAYMENT_METHODS[payMethod].merchantCode}</strong></li>
+                      <li>Follow the prompts to complete payment</li>
+                      <li>Your order will be confirmed once payment is verified</li>
+                    </ol>
                   </div>
                 )}
-                {payMethod==='bank_transfer' && (
-                  <div className="mb-5 p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-3" style={{ color: '#B8752A' }}>Bank Details</p>
-                    {[['Bank','Stanbic Bank Uganda'],['Account','9030012345678'],['Name','HAIQ Bakery Ltd']].map(([k,v])=>(
-                      <div key={k} className="flex justify-between mb-1.5">
-                        <span className="text-[11px]" style={{ color: '#8C7355' }}>{k}</span>
-                        <span className="text-[11px] font-medium" style={{ color: '#F2EAD8' }}>{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+
                 <div className="flex gap-3">
                   <button onClick={() => setStep(2)} className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase"
                     style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>Back</button>

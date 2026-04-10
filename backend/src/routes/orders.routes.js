@@ -21,8 +21,7 @@ const createOrderSchema = z.object({
     variant_id: z.string().uuid(),
     quantity:   z.number().int().min(1).max(100),
   })).min(1),
-  payment_method: z.enum(['mtn_momo', 'airtel', 'bank_transfer', 'cash_on_delivery']),
-  payer_phone:    z.string().regex(/^\+?[0-9]{9,15}$/).optional(),
+  payment_method: z.enum(['mtn_momo', 'airtel', 'cash_on_delivery']),
   consent_given:  z.literal(true, { errorMap: () => ({ message: 'You must consent to proceed' }) }),
 });
 

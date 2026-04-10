@@ -8,6 +8,7 @@ import HomePage              from './pages/HomePage'
 import ShopPage              from './pages/ShopPage'
 import ProductDetailPage     from './pages/ProductDetailPage'
 import CheckoutPage          from './pages/CheckoutPage'
+import PaymentConfirmationPage from './pages/PaymentConfirmationPage'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import TrackOrderPage        from './pages/TrackOrderPage'
 import BuildYourBoxPage      from './pages/BuildYourBoxPage'
@@ -52,6 +53,7 @@ export default function App() {
 
             {/* Checkout — full screen */}
             <Route path="/checkout"                  element={<CheckoutPage />} />
+            <Route path="/payment-confirmation/:token" element={<PaymentConfirmationPage />} />
             <Route path="/order-confirmation/:token" element={<OrderConfirmationPage />} />
 
             <Route path="*" element={<Navigate to="/" replace />} />
