@@ -29,7 +29,7 @@ const PAYMENT_METHODS = {
   },
   cash_on_delivery: {
     label: 'Cash on Delivery',
-    icon: '�',
+    logo: '/logos/cod-logo.svg',
     description: 'Pay when your order arrives',
     color: '#8B7355',
   },
@@ -136,7 +136,8 @@ function OrderSummary({ items, subtotal }) {
 
 function PayBtn({ method, selected, onSelect }) {
   const config = PAYMENT_METHODS[method]
-  const isLogoMethod = method === 'mtn_momo' || method === 'airtel'
+  const isLogoMethod = config.logo !== undefined
+  const isMobileMoneyMethod = method === 'mtn_momo' || method === 'airtel'
   
   return (
     <button onClick={() => onSelect(method)}
@@ -166,7 +167,7 @@ function PayBtn({ method, selected, onSelect }) {
           </div>
         </div>
         
-        {isLogoMethod && (
+        {isMobileMoneyMethod && (
           <div className="pl-2 pt-2 border-t border-opacity-20" style={{ borderColor: 'rgba(184,117,42,0.3)' }}>
             <div className="grid grid-cols-2 gap-3">
               <div>
