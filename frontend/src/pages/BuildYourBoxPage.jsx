@@ -113,13 +113,13 @@ export default function BuildYourBoxPage() {
             {isSpecialDay ? (
               <div className="flex items-center gap-2">
                 <span className="font-serif font-bold text-lg line-through" style={{ color: '#8C7355' }}>UGX {originalPrice.toLocaleString()}</span>
-                <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>UGX {specialPrice.toLocaleString()}</p>
+                <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>UGX {boxPrice.toLocaleString()}</p>
                 <span className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider"
                   style={{ background: '#B8752A', color: '#1A0A00' }}>Special Day</span>
               </div>
             ) : (
               <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>
-                UGX {originalPrice.toLocaleString()}
+                UGX {boxPrice.toLocaleString()}
               </p>
             )}
           </div>
