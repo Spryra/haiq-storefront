@@ -7,14 +7,14 @@ const PAYMENT_METHODS = {
     label: 'MTN Mobile Money',
     ussd: '*165*3#',
     merchantCode: '170010',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/MTN_logo.svg/1200px-MTN_logo.svg.png',
+    logo: '/logos/mtn-logo.svg',
     color: '#FFD700',
   },
   airtel: {
     label: 'Airtel Money',
     ussd: '*185*9#',
     merchantCode: '100010',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Airtel_logo_2010-2022.svg/1200px-Airtel_logo_2010-2022.svg.png',
+    logo: '/logos/airtel-logo.svg',
     color: '#DC143C',
   },
 }
