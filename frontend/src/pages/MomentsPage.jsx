@@ -9,7 +9,7 @@ const ALL_MOMENTS = [
   { src: '/images/moments/moment_06.jpg', caption: 'She came for one. Stayed for four.',      sub: 'Kampala, 2025' },
   { src: '/images/moments/moment_07.jpg', caption: 'Kampala tastes better now.',              sub: 'Made For You'  },
   { src: '/images/moments/moment_08.jpg', caption: 'Open hand. Open smile.',                  sub: 'Kampala, 2025' },
-  { src: '/images/moments/moment_09.jpg', caption: 'The Unboxing. Right on time.',            sub: 'Made For You'  },
+  { src: '/images/moments/moment_09.jpg', caption: 'Build Your Box. Right on time.',            sub: 'Made For You'  },
   { src: '/images/moments/moment_10.jpg', caption: 'Open it. Own it.',                        sub: 'Kampala, 2025' },
 ]
 

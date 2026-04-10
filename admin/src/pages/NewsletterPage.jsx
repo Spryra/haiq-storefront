@@ -172,7 +172,7 @@ export default function NewsletterPage() {
                   <div>
                     <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>Subject Line *</label>
                     <input value={subject} onChange={e => setSubject(e.target.value)}
-                      placeholder="e.g. New flavour just dropped — The Unboxing is back"
+                      placeholder="e.g. New flavour just dropped — Build Your Box is available"
                       className="w-full focus:outline-none" style={inputSty} />
                   </div>
                   <div>

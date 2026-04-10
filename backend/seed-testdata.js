@@ -51,7 +51,7 @@ const REVIEW_DATA = [
   { slug:'coconut',             name:'David O.',  rating:4, comment:'Perfectly crispy and tropical. Classic but satisfying.',                               status:'approved' },
   { slug:'crimson-sin',         name:'Eve N.',    rating:5, comment:'Smooth, rich and slightly dangerous. Exactly what the description says.',              status:'approved' },
   { slug:'venom',               name:'Grace A.',  rating:4, comment:'Great packaging, great cookies. The Venom will have you addicted.',                    status:'pending'  },
-  { slug:'the-unboxing',        name:'Henry K.',  rating:5, comment:'The box made the whole experience. Every cookie was individually wrapped. 10/10.',     status:'pending'  },
+  { slug:'box-office',        name:'Henry K.',  rating:5, comment:'The box made the whole experience. Every cookie was individually wrapped. 10/10.',     status:'pending'  },
 ];
 
 async function run() {

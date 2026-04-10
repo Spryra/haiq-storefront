@@ -1,6 +1,6 @@
 // src/routes/specialdays.routes.js
 // PUBLIC route — no auth required
-// Used by the frontend to determine if today is a special day (Unboxing box price)
+// Used by the frontend to determine if today is a special day (Build Your Box price)
 'use strict';
 
 const router = require('express').Router();

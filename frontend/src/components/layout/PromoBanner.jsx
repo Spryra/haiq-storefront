@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 
 const MESSAGES = [
   'Made For You — Baked Fresh Every Morning in Kampala',
-  'Venom · Coconut · Crimson Sin · Campfire After Dark · Blackout',
-  'The Unboxing — Uganda\'s boldest cookie box. Order yours.',
+  'Build Your Box · 4 Premium Cookies · Individually Wrapped',
+  'Uganda\'s Boldest Cookie Box — Build Your Box Today.',
 ]
 
 export default function PromoBanner() {

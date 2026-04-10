@@ -12,7 +12,7 @@ const FAQ_SECTIONS = [
       },
       {
         q: 'How many cookies come in a pack?',
-        a: 'Every pack contains exactly 4 cookies. The Unboxing box also has 4 — individually wrapped inside a signature black box. Always 4. Non-negotiable.',
+        a: 'Every pack contains exactly 4 cookies. Build Your Box also contains 4 — individually wrapped inside a signature black box. Always 4. Non-negotiable.',
       },
       {
         q: 'Are the cookies made fresh?',
@@ -45,8 +45,8 @@ const FAQ_SECTIONS = [
         a: 'No. We don\'t do discounts. The price is the price because we don\'t cut corners on what goes inside. What you pay reflects what you get — nothing inflated, nothing skimped.',
       },
       {
-        q: 'Why does The Unboxing cost more on certain days?',
-        a: 'The Unboxing is a signature gift box only available on special occasions — holidays, celebrations, and days we designate. On special days it\'s UGX 40,000. Outside of those days, the price is UGX 80,000. No exceptions.',
+        q: 'Why does Build Your Box cost more on certain days?',
+        a: 'Build Your Box is a signature gift box only available on special occasions — holidays, celebrations, and days we designate. On special days it\'s UGX 40,000. Outside of those days, the price is UGX 80,000. No exceptions.',
       },
     ],
   },

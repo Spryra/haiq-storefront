@@ -49,7 +49,7 @@ export default function SpecialDaysPage() {
   return (
     <div className="space-y-5 max-w-[700px]">
       <p className="text-sm leading-relaxed" style={{ color: '#8C7355' }}>
-        Special days make The Unboxing available at the discounted price of UGX 40,000.
+        Special days make Build Your Box available at the discounted price of UGX 40,000.
         Outside of these days it reverts to UGX 80,000.
       </p>
 
