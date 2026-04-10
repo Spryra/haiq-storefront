@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
+import Button from '../shared/Button'
+import Crown from '../shared/Crown'
 
 // ── Box item — single row with collapsible cookie list ────────────────────────
 function BoxCartItem({ item, onRemove }) {
@@ -246,14 +248,14 @@ export default function CartDrawer({ isOpen, onClose }) {
             <p className="text-[10px] leading-relaxed" style={{ color: '#8C7355' }}>
               Delivery (UGX 5,000) added at checkout.
             </p>
-            <Link
+            <Button
+              as="link"
               to="/checkout"
               onClick={onClose}
-              className="block w-full text-center py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase hover:opacity-90 transition"
-              style={{ background: '#B8752A', color: '#1A0A00' }}
+              className="w-full py-3.5 text-[11px]"
             >
               Checkout — UGX {subtotal.toLocaleString()}
-            </Link>
+            </Button>
             <button
               onClick={() => { clearCart(); onClose() }}
               className="w-full text-[10px] tracking-wide transition hover:opacity-50"
