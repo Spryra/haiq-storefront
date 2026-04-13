@@ -191,7 +191,7 @@ function PayBtn({ method, selected, onSelect }) {
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const { items, subtotal, toOrderItems, clearCart } = useCart()
   const [step, setStep] = useState(1)
 
@@ -211,14 +211,15 @@ export default function CheckoutPage() {
   const upd = f => e => setDetails(d => ({ ...d, [f]: e.target.value }))
 
   useEffect(() => {
-    // Redirect if not authenticated
+    // Wait for auth to finish loading, then redirect if not authenticated
+    if (loading) return
     if (!user) {
       navigate('/login', { replace: true })
       return
     }
     // Redirect if cart is empty
     if (items.length === 0) navigate('/shop', { replace: true })
-  }, [items, navigate, user])
+  }, [items, loading, navigate, user])
 
   const detailsValid =
     details.first_name.trim() && details.last_name.trim() &&
