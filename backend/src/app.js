@@ -20,7 +20,7 @@ app.use(helmet({
 }));
 
 // ─── CORS (FIXED + SAFE) ───────────────────────────────────────
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+const allowedOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
