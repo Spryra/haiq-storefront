@@ -9,6 +9,7 @@ import ItemListAccordion from '../components/product/ItemListAccordion'
 import RelatedProducts from '../components/product/RelatedProducts'
 import ProductReviews from '../components/product/ProductReviews'
 import { ProductSEO } from '../components/shared/SEO'
+import Button from '../components/shared/Button'
 
 export default function ProductDetailPage() {
   const { slug }   = useParams()
@@ -166,21 +167,15 @@ export default function ProductDetailPage() {
             )}
 
             {/* Add to cart */}
-            <button
+            <Button
               onClick={handleAddToCart}
               disabled={isSoldOut}
-              className={`
-                w-full py-4 rounded-2xl font-bold text-base mb-4 transition-all duration-200
-                ${isSoldOut
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : added
-                    ? 'bg-green-500 text-white scale-[0.99]'
-                    : 'bg-dark text-light hover:bg-primary hover:text-dark active:scale-[0.98]'
-                }
-              `}
+              variant={isSoldOut ? 'secondary' : 'primary'}
+              className={`w-full rounded-2xl mb-4 text-base ${added ? 'bg-green-500 text-white hover:bg-green-500' : ''}`}
+              size="lg"
             >
               {isSoldOut ? 'Sold Out' : added ? '✓ Added to Cart' : `Add to Cart — UGX ${Number(selectedVariant?.price ?? product.base_price).toLocaleString()}`}
-            </button>
+            </Button>
 
             {/* Tasting notes */}
             {product.tasting_notes && (

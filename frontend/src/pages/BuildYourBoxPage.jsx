@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import api from '../services/api'
 import { useCart } from '../context/CartContext'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 const BOX_SIZE     = 4
 const COOKIE_SLUGS = ['venom','coconut','crimson-sin','campfire-after-dark','blackout']
@@ -140,11 +141,9 @@ export default function BuildYourBoxPage() {
               {isFull && <span className="text-xs font-semibold" style={{ color: '#E8C88A' }}>Box complete</span>}
             </div>
             {isFull && (
-              <button onClick={handleAddToCart}
-                className="px-5 py-2 font-bold text-[11px] tracking-[0.2em] uppercase"
-                style={{ background: '#B8752A', color: '#1A0A00' }}>
+              <Button onClick={handleAddToCart} variant="primary" size="sm" className="uppercase tracking-[0.2em]">
                 Add to Cart
-              </button>
+              </Button>
             )}
           </div>
           <div className="h-px overflow-hidden" style={{ background: 'rgba(184,117,42,0.15)' }}>
@@ -216,11 +215,9 @@ export default function BuildYourBoxPage() {
                 }).filter(Boolean).join(' · ')}
               </p>
             </div>
-            <button onClick={handleAddToCart}
-              className="px-8 py-3 font-bold text-[11px] tracking-[0.25em] uppercase whitespace-nowrap"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
+            <Button onClick={handleAddToCart} variant="primary" size="md" className="px-8 whitespace-nowrap">
               Add to Cart · UGX {boxPrice.toLocaleString()}
-            </button>
+            </Button>
           </div>
         </div>
       )}

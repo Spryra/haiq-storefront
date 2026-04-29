@@ -3,8 +3,23 @@ const router = require('express').Router();
 const { requireStaff, requireSuperAdmin } = require('../../middleware/adminAuth');
 const adminProductsCtrl = require('../../controllers/admin/admin.products.controller');
 const multer = require('multer');
+const { validate } = require('../../middleware/validate');
+const { adminCreateProductSchema } = require('../../middleware/schemas');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only JPEG, PNG, and WebP images are allowed.'), false);
+  }
+};
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter,
+});
 
 /**
  * @swagger
@@ -59,7 +74,7 @@ router.get('/', requireStaff, adminProductsCtrl.list);
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-router.post('/', requireSuperAdmin, adminProductsCtrl.create);
+router.post('/', requireSuperAdmin, upload.array('images', 5), validate(adminCreateProductSchema), adminProductsCtrl.create);
 
 /**
  * @swagger
@@ -84,7 +99,7 @@ router.post('/', requireSuperAdmin, adminProductsCtrl.create);
  *       200:
  *         description: Product updated
  */
-router.put('/:id', requireSuperAdmin, adminProductsCtrl.update);
+router.put('/:id', requireSuperAdmin, upload.array('images', 5), validate(adminCreateProductSchema.partial()), adminProductsCtrl.update);
 
 /**
  * @swagger

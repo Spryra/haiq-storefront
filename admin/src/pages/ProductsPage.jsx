@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import adminApi from '../services/adminApi'
+import Button from '../components/shared/Button'
 
 function ProductModal({ product, onClose, onSaved }) {
   const isEdit = !!product?.id
@@ -123,11 +124,9 @@ function ProductModal({ product, onClose, onSaved }) {
                   </div>
                 )}
                 <div>
-                  <button onClick={() => fileRef.current?.click()}
-                    className="px-4 py-2 font-bold text-[11px] tracking-wider uppercase"
-                    style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>
+                  <Button onClick={() => fileRef.current?.click()} variant="secondary" size="sm">
                     {imagePreview ? 'Change Image' : 'Upload Image'}
-                  </button>
+                  </Button>
                   <p className="text-[10px] mt-1.5" style={{ color: '#8C7355' }}>
                     JPEG, PNG or WebP · Max 5MB · Recommended 800×800
                   </p>
@@ -234,12 +233,12 @@ function ProductModal({ product, onClose, onSaved }) {
           {/* Footer */}
           <div className="flex items-center justify-end gap-3 px-6 py-4 sticky bottom-0"
             style={{ background: '#2A1200', borderTop: '1px solid rgba(184,117,42,0.2)' }}>
-            <button onClick={onClose} className="text-sm hover:opacity-60 transition" style={{ color: '#8C7355' }}>Cancel</button>
-            <button onClick={save} disabled={saving || uploading}
-              className="px-6 py-2.5 font-bold text-[11px] tracking-wider uppercase disabled:opacity-50"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
-              {uploading ? 'Uploading image…' : saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Product'}
-            </button>
+            <Button onClick={onClose} variant="muted" size="sm">
+              Cancel
+            </Button>
+            <Button onClick={save} disabled={saving || uploading} loading={saving || uploading} variant="primary" size="sm">
+              {uploading ? 'Uploading image…' : isEdit ? 'Save Changes' : 'Create Product'}
+            </Button>
           </div>
         </div>
       </div>
@@ -289,19 +288,15 @@ export default function ProductsPage() {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex gap-1 p-1" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
           {[{key:'products',label:'Products'},{key:'reviews',label:`Reviews${reviews.length>0?` (${reviews.length})`:''}`}].map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)}
-              className="px-4 py-2 text-sm font-semibold transition"
-              style={{ background: tab===t.key ? '#B8752A' : 'transparent', color: tab===t.key ? '#1A0A00' : 'rgba(242,234,216,0.45)' }}>
+            <Button key={t.key} onClick={() => setTab(t.key)} variant={tab===t.key ? 'primary' : 'secondary'} size="sm" className="px-4">
               {t.label}
-            </button>
+            </Button>
           ))}
         </div>
         {tab === 'products' && (
-          <button onClick={() => setModal('new')}
-            className="px-4 py-2 font-bold text-[11px] tracking-wider uppercase"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
+          <Button onClick={() => setModal('new')} variant="primary" size="sm">
             + Add Product
-          </button>
+          </Button>
         )}
       </div>
 
@@ -399,8 +394,8 @@ export default function ProductsPage() {
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex gap-3">
-                          <button onClick={() => approveReview(r.id)} className="text-[10px] font-medium hover:underline text-green-400">Approve</button>
-                          <button onClick={() => deleteReview(r.id)} className="text-[10px] font-medium hover:underline text-red-400">Delete</button>
+                          <Button onClick={() => approveReview(r.id)} size="sm" variant="primary" className="text-[10px]">Approve</Button>
+                          <Button onClick={() => deleteReview(r.id)} size="sm" variant="danger" className="text-[10px]">Delete</Button>
                         </div>
                       </td>
                     </tr>

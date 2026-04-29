@@ -2,8 +2,16 @@
 const router = require('express').Router()
 const ctrl   = require('../controllers/auth.controller')
 const { requireAuth } = require('../middleware/auth')
-const { z } = require('zod')
 const { validate } = require('../middleware/validate')
+const { authLimiter } = require('../middleware/rateLimiter')
+const {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  updateProfileSchema,
+  changePasswordSchema,
+} = require('../middleware/schemas')
 const { query } = require('../config/db')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
@@ -11,8 +19,8 @@ const emailService = require('../services/email.service')
 const { logger } = require('../config/logger')
 
 // Existing routes
-router.post('/register', ctrl.register);
-router.post('/login', ctrl.login);
+router.post('/register', authLimiter, validate(registerSchema), ctrl.register);
+router.post('/login', authLimiter, validate(loginSchema), ctrl.login);
 router.post('/logout', ctrl.logout);
 
 // ✅ SINGLE SOURCE OF TRUTH
@@ -20,14 +28,13 @@ router.post('/refresh', ctrl.refresh);
 router.get('/refresh', ctrl.refresh);
 
 router.get('/me', requireAuth, ctrl.getMe);
-router.put('/profile', requireAuth, ctrl.updateProfile);
-router.put('/password', requireAuth, ctrl.changePassword);
+router.put('/profile', requireAuth, validate(updateProfileSchema), ctrl.updateProfile);
+router.put('/password', requireAuth, validate(changePasswordSchema), ctrl.changePassword);
 
 // ── Forgot password ───────────────────────────────────────────────────────────
-router.post('/forgot-password', async (req, res, next) => {
+router.post('/forgot-password', authLimiter, validate(forgotPasswordSchema), async (req, res, next) => {
   try {
     const { email } = req.body
-    if (!email) return res.status(400).json({ success: false, error: 'Email required.' })
 
     const { rows: [user] } = await query(
       'SELECT id, email, first_name FROM users WHERE email = $1 AND is_guest = false',
@@ -55,11 +62,9 @@ router.post('/forgot-password', async (req, res, next) => {
 })
 
 // ── Reset password ────────────────────────────────────────────────────────────
-router.post('/reset-password', async (req, res, next) => {
+router.post('/reset-password', validate(resetPasswordSchema), async (req, res, next) => {
   try {
     const { token, new_password } = req.body
-    if (!token || !new_password) return res.status(400).json({ success: false, error: 'Token and new password required.' })
-    if (new_password.length < 6) return res.status(400).json({ success: false, error: 'Password must be at least 6 characters.' })
 
     const { rows: [record] } = await query(
       `SELECT user_id, expires_at, used FROM password_reset_tokens

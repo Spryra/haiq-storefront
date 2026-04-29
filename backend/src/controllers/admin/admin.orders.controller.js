@@ -87,51 +87,74 @@ async function getOne(req, res, next) {
 }
 
 async function updateStatus(req, res, next) {
+  const client = await getClient();
   try {
     const { id } = req.params;
     const { status } = req.body;
 
     const allowedStatuses = Object.values(ORDER_STATUSES);
-
     if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid status provided'
-      });
+      return res.status(400).json({ success: false, error: 'Invalid status provided' });
     }
 
-    // Get the order first
-    const { rows: [order] } = await query(
-      'SELECT id, payment_method FROM orders WHERE id = $1',
+    await client.query('BEGIN');
+
+    // Lock the row for update
+    const { rows: [order] } = await client.query(
+      'SELECT id, status, payment_method FROM orders WHERE id = $1 FOR UPDATE',
       [id]
     );
 
     if (!order) {
-      return res.status(404).json({
+      await client.query('ROLLBACK');
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    // Enforce transition rules
+    const allowedTransitions = STATUS_TRANSITIONS[order.status] || [];
+    if (!allowedTransitions.includes(status)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
         success: false,
-        error: 'Order not found'
+        error: `Cannot move order from "${order.status}" to "${status}".`,
       });
     }
 
     // Update order status
-    await query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
+    await client.query(
+      'UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2',
+      [status, id]
+    );
 
-    // ✅ COD auto-payment logic: auto-mark as paid when delivered
+    // COD auto-payment
     if (order.payment_method === 'cash_on_delivery' && status === 'delivered') {
-      await query('UPDATE orders SET payment_status = $1 WHERE id = $2', ['paid', id]);
+      await client.query(
+        'UPDATE orders SET payment_status = $1, updated_at = NOW() WHERE id = $2',
+        ['paid', id]
+      );
     }
 
-    return res.json({
-      success: true,
-      message: 'Order status updated successfully'
-    });
+    // Log the event
+    await client.query(
+      `INSERT INTO order_events (order_id, event_type, old_value, new_value, actor_type, actor_id)
+       VALUES ($1, 'status_change', $2, $3, 'admin', $4)`,
+      [id, order.status, status, req.admin.id]
+    );
 
+    await client.query('COMMIT');
+
+    // Broadcast to SSE clients if function available
+    if (typeof broadcastStatusUpdate === 'function') {
+      broadcastStatusUpdate(id, status);
+    }
+
+    return res.json({ success: true, message: 'Order status updated successfully' });
   } catch (error) {
+    try { await client.query('ROLLBACK'); } catch (_) {}
     logger.error('updateStatus error:', { error: error.message, orderId: req.params.id });
-    return res.status(500).json({
-      success: false,
-      error: 'Failed to update order status'
-    });
+    return res.status(500).json({ success: false, error: 'Failed to update order status' });
+  } finally {
+    client.release();
   }
 }
 

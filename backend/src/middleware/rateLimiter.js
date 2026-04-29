@@ -29,10 +29,14 @@ const paymentLimiter = createLimiter(5 * 60 * 1000, 3, 'Too many payment attempt
 // Newsletter
 const newsletterLimiter = createLimiter(60 * 60 * 1000, 3, 'Already subscribed or too many attempts.');
 
+// Reviews
+const reviewLimiter = createLimiter(60 * 60 * 1000, 5, 'Too many review submissions. Try again in an hour.');
+
 module.exports = {
   generalLimiter,
   authLimiter,
   orderLimiter,
   paymentLimiter,
   newsletterLimiter,
+  reviewLimiter,
 };

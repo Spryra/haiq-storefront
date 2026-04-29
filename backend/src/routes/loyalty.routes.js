@@ -3,6 +3,8 @@
 const router        = require('express').Router();
 const { query }     = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
+const { validate } = require('../middleware/validate');
+const { loyaltyApplySchema } = require('../middleware/schemas');
 
 // GET /v1/loyalty/me — card status only
 router.get('/me', requireAuth, async (req, res, next) => {
@@ -21,16 +23,9 @@ router.get('/me', requireAuth, async (req, res, next) => {
 });
 
 // POST /v1/loyalty/apply
-router.post('/apply', requireAuth, async (req, res, next) => {
+router.post('/apply', requireAuth, validate(loyaltyApplySchema), async (req, res, next) => {
   try {
     const { delivery_address, contact_phone } = req.body;
-
-    if (!delivery_address || String(delivery_address).trim().length < 5) {
-      return res.status(400).json({ success: false, error: 'Please enter your full delivery address.' });
-    }
-    if (!contact_phone || String(contact_phone).trim().length < 7) {
-      return res.status(400).json({ success: false, error: 'Please enter your phone number for card delivery.' });
-    }
 
     // Block duplicate active applications
     const { rows: [existing] } = await query(

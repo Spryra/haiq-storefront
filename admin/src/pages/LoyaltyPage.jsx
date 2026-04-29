@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import adminApi from '../services/adminApi'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 const STATUS_STYLES = {
   pending:    { label: 'Pending',        color: '#E8C88A',  bg: 'rgba(232,200,138,0.12)' },
@@ -88,21 +89,15 @@ function ReviewModal({ card, onClose, onDone }) {
           {/* Action selection */}
           <div className="grid grid-cols-2 gap-2">
             {['approve', 'reject'].map(a => (
-              <button key={a} onClick={() => setAction(a)}
-                className="py-3 text-xs font-bold uppercase tracking-wider transition border"
-                style={{
-                  background: action === a
-                    ? (a === 'approve' ? 'rgba(74,222,128,0.15)' : 'rgba(239,68,68,0.15)')
-                    : 'transparent',
-                  borderColor: action === a
-                    ? (a === 'approve' ? 'rgba(74,222,128,0.4)' : 'rgba(239,68,68,0.4)')
-                    : 'rgba(184,117,42,0.2)',
-                  color: action === a
-                    ? (a === 'approve' ? '#4ade80' : '#f87171')
-                    : '#8C7355',
-                }}>
+              <Button
+                key={a}
+                onClick={() => setAction(a)}
+                variant={a === 'approve' ? 'primary' : 'danger'}
+                className={`w-full ${action === a ? '' : 'opacity-80'}`}
+                size="sm"
+              >
                 {a === 'approve' ? 'Approve' : 'Reject'}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -131,12 +126,12 @@ function ReviewModal({ card, onClose, onDone }) {
 
         <div className="flex items-center justify-end gap-3 px-6 py-4"
           style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
-          <button onClick={onClose} className="text-sm hover:opacity-60 transition" style={{ color: '#8C7355' }}>Cancel</button>
-          <button onClick={submit} disabled={saving || !action}
-            className="px-5 py-2.5 font-bold text-[11px] tracking-wider uppercase disabled:opacity-50"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
-            {saving ? 'Saving…' : 'Confirm'}
-          </button>
+          <Button onClick={onClose} variant="muted" size="sm">
+            Cancel
+          </Button>
+          <Button onClick={submit} disabled={saving || !action} loading={saving} variant="primary" size="sm">
+            Confirm
+          </Button>
         </div>
       </div>
     </div>
@@ -192,9 +187,9 @@ function CardsTable({ cards, loading, onReview, onDispatch, onDeliver }) {
                     <td className="px-4 py-4"><StatusBadge status={c.status} /></td>
                     <td className="px-4 py-4">
                       <div className="flex gap-2 flex-wrap">
-                        {c.status === 'pending'    && <button onClick={() => onReview(c)}   className="text-[10px] hover:underline font-medium" style={{ color: '#E8C88A' }}>Review</button>}
-                        {c.status === 'approved'   && <button onClick={() => onDispatch(c)} className="text-[10px] hover:underline font-medium" style={{ color: '#60a5fa' }}>Mark Dispatched</button>}
-                        {c.status === 'dispatched' && <button onClick={() => onDeliver(c)}  className="text-[10px] hover:underline font-medium" style={{ color: '#4ade80' }}>Mark Delivered</button>}
+                        {c.status === 'pending'    && <Button onClick={() => onReview(c)}   size="sm" variant="secondary" className="text-[10px]">Review</Button>}
+                        {c.status === 'approved'   && <Button onClick={() => onDispatch(c)} size="sm" variant="primary" className="text-[10px]">Mark Dispatched</Button>}
+                        {c.status === 'dispatched' && <Button onClick={() => onDeliver(c)}  size="sm" variant="muted" className="text-[10px]" style={{ background: '#E8C88A', color: '#1A0A00' }}>Mark Delivered</Button>}
                       </div>
                     </td>
                   </tr>

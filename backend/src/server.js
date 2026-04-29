@@ -43,6 +43,15 @@ async function start() {
     }
   });
 
+  // Clean up expired revoked tokens every hour
+  setInterval(async () => {
+    try {
+      await require('./config/db').query('DELETE FROM revoked_tokens WHERE expires_at < NOW()');
+    } catch (err) {
+      logger.error('Revoked token cleanup failed', { error: err.message });
+    }
+  }, 60 * 60 * 1000);
+
   // Graceful shutdown
   const shutdown = (signal) => {
     logger.info(`${signal} received — shutting down gracefully`);

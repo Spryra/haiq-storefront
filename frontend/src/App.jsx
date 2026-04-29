@@ -19,6 +19,9 @@ import MomentsPage           from './pages/MomentsPage'
 import LoginPage             from './pages/LoginPage'
 import RegisterPage          from './pages/RegisterPage'
 import { ForgotPasswordPage, ResetPasswordPage } from './pages/PasswordResetPages'
+import PrivacyPolicyPage     from './pages/PrivacyPolicyPage'
+import TermsOfUsePage        from './pages/TermsOfUsePage'
+import DataCompliancePage    from './pages/DataCompliancePage'
 
 // Each route explicitly wraps with Layout
 const withLayout = (Page) => (
@@ -50,6 +53,9 @@ export default function App() {
             <Route path="/register"        element={withLayout(RegisterPage)} />
             <Route path="/forgot-password" element={withLayout(ForgotPasswordPage)} />
             <Route path="/reset-password"  element={withLayout(ResetPasswordPage)} />
+            <Route path="/privacy-policy"   element={withLayout(PrivacyPolicyPage)} />
+            <Route path="/terms"            element={withLayout(TermsOfUsePage)} />
+            <Route path="/data-compliance"  element={withLayout(DataCompliancePage)} />
 
             {/* Checkout — full screen */}
             <Route path="/checkout"                  element={<CheckoutPage />} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import adminApi from '../services/adminApi'
+import Button from '../components/shared/Button'
 
 export default function NewsletterPage() {
   const [tab,      setTab]      = useState('subscribers')
@@ -87,11 +88,15 @@ export default function NewsletterPage() {
           { key: 'campaign',    label: 'Send Campaign' },
           { key: 'whatsapp',    label: 'WhatsApp Invite' },
         ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
-            className="px-4 py-2 text-sm font-semibold transition"
-            style={{ background: tab===t.key ? '#B8752A' : 'transparent', color: tab===t.key ? '#1A0A00' : 'rgba(242,234,216,0.45)' }}>
+          <Button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            variant={tab===t.key ? 'primary' : 'secondary'}
+            size="sm"
+            className="px-4"
+          >
             {t.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -105,11 +110,9 @@ export default function NewsletterPage() {
             <span className="text-xs" style={{ color: '#8C7355' }}>
               {filtered.length} subscriber{filtered.length !== 1 ? 's' : ''}
             </span>
-            <button onClick={exportCSV} disabled={!filtered.length}
-              className="ml-auto px-4 py-2 font-bold text-[11px] tracking-wider uppercase disabled:opacity-40"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
+            <Button onClick={exportCSV} disabled={!filtered.length} variant="primary" size="sm" className="ml-auto">
               Export CSV
-            </button>
+            </Button>
           </div>
 
           <div style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)', overflow: 'hidden' }}>
@@ -156,11 +159,9 @@ export default function NewsletterPage() {
               <p className="text-sm" style={{ color: '#8C7355' }}>
                 {sent} of {subs.filter(s=>s.is_active!==false).length} subscribers received your email.
               </p>
-              <button onClick={() => { setSent(null); setSubject(''); setBodyHtml('') }}
-                className="mt-4 px-5 py-2 font-bold text-[11px] tracking-wider uppercase"
-                style={{ background: '#B8752A', color: '#1A0A00' }}>
+              <Button onClick={() => { setSent(null); setSubject(''); setBodyHtml('') }} variant="primary" size="sm" className="mt-4">
                 Send Another
-              </button>
+              </Button>
             </div>
           ) : (
             <>
@@ -188,11 +189,9 @@ export default function NewsletterPage() {
                     </p>
                   </div>
                   {campErr && <p className="text-red-400 text-xs">{campErr}</p>}
-                  <button onClick={sendCampaign} disabled={sending}
-                    className="px-6 py-2.5 font-bold text-[11px] tracking-wider uppercase disabled:opacity-50"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>
-                    {sending ? 'Sending…' : 'Send Campaign'}
-                  </button>
+                  <Button onClick={sendCampaign} disabled={sending} loading={sending} variant="primary" size="sm">
+                    Send Campaign
+                  </Button>
                 </div>
               </div>
             </>
@@ -238,11 +237,9 @@ export default function NewsletterPage() {
                     style={inputSty} />
                 </div>
                 {waErr && <p className="text-red-400 text-xs">{waErr}</p>}
-                <button onClick={sendWaInvite} disabled={waSending}
-                  className="px-6 py-2.5 font-bold text-[11px] tracking-wider uppercase disabled:opacity-50"
-                  style={{ background: '#B8752A', color: '#1A0A00' }}>
-                  {waSending ? 'Sending…' : 'Send WhatsApp Invite'}
-                </button>
+                <Button onClick={sendWaInvite} disabled={waSending} loading={waSending} variant="primary" size="sm">
+                  Send WhatsApp Invite
+                </Button>
               </div>
             )}
           </div>

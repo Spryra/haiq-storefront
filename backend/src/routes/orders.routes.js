@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const { z } = require('zod');
 const { validate } = require('../middleware/validate');
 const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { orderLimiter } = require('../middleware/rateLimiter');
@@ -7,23 +6,7 @@ const ordersCtrl = require('../controllers/orders.controller');
 const { query } = require('../config/db');
 const emailService = require('../services/email.service');
 const { logger } = require('../config/logger');
-
-const createOrderSchema = z.object({
-  first_name:        z.string().min(1).max(100),
-  last_name:         z.string().min(1).max(100),
-  email:             z.string().email(),
-  phone:             z.string().regex(/^\+?[0-9]{9,15}$/),
-  delivery_address:  z.string().min(5).max(500),
-  delivery_note:     z.string().max(300).optional(),
-  gift_note:         z.string().max(300).optional(),
-  items: z.array(z.object({
-    product_id: z.string().uuid(),
-    variant_id: z.string().uuid(),
-    quantity:   z.number().int().min(1).max(100),
-  })).min(1),
-  payment_method: z.enum(['mtn_momo', 'airtel', 'cash_on_delivery']),
-  consent_given:  z.literal(true, { errorMap: () => ({ message: 'You must consent to proceed' }) }),
-});
+const { createOrderSchema, cancelOrderSchema } = require('../middleware/schemas');
 
 router.post('/', orderLimiter, optionalAuth, validate(createOrderSchema), ordersCtrl.create);
 router.get('/track/:token', ordersCtrl.track);
@@ -32,12 +15,9 @@ router.get('/my', requireAuth, ordersCtrl.listMine);
 router.get('/:id', requireAuth, ordersCtrl.getOne);
 
 // ── Customer cancel order ─────────────────────────────────────────────────────
-router.post('/:id/cancel', requireAuth, async (req, res, next) => {
+router.post('/:id/cancel', requireAuth, validate(cancelOrderSchema), async (req, res, next) => {
   try {
     const { reason } = req.body;
-    if (!reason || String(reason).trim().length < 5) {
-      return res.status(400).json({ success: false, error: 'Please provide a reason for cancellation (at least 5 characters).' });
-    }
 
     const { rows: [order] } = await query(
       `SELECT id, status, user_id, payment_status, email, first_name

@@ -1,28 +1,31 @@
 import { useState, useEffect } from 'react'
 import adminApi from '../services/adminApi'
+import Button from '../components/shared/Button'
 
 export default function SpecialDaysPage() {
-  const [days,    setDays]    = useState([])
-  const [loading, setLoading] = useState(true)
-  const [date,    setDate]    = useState('')
-  const [label,   setLabel]   = useState('')
-  const [adding,  setAdding]  = useState(false)
-  const [err,     setErr]     = useState(null)
+  const [days,      setDays]      = useState([])
+  const [loading,   setLoading]   = useState(true)
+  const [dateFrom,  setDateFrom]  = useState('')
+  const [dateTo,    setDateTo]    = useState('')
+  const [label,     setLabel]     = useState('')
+  const [adding,    setAdding]    = useState(false)
+  const [err,       setErr]       = useState(null)
 
   const load = () => {
     adminApi.get('/admin/special-days')
-      .then(r => setDays(r.data.special_days || []))
+      .then(r => setDays(r.data.days || []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }
   useEffect(() => { load() }, [])
 
   const add = async () => {
-    if (!date || !label.trim()) { setErr('Date and label are required.'); return }
+    if (!dateFrom || !dateTo || !label.trim()) { setErr('Date range and label are required.'); return }
+    if (new Date(dateTo) < new Date(dateFrom)) { setErr('End date must be on or after start date.'); return }
     setAdding(true); setErr(null)
     try {
-      await adminApi.post('/admin/special-days', { date, label: label.trim(), is_active: true })
-      setDate(''); setLabel('')
+      await adminApi.post('/admin/special-days', { label: label.trim(), date_from: dateFrom, date_to: dateTo })
+      setDateFrom(''); setDateTo(''); setLabel('')
       load()
     } catch (e) { setErr(e.response?.data?.error || 'Failed.') }
     finally { setAdding(false) }
@@ -59,15 +62,15 @@ export default function SpecialDaysPage() {
           Add Special Day
         </p>
         <div className="flex gap-3 flex-wrap">
-          <input type="date" value={date} onChange={e => setDate(e.target.value)}
+          <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
+            className="focus:outline-none" style={{ ...inputSty, minWidth: '150px' }} />
+          <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
             className="focus:outline-none" style={{ ...inputSty, minWidth: '150px' }} />
           <input type="text" value={label} onChange={e => setLabel(e.target.value)}
             placeholder="e.g. Valentine's Day" className="flex-1 focus:outline-none min-w-[160px]" style={inputSty} />
-          <button onClick={add} disabled={adding}
-            className="px-5 py-2 font-bold text-[11px] tracking-wider uppercase disabled:opacity-50"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
-            {adding ? 'Adding…' : 'Add'}
-          </button>
+          <Button onClick={add} disabled={adding} loading={adding} variant="primary" size="sm">
+            Add
+          </Button>
         </div>
         {err && <p className="text-red-400 text-xs mt-2">{err}</p>}
       </div>
@@ -86,22 +89,23 @@ export default function SpecialDaysPage() {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(61,32,0,0.8)' }}>
-                {['Date','Label','Status',''].map(h => (
+                {['Date From','Date To','Label','Status',''].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-[9px] font-semibold text-muted uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {days.map(d => {
-                const isPast = d.date < today
-                const isToday = d.date === today
+                const isPast = d.date_to < today
+                const isToday = today >= d.date_from && today <= d.date_to
                 return (
                   <tr key={d.id} style={{ borderBottom: '1px solid rgba(61,32,0,0.4)' }}>
+                    <td className="px-4 py-3 font-mono text-xs" style={{ color: '#F2EAD8' }}>{d.date_from}</td>
+                    <td className="px-4 py-3 font-mono text-xs" style={{ color: '#F2EAD8' }}>{d.date_to}</td>
                     <td className="px-4 py-3 font-mono text-xs" style={{ color: isToday ? '#E8C88A' : '#F2EAD8' }}>
-                      {d.date}
+                      {d.label}
                       {isToday && <span className="ml-2 text-[9px] font-bold" style={{ color: '#E8C88A' }}>TODAY</span>}
                     </td>
-                    <td className="px-4 py-3 text-xs" style={{ color: '#F2EAD8' }}>{d.label}</td>
                     <td className="px-4 py-3">
                       <button onClick={() => toggle(d.id)}
                         className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider"

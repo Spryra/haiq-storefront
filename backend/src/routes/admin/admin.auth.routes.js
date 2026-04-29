@@ -1,14 +1,9 @@
 const router = require('express').Router();
-const { z } = require('zod');
 const { validate } = require('../../middleware/validate');
 const { authLimiter } = require('../../middleware/rateLimiter');
 const { requireStaff } = require('../../middleware/adminAuth');
 const adminAuthCtrl = require('../../controllers/admin/admin.auth.controller');
-
-const loginSchema = z.object({
-  email:    z.string().email(),
-  password: z.string().min(1),
-});
+const { adminLoginSchema } = require('../../middleware/schemas');
 
 /**
  * @swagger
@@ -43,7 +38,7 @@ const loginSchema = z.object({
  *       401:
  *         description: Invalid credentials or inactive account
  */
-router.post('/login', authLimiter, validate(loginSchema), adminAuthCtrl.login);
+router.post('/login', authLimiter, validate(adminLoginSchema), adminAuthCtrl.login);
 
 /**
  * @swagger

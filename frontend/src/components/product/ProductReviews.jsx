@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../services/api'
 import { useAuth } from '../../context/AuthContext'
+import Button from '../shared/Button'
 
 // ── Star Rating ───────────────────────────────────────────────────────────────
 function StarRating({ value, onChange, readonly = false, size = 'md' }) {
@@ -85,9 +86,12 @@ export default function ProductReviews({ productSlug }) {
       .finally(() => setLoading(false))
   }, [productSlug])
 
+  const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!comment.trim()) return
+    if (containsHtml(comment)) { setStatus('error'); return }
     // Must be signed in — name comes from account, no token field
     if (!user) return
 
@@ -196,13 +200,9 @@ export default function ProductReviews({ productSlug }) {
             </Link>
           </div>
         ) : !showForm ? (
-          <button
-            onClick={() => setShowForm(true)}
-            className="font-bold text-[11px] tracking-[0.2em] uppercase px-6 py-3 transition-all hover:opacity-80"
-            style={{ border: '1px solid #1A0A00', color: '#1A0A00' }}
-          >
+          <Button onClick={() => setShowForm(true)} variant="secondary" size="md">
             Leave a Review
-          </button>
+          </Button>
         ) : (
           <form
             onSubmit={handleSubmit}
@@ -253,24 +253,12 @@ export default function ProductReviews({ productSlug }) {
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <button
-                type="submit"
-                disabled={submitting || !comment.trim()}
-                className="font-bold text-sm px-6 py-2.5 transition-all disabled:opacity-50"
-                style={{ background: '#1A0A00', color: '#F2EAD8' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#B8752A'}
-                onMouseLeave={e => e.currentTarget.style.background = '#1A0A00'}
-              >
-                {submitting ? 'Submitting…' : 'Submit Review'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowForm(false); setStatus(null) }}
-                className="text-sm transition-opacity hover:opacity-60"
-                style={{ color: '#8C7355' }}
-              >
+              <Button type="submit" disabled={submitting || !comment.trim()} loading={submitting} variant="primary" size="md">
+                Submit Review
+              </Button>
+              <Button type="button" onClick={() => { setShowForm(false); setStatus(null) }} variant="muted" size="sm">
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         )}

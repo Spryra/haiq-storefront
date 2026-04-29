@@ -30,6 +30,7 @@
     "nodemailer": "^6.9.9",
     "pg": "^8.11.3",
     "resend": "^2.1.0",
+    "sanitize-html": "^2.13.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.0",

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Crown from '../shared/Crown'
 import { useAuth } from '../../context/AuthContext'
 import api from '../../services/api'
+import Button from '../shared/Button'
 
 export default function Footer() {
   const { user } = useAuth()
@@ -16,8 +17,11 @@ export default function Footer() {
 
   const handleSubscribe = async (e) => {
     e.preventDefault()
+    const containsHtml = (value) => /<[^>]*>/.test(value) || /javascript:/i.test(value)
     if (!name.trim())  { setErrMsg('Your name is required.'); setStatus('error'); return }
+    if (containsHtml(name)) { setErrMsg('Invalid characters in name.'); setStatus('error'); return }
     if (!email.trim()) { setErrMsg('Your email is required.'); setStatus('error'); return }
+    if (containsHtml(email)) { setErrMsg('Invalid characters in email.'); setStatus('error'); return }
     setStatus('loading'); setErrMsg('')
     try {
       const res = await api.post('/newsletter/subscribe', { email: email.trim(), name: name.trim() })
@@ -131,14 +135,16 @@ export default function Footer() {
                   onBlur={inputBlur}
                   required
                 />
-                <button
+                <Button
                   type="submit"
+                  variant="primary"
+                  size="sm"
+                  className="w-full"
                   disabled={status === 'loading'}
-                  className="w-full py-2.5 text-[11px] font-bold tracking-[0.2em] uppercase transition-opacity disabled:opacity-50"
-                  style={{ background: '#B8752A', color: '#1A0A00' }}
+                  loading={status === 'loading'}
                 >
-                  {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
-                </button>
+                  Subscribe
+                </Button>
                 {status === 'error' && <p className="text-red-400 text-[10px]">{errMsg}</p>}
               </form>
             )}
@@ -152,15 +158,28 @@ export default function Footer() {
           <p className="text-[10px] tracking-wide" style={{ color: 'rgba(242,234,216,0.2)' }}>
             © {new Date().getFullYear()} HAIQ Bakery. Made For You.
           </p>
-          <div className="flex items-center gap-5">
-            <a href="https://www.instagram.com/haiq_ug" target="_blank" rel="noopener noreferrer"
-              className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
-              @haiq_ug
-            </a>
-            <a href="https://www.facebook.com/Haiqafrica" target="_blank" rel="noopener noreferrer"
-              className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
-              Haiqafrica
-            </a>
+          <div className="flex items-center gap-5 flex-wrap">
+            <div className="flex gap-6 flex-wrap">
+              <Link to="/privacy-policy" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
+                Terms of Use
+              </Link>
+              <Link to="/data-compliance" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
+                Data & Compliance
+              </Link>
+            </div>
+            <div className="flex items-center gap-5">
+              <a href="https://www.instagram.com/haiq_ug" target="_blank" rel="noopener noreferrer"
+                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
+                @haiq_ug
+              </a>
+              <a href="https://www.facebook.com/Haiqafrica" target="_blank" rel="noopener noreferrer"
+                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
+                Haiqafrica
+              </a>
+            </div>
           </div>
         </div>
       </div>

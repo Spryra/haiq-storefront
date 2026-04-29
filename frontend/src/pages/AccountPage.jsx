@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 // ── Profile Tab ───────────────────────────────────────────────
 function ProfileTab({ user, onUpdated }) {
@@ -15,10 +16,16 @@ function ProfileTab({ user, onUpdated }) {
   const [msg,     setMsg]     = useState(null)
   const [pwMsg,   setPwMsg]   = useState(null)
 
+  const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const upd   = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
   const updPw = k => e => setPwForm(f => ({ ...f, [k]: e.target.value }))
 
   const saveProfile = async () => {
+    if (containsHtml(form.full_name) || containsHtml(form.phone)) {
+      setMsg({ ok: false, text: 'Please remove HTML or script content.' })
+      return
+    }
     setSaving(true); setMsg(null)
     try {
       const parts = form.full_name.trim().split(' ')
@@ -35,6 +42,10 @@ function ProfileTab({ user, onUpdated }) {
   }
 
   const changePw = async () => {
+    if (containsHtml(pwForm.current) || containsHtml(pwForm.next) || containsHtml(pwForm.confirm)) {
+      setPwMsg('Please remove HTML or script content.');
+      return
+    }
     if (pwForm.next.length < 6)          { setPwMsg('Minimum 6 characters.'); return }
     if (!/[!@#$%^&*]/.test(pwForm.next)) { setPwMsg('Include at least one special character.'); return }
     if (pwForm.next !== pwForm.confirm)   { setPwMsg('Passwords do not match.'); return }
@@ -59,11 +70,9 @@ function ProfileTab({ user, onUpdated }) {
         <div>{lbl('Phone')}<input type="tel" value={form.phone} onChange={upd('phone')} className={iCls} style={iSty} /></div>
         <div>{lbl('Email (cannot change)')}<input value={user?.email} readOnly className={`${iCls} cursor-not-allowed`} style={{ ...iSty, opacity: 0.4 }} /></div>
         {msg && <p className="text-xs" style={{ color: msg.ok ? '#B8752A' : '#f87171' }}>{msg.text}</p>}
-        <button onClick={saveProfile} disabled={saving}
-          className="px-6 py-2.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-50"
-          style={{ background: '#B8752A', color: '#1A0A00' }}>
-          {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        <Button onClick={saveProfile} disabled={saving} loading={saving} variant="primary" size="md">
+          Save Changes
+        </Button>
       </div>
 
       <div className="space-y-4 pt-8" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
@@ -72,11 +81,9 @@ function ProfileTab({ user, onUpdated }) {
           <div key={k}>{lbl(l)}<input type="password" value={pwForm[k]} onChange={updPw(k)} className={iCls} style={iSty} /></div>
         ))}
         {pwMsg && <p className="text-xs" style={{ color: pwMsg === 'Password updated.' ? '#B8752A' : '#f87171' }}>{pwMsg}</p>}
-        <button onClick={changePw} disabled={pwSaving}
-          className="px-6 py-2.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-50"
-          style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>
-          {pwSaving ? 'Updating...' : 'Update Password'}
-        </button>
+        <Button onClick={changePw} disabled={pwSaving} loading={pwSaving} variant="secondary" size="md">
+          Update Password
+        </Button>
       </div>
     </div>
   )
@@ -138,11 +145,14 @@ function LoyaltyTab({ user }) {
   const [submitting,setSubmitting]= useState(false)
   const [err,       setErr]       = useState(null)
 
+  const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   useEffect(() => {
     api.get('/loyalty/me').then(r => setCard(r.data.card)).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const handleApply = async () => {
+    if (containsHtml(address) || containsHtml(phone)) { setErr('Please remove HTML or script content.'); return }
     if (address.trim().length < 5) { setErr('Enter your full delivery address.'); return }
     if (phone.trim().length < 7)   { setErr('Enter a phone number for card delivery.'); return }
     setSubmitting(true); setErr(null)
@@ -188,11 +198,9 @@ function LoyaltyTab({ user }) {
           <p className="text-sm" style={{ color: 'rgba(242,234,216,0.45)' }}>You haven't applied for a loyalty card yet.</p>
         )}
         {(!card || card?.status === 'rejected') && !applyOpen && (
-          <button onClick={() => setApplyOpen(true)}
-            className="mt-4 px-5 py-2.5 font-bold text-[11px] tracking-[0.2em] uppercase"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
+          <Button onClick={() => setApplyOpen(true)} variant="primary" size="sm" className="mt-4">
             Apply for Card
-          </button>
+          </Button>
         )}
       </div>
 
@@ -213,12 +221,12 @@ function LoyaltyTab({ user }) {
           </div>
           {err && <p className="text-red-400 text-xs mt-3">{err}</p>}
           <div className="flex gap-3 mt-5">
-            <button onClick={handleApply} disabled={submitting}
-              className="px-6 py-2.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-50"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
-              {submitting ? 'Submitting...' : 'Submit Application'}
-            </button>
-            <button onClick={() => setApplyOpen(false)} className="text-sm hover:opacity-60" style={{ color: '#8C7355' }}>Cancel</button>
+            <Button onClick={handleApply} disabled={submitting} loading={submitting} variant="primary" size="sm">
+              Submit Application
+            </Button>
+            <Button onClick={() => setApplyOpen(false)} variant="muted" size="sm">
+              Cancel
+            </Button>
           </div>
         </div>
       )}

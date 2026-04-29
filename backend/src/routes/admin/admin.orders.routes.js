@@ -1,6 +1,5 @@
 // backend/src/routes/admin/admin.orders.routes.js
 const router = require('express').Router()
-const { z } = require('zod')
 const { validate } = require('../../middleware/validate')
 const { requireStaff } = require('../../middleware/adminAuth')
 const adminOrdersCtrl = require('../../controllers/admin/admin.orders.controller')
@@ -8,15 +7,11 @@ const { ORDER_STATUSES } = require('../../config/constants')
 const { query } = require('../../config/db')
 const emailService = require('../../services/email.service')
 const { logger } = require('../../config/logger')
-
-const updateStatusSchema = z.object({
-  status: z.enum(Object.values(ORDER_STATUSES)),
-  note:   z.string().max(500).optional(),
-})
+const { updateOrderStatusSchema } = require('../../middleware/schemas')
 
 router.get('/',     requireStaff, adminOrdersCtrl.list)
 router.get('/:id',  requireStaff, adminOrdersCtrl.getOne)
-router.patch('/:id/status', requireStaff, validate(updateStatusSchema), adminOrdersCtrl.updateStatus)
+router.patch('/:id/status', requireStaff, validate(updateOrderStatusSchema), adminOrdersCtrl.updateStatus)
 
 // ── Admin cancel order with reason ────────────────────────────────────────────
 router.post('/:id/cancel', requireStaff, async (req, res, next) => {

@@ -4,22 +4,15 @@ const router = require('express').Router();
 const { query } = require('../config/db');
 const { logger } = require('../config/logger');
 const { optionalAuth } = require('../middleware/auth');
+const { newsletterLimiter } = require('../middleware/rateLimiter');
+const { validate } = require('../middleware/validate');
+const { newsletterSubscribeSchema } = require('../middleware/schemas');
 
-router.post('/subscribe', optionalAuth, async (req, res, next) => {
+router.post('/subscribe', newsletterLimiter, optionalAuth, validate(newsletterSubscribeSchema), async (req, res, next) => {
   try {
     const { email, name } = req.body;
 
-    if (!email || typeof email !== 'string') {
-      return res.status(400).json({ success: false, error: 'Email address is required.' });
-    }
-    if (!name || typeof name !== 'string' || name.trim().length < 2) {
-      return res.status(400).json({ success: false, error: 'Your name is required to subscribe.' });
-    }
-
     const normalised = email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalised)) {
-      return res.status(400).json({ success: false, error: 'Please enter a valid email address.' });
-    }
 
     // Check for existing subscription
     const { rows: [existing] } = await query(

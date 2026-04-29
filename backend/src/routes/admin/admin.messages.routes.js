@@ -1,8 +1,10 @@
 // src/routes/admin/admin.messages.routes.js
 'use strict';
 const router    = require('express').Router();
-const { requireStaff } = require('../../middleware/adminAuth');
-const { query } = require('../../config/db');
+const { optionalAdminAuth, requireStaff } = require('../../middleware/adminAuth');
+const messagesCtrl = require('../../controllers/admin/admin.messages.controller');
+const { validate } = require('../../middleware/validate');
+const { adminMessageReplySchema } = require('../../middleware/schemas');
 
 // ── GET / — list all message threads (direct + order-linked + contact form) ──
 router.get('/', requireStaff, async (req, res, next) => {
@@ -81,7 +83,7 @@ router.patch('/:id/read', requireStaff, async (req, res, next) => {
 });
 
 // ── POST /:id/reply — admin replies to a message ─────────────────────────────
-router.post('/:id/reply', requireStaff, async (req, res, next) => {
+router.post('/:id/reply', requireStaff, validate(adminMessageReplySchema), async (req, res, next) => {
   try {
     const { body } = req.body;
     if (!body?.trim()) return res.status(400).json({ success: false, error: 'Reply body required.' });

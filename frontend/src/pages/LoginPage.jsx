@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 export default function LoginPage() {
   const navigate  = useNavigate()
@@ -15,9 +16,15 @@ export default function LoginPage() {
 
   const from = location.state?.from?.pathname || '/account'
 
+  const containsHtml = (value) => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    if (containsHtml(email) || containsHtml(password)) {
+      setError('Please remove HTML or script content.');
+      return
+    }
     setLoading(true)
     try {
       await login(email.trim().toLowerCase(), password)
@@ -94,14 +101,15 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            className="w-full"
+            loading={loading}
             disabled={loading}
-            className="w-full py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase transition disabled:opacity-50"
-            style={{ background: '#B8752A', color: '#1A0A00' }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
+            Sign In
+          </Button>
         </form>
 
         <p className="text-xs text-center mt-6" style={{ color: 'rgba(242,234,216,0.35)' }}>

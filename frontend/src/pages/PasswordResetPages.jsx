@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 export function ForgotPasswordPage() {
   const { requestPasswordReset } = useAuth()
@@ -11,8 +12,11 @@ export function ForgotPasswordPage() {
   const [done,    setDone]    = useState(false)
   const [error,   setError]   = useState(null)
 
+  const containsHtml = (value) => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const submit = async (e) => {
     e.preventDefault()
+    if (containsHtml(email)) { setError('Please remove HTML or script content.'); return }
     setLoading(true); setError(null)
     try {
       await requestPasswordReset(email.trim().toLowerCase())
@@ -54,11 +58,9 @@ export function ForgotPasswordPage() {
                 style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }} />
             </div>
             {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
-            <button type="submit" disabled={loading}
-              className="w-full py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase disabled:opacity-50"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
-              {loading ? 'Sending...' : 'Send Reset Link'}
-            </button>
+            <Button type="submit" variant="primary" className="w-full" loading={loading} disabled={loading}>
+              Send Reset Link
+            </Button>
             <div className="text-center">
               <Link to="/login" className="text-xs hover:underline" style={{ color: '#8C7355' }}>Back to Sign In</Link>
             </div>
@@ -80,8 +82,11 @@ export function ResetPasswordPage() {
   const [loading,   setLoading]   = useState(false)
   const [error,     setError]     = useState(null)
 
+  const containsHtml = (value) => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const submit = async (e) => {
     e.preventDefault()
+    if (containsHtml(password) || containsHtml(confirm)) { setError('Please remove HTML or script content.'); return }
     if (password.length < 6)          { setError('Password must be at least 6 characters.'); return }
     if (!/[!@#$%^&*]/.test(password)) { setError('Include at least one special character.'); return }
     if (password !== confirm)          { setError('Passwords do not match.'); return }
@@ -128,11 +133,9 @@ export function ResetPasswordPage() {
               style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }} />
           </div>
           {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
-          <button type="submit" disabled={loading}
-            className="w-full py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase disabled:opacity-50"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
-            {loading ? 'Updating...' : 'Set New Password'}
-          </button>
+          <Button type="submit" variant="primary" className="w-full" loading={loading} disabled={loading}>
+            Set New Password
+          </Button>
         </form>
       </div>
     </div>

@@ -1,21 +1,13 @@
 // src/routes/messages.routes.js
 const router = require('express').Router();
-const { z } = require('zod');
 const { validate } = require('../middleware/validate');
 const { optionalAuth, requireAuth } = require('../middleware/auth');
 const messagesCtrl = require('../controllers/messages.controller');
 const { query } = require('../config/db');
-
-const createMsgSchema = z.object({
-  order_id: z.string().uuid().optional(),
-  body:     z.string().min(1).max(2000),
-  email:    z.string().email().optional(),
-  name:     z.string().max(200).optional(),
-  subject:  z.string().max(200).optional(),
-});
+const { createMessageSchema } = require('../middleware/schemas');
 
 // Contact form — public
-router.post('/', optionalAuth, validate(createMsgSchema), messagesCtrl.create);
+router.post('/', optionalAuth, validate(createMessageSchema), messagesCtrl.create);
 
 // Order thread (guest-accessible via x-tracking-token header)
 router.get('/:order_id', optionalAuth, messagesCtrl.getThread);
@@ -45,7 +37,7 @@ router.get('/direct/me', requireAuth, async (req, res, next) => {
 });
 
 // POST /v1/messages/direct — send a direct message to admin
-router.post('/direct', requireAuth, async (req, res, next) => {
+router.post('/direct', requireAuth, validate(createMessageSchema), async (req, res, next) => {
   try {
     const { body, subject } = req.body;
     if (!body?.trim()) return res.status(400).json({ success: false, error: 'Message body required.' });

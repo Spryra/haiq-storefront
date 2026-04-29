@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 const STATUS_CONFIG = {
   pending:         { label: 'Order Received',    emoji: '📋', step: 1, desc: 'We have your order and are getting started.' },
@@ -16,6 +17,7 @@ const STATUS_CONFIG = {
 
 const ACTIVE_STATUSES  = ['pending','freshly_kneaded','ovenbound','on_the_cart','en_route']
 const PAST_STATUSES    = ['delivered','cancelled']
+const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
 
 // ── Progress bar ──────────────────────────────────────────────────────────────
 function OrderProgress({ status }) {
@@ -86,6 +88,7 @@ function CancelModal({ order, onCancel, onClose }) {
   const [error,      setError]      = useState(null)
 
   const handleCancel = async () => {
+    if (containsHtml(reason)) { setError('Please remove HTML or script content.'); return }
     if (reason.trim().length < 5) { setError('Please give a reason (at least 5 characters).'); return }
     setSubmitting(true)
     try {
@@ -119,15 +122,12 @@ function CancelModal({ order, onCancel, onClose }) {
         {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
 
         <div className="flex gap-3 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 text-sm"
-            style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#8C7355' }}>
+          <Button onClick={onClose} variant="secondary" className="flex-1" size="sm">
             Keep Order
-          </button>
-          <button onClick={handleCancel} disabled={submitting}
-            className="flex-1 py-2.5 font-bold text-sm disabled:opacity-50"
-            style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }}>
-            {submitting ? 'Cancelling…' : 'Cancel Order'}
-          </button>
+          </Button>
+          <Button onClick={handleCancel} disabled={submitting} loading={submitting} variant="danger" className="flex-1" size="sm">
+            Cancel Order
+          </Button>
         </div>
       </div>
     </div>
@@ -151,7 +151,7 @@ function OrderDetail({ order, onBack, onCancelled }) {
   }, [order.id])
 
   const sendMessage = async () => {
-    if (!msgBody.trim()) return
+    if (!msgBody.trim() || containsHtml(msgBody)) return
     setSending(true)
     try {
       await api.post('/messages', { order_id: order.id, body: msgBody.trim() })

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import adminApi from '../services/adminApi'
+import Button from '../components/shared/Button'
 
 const ORDER_STATUSES = ['pending','en_route','delivered','cancelled']
 const STATUS_NEXT = {
@@ -108,16 +109,12 @@ function CancelModal({ order, onClose, onDone }) {
           {err && <p className="text-xs" style={{ color: '#f87171' }}>{err}</p>}
         </div>
         <div className="flex gap-3 px-5 pb-5">
-          <button onClick={onClose}
-            className="flex-1 py-2.5 text-sm"
-            style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#8C7355' }}>
+          <Button onClick={onClose} variant="muted" size="sm" className="flex-1">
             Keep Order
-          </button>
-          <button onClick={submit} disabled={submitting}
-            className="flex-1 py-2.5 font-bold text-sm disabled:opacity-50"
-            style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.35)', color: '#f87171' }}>
-            {submitting ? 'Cancelling...' : 'Cancel Order'}
-          </button>
+          </Button>
+          <Button onClick={submit} disabled={submitting} loading={submitting} variant="danger" size="sm" className="flex-1">
+            Cancel Order
+          </Button>
         </div>
       </div>
     </div>
@@ -193,18 +190,13 @@ export default function OrdersPage() {
             className="focus:outline-none flex-1 min-w-[200px]"
             style={{ ...inputSty, borderColor: search ? '#B8752A' : 'rgba(184,117,42,0.25)' }}
           />
-          <button type="submit"
-            className="px-4 py-2 font-bold text-[11px] tracking-wider uppercase"
-            style={{ background: '#B8752A', color: '#1A0A00' }}>
+          <Button type="submit" variant="primary" size="sm">
             Search
-          </button>
+          </Button>
           {(search || statusF || payF) && (
-            <button type="button"
-              onClick={() => { setSearch(''); setStatusF(''); setPayF(''); setPage(1); setTimeout(load, 0) }}
-              className="px-4 py-2 text-[11px] tracking-wider"
-              style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#8C7355' }}>
+            <Button type="button" onClick={() => { setSearch(''); setStatusF(''); setPayF(''); setPage(1); setTimeout(load, 0) }} variant="muted" size="sm">
               Clear
-            </button>
+            </Button>
           )}
         </form>
 
@@ -359,19 +351,15 @@ export default function OrdersPage() {
         {/* Pagination */}
         {total > 20 && (
           <div className="flex items-center justify-between px-4 py-3" style={{ borderTop: '1px solid rgba(61,32,0,0.8)' }}>
-            <button disabled={page === 1} onClick={() => setPage(p => p-1)}
-              className="text-xs font-semibold px-3 py-1.5 disabled:opacity-30"
-              style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#B8752A' }}>
+            <Button disabled={page === 1} onClick={() => setPage(p => p-1)} variant="secondary" size="sm">
               Previous
-            </button>
+            </Button>
             <p className="text-xs" style={{ color: '#8C7355' }}>
               Page {page} of {Math.ceil(total / 20)}
             </p>
-            <button disabled={page >= Math.ceil(total/20)} onClick={() => setPage(p => p+1)}
-              className="text-xs font-semibold px-3 py-1.5 disabled:opacity-30"
-              style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#B8752A' }}>
+            <Button disabled={page >= Math.ceil(total/20)} onClick={() => setPage(p => p+1)} variant="secondary" size="sm">
               Next
-            </button>
+            </Button>
           </div>
         )}
       </div>

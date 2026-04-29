@@ -7,26 +7,26 @@
 DELETE FROM product_images
 WHERE product_id IN (
   SELECT id FROM products
-  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','the-unboxing')
+  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','box-office')
 );
 
 -- Remove old product items for non-cookie products
 DELETE FROM product_items
 WHERE product_id IN (
   SELECT id FROM products
-  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','the-unboxing')
+  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','box-office')
 );
 
 -- Remove old product variants for non-cookie products
 DELETE FROM product_variants
 WHERE product_id IN (
   SELECT id FROM products
-  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','the-unboxing')
+  WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','box-office')
 );
 
 -- Remove the old products themselves
 DELETE FROM products
-WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','the-unboxing');
+WHERE slug NOT IN ('venom','coconut','crimson-sin','campfire-after-dark','blackout','box-office');
 
 -- Remove old non-cookie categories (keep 'cookies' only)
 DELETE FROM categories

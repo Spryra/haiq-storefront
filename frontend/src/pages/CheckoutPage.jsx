@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
+import Button from '../components/shared/Button'
 
 // Delivery notice instead of a hardcoded fee
 const DELIVERY_NOTICE = 'Delivery pricing varies by location and will be confirmed by our team before dispatch. Estimated from UGX 5,000 within Kampala.'
@@ -34,6 +35,8 @@ const PAYMENT_METHODS = {
     color: '#8B7355',
   },
 }
+
+const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
 
 function StepBar({ step }) {
   const steps = ['Order', 'Details', 'Payment', 'Confirm']
@@ -221,15 +224,26 @@ export default function CheckoutPage() {
     if (items.length === 0) navigate('/shop', { replace: true })
   }, [items, loading, navigate, user])
 
+  const detailsFields = [
+    details.first_name,
+    details.last_name,
+    details.email,
+    details.phone,
+    details.delivery_address,
+    details.delivery_note,
+  ]
+
   const detailsValid =
     details.first_name.trim() && details.last_name.trim() &&
     details.email.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email) &&
-    details.phone.trim() && details.delivery_address.trim().length >= 5
+    details.phone.trim() && details.delivery_address.trim().length >= 5 &&
+    !detailsFields.some(containsHtml)
 
   const paymentValid = payMethod !== ''
 
   const handleSubmit = async () => {
     if (!consent) { setSubmitError('Please confirm your agreement.'); return }
+    if (detailsFields.some(containsHtml)) { setSubmitError('Please remove HTML or script content from the form.'); return }
     setSubmitting(true); setSubmitError(null)
     try {
       const body = {
@@ -318,11 +332,9 @@ export default function CheckoutPage() {
                     )
                   ))}
                 </div>
-                <button onClick={() => setStep(2)}
-                  className="w-full py-4 font-bold text-[11px] tracking-[0.25em] uppercase"
-                  style={{ background: '#B8752A', color: '#1A0A00' }}>
+                <Button onClick={() => setStep(2)} variant="primary" className="w-full" size="lg">
                   Continue to Details
-                </button>
+                </Button>
               </div>
             )}
 
@@ -341,11 +353,12 @@ export default function CheckoutPage() {
                   <div>{lbl('Delivery Note')}<input className={inputCls} style={inputSty} value={details.delivery_note} onChange={upd('delivery_note')} placeholder="Leave at gate / call on arrival"/></div>
                 </div>
                 <div className="flex gap-3 mt-6">
-                  <button onClick={() => setStep(1)} className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase"
-                    style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>Back</button>
-                  <button onClick={() => setStep(3)} disabled={!detailsValid}
-                    className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-40"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>Continue to Payment</button>
+                  <Button onClick={() => setStep(1)} variant="secondary" className="flex-1" size="md">
+                    Back
+                  </Button>
+                  <Button onClick={() => setStep(3)} disabled={!detailsValid} variant="primary" className="flex-1" size="md">
+                    Continue to Payment
+                  </Button>
                 </div>
               </div>
             )}
@@ -377,11 +390,12 @@ export default function CheckoutPage() {
                 )}
 
                 <div className="flex gap-3">
-                  <button onClick={() => setStep(2)} className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase"
-                    style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>Back</button>
-                  <button onClick={() => setStep(4)} disabled={!paymentValid}
-                    className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-40"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>Review Order</button>
+                  <Button onClick={() => setStep(2)} variant="secondary" className="flex-1" size="md">
+                    Back
+                  </Button>
+                  <Button onClick={() => setStep(4)} disabled={!paymentValid} variant="primary" className="flex-1" size="md">
+                    Review Order
+                  </Button>
                 </div>
               </div>
             )}
@@ -417,7 +431,9 @@ export default function CheckoutPage() {
                     {consent && <span style={{ color: '#1A0A00', fontSize: '11px', fontWeight: 'bold' }}>v</span>}
                   </div>
                   <p className="text-xs leading-relaxed" style={{ color: '#8C7355' }}>
-                    I confirm my order details are correct and agree to HAIQ's terms.
+                    I agree to HAIQ's{' '}
+                    <a href="/terms" target="_blank" style={{ color: '#B8752A' }}>Terms of Use</a>{' '}and{' '}
+                    <a href="/privacy-policy" target="_blank" style={{ color: '#B8752A' }}>Privacy Policy</a>, and I consent to my personal data being processed for order fulfilment.
                   </p>
                 </label>
 
@@ -429,13 +445,19 @@ export default function CheckoutPage() {
                 )}
 
                 <div className="flex gap-3">
-                  <button onClick={() => setStep(3)} className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase"
-                    style={{ border: '1px solid rgba(184,117,42,0.4)', color: '#B8752A' }}>Back</button>
-                  <button onClick={handleSubmit} disabled={submitting || !consent}
-                    className="flex-1 py-3.5 font-bold text-[11px] tracking-[0.2em] uppercase disabled:opacity-50"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>
-                    {submitting ? 'Placing Order...' : `Place Order - UGX ${subtotal.toLocaleString()}`}
-                  </button>
+                  <Button onClick={() => setStep(3)} variant="secondary" className="flex-1" size="md">
+                    Back
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={submitting || !consent}
+                    loading={submitting}
+                    variant="primary"
+                    className="flex-1"
+                    size="md"
+                  >
+                    Confirm Order
+                  </Button>
                 </div>
               </div>
             )}

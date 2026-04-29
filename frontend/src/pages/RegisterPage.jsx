@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import Crown from '../components/shared/Crown'
+import Button from '../components/shared/Button'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -14,15 +15,20 @@ export default function RegisterPage() {
 
   const upd = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
 
+  const containsHtml = (value) => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const validate = () => {
     const name = form.full_name.trim()
     if (!name || !name.includes(' ') || name.split(' ').filter(Boolean).length < 2) {
       return 'Please enter your full name — first and last name required.'
     }
+    if (containsHtml(name)) return 'This field contains invalid characters.'
     if (!form.phone.trim()) return 'Phone number is required.'
+    if (containsHtml(form.phone)) return 'This field contains invalid characters.'
     if (!form.email.trim()) return 'Email address is required.'
+    if (containsHtml(form.email)) return 'This field contains invalid characters.'
     if (form.password.length < 6) return 'Password must be at least 6 characters.'
-    if (!/[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?\/\\`~]/.test(form.password)) {
+    if (!/[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/\\`~]/.test(form.password)) {
       return 'Password must include at least one special character (e.g. ! @ # $ %).'
     }
     return null
@@ -149,14 +155,22 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            className="w-full mt-2"
+            loading={loading}
             disabled={loading}
-            className="w-full bg-primary text-dark py-3.5 font-bold text-[11px] tracking-[0.25em] uppercase hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
           >
-            {loading ? 'Creating account…' : 'Create Account'}
-          </button>
+            Create Account
+          </Button>
         </form>
+
+        <p className="text-[10px] text-center mt-3" style={{ color: '#8C7355' }}>
+          By creating an account, you agree to our{' '}
+          <Link to="/terms" style={{ color: '#B8752A' }}>Terms of Use</Link>{' '}and{' '}
+          <Link to="/privacy-policy" style={{ color: '#B8752A' }}>Privacy Policy</Link>.
+        </p>
 
         <p className="text-light/30 text-xs text-center mt-6">
           Already have an account?{' '}

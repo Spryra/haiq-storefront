@@ -1,6 +1,9 @@
 // src/routes/reviews.routes.js
 const router  = require('express').Router({ mergeParams: true });
 const { query } = require('../config/db');
+const { validate } = require('../middleware/validate');
+const { createReviewSchema } = require('../middleware/schemas');
+const { reviewLimiter } = require('../middleware/rateLimiter');
 
 // GET /v1/products/:slug/reviews — public, approved only
 router.get('/', async (req, res, next) => {
@@ -22,16 +25,9 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST /v1/products/:slug/reviews — public
-router.post('/', async (req, res, next) => {
+router.post('/', reviewLimiter, validate(createReviewSchema), async (req, res, next) => {
   try {
     const { name, rating, comment, tracking_token } = req.body;
-
-    if (!name || !comment || !rating) {
-      return res.status(400).json({ success: false, message: 'name, rating, and comment are required' });
-    }
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({ success: false, message: 'Rating must be between 1 and 5' });
-    }
 
     const { rows: [product] } = await query(
       'SELECT id FROM products WHERE slug = $1', [req.params.slug]

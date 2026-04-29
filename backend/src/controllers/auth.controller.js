@@ -49,6 +49,13 @@ async function register(req, res, next) {
       });
     }
 
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters.' });
+    }
+    if (!/[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?\/\\`~]/.test(password)) {
+      return res.status(400).json({ success: false, error: 'Password must include at least one special character.' });
+    }
+
     const existing = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
     if (existing.rowCount > 0) {
       return res.status(409).json({ success: false, error: 'An account with this email already exists' });
@@ -150,6 +157,15 @@ async function refresh(req, res, next) {
     if (!user) return res.status(401).json({ success: false, error: 'User not found' });
 
     const access_token = signAccessToken(user.id, user.email);
+    const new_refresh_token = signRefreshToken(user.id);
+
+    res.cookie('refresh_token', new_refresh_token, {
+      httpOnly: true,
+      secure:   true,
+      sameSite: 'none',
+      maxAge:   7 * 24 * 60 * 60 * 1000,
+    });
+
     res.json({ success: true, access_token });
   } catch {
     return res.status(401).json({ success: false, error: 'Refresh token invalid or expired' });

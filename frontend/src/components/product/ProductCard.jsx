@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useState, useRef, useEffect } from 'react';
 import VariantPickerModal from './VariantPickerModal';
+import Button from '../shared/Button';
 
 const LOGO_FALLBACK = '/HAIQmain.png';
 
@@ -147,19 +148,11 @@ export default function ProductCard({ product, index = 0 }) {
                 </p>
               </div>
 
-              <button
+              <Button
                 onClick={handleAdd}
                 disabled={isSoldOut}
-                className={`
-                  mt-auto w-full py-2.5 rounded-xl font-semibold text-sm
-                  transition-all duration-200 active:scale-[0.97]
-                  ${isSoldOut
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : added
-                      ? 'bg-green-500 text-white'
-                      : 'bg-dark text-light hover:bg-primary hover:text-dark'
-                  }
-                `}
+                variant={isSoldOut ? 'secondary' : 'primary'}
+                className={`mt-auto w-full rounded-xl text-sm ${added ? 'bg-green-500 text-white hover:bg-green-500' : ''}`}
               >
                 {isSoldOut
                   ? 'Sold Out'
@@ -171,7 +164,7 @@ export default function ProductCard({ product, index = 0 }) {
                         ? 'Choose Size →'
                         : 'Add to Cart'
                 }
-              </button>
+              </Button>
             </div>
           </div>
         </Link>

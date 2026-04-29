@@ -19,6 +19,14 @@ app.use(helmet({
   contentSecurityPolicy: false,
 }));
 
+// Redirect HTTP → HTTPS in production behind proxy
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
 // ─── CORS (FIXED + SAFE) ───────────────────────────────────────
 const allowedOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
   .split(',')

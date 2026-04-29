@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import api from '../services/api'
+import Button from '../components/shared/Button'
 
 const CONTACT_ITEMS = [
   {
@@ -56,10 +57,16 @@ export default function ContactPage() {
   const [form,   setForm]   = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState(null) // null | loading | success | error
 
+  const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if ([form.name, form.email, form.message].some(containsHtml)) {
+      setStatus('error')
+      return
+    }
     setStatus('loading')
     try {
       await api.post('/messages', {
@@ -171,12 +178,9 @@ export default function ContactPage() {
                 <p className="text-gray-500 text-sm">
                   We will get back to you within a few hours on WhatsApp or email.
                 </p>
-                <button
-                  onClick={() => setStatus(null)}
-                  className="mt-5 text-sm text-primary hover:underline"
-                >
+                <Button onClick={() => setStatus(null)} variant="secondary" size="sm">
                   Send another message
-                </button>
+                </Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -219,9 +223,9 @@ export default function ContactPage() {
                     value={form.message}
                     onChange={handleChange}
                     required
-                    rows={6}
-                    placeholder="Ask us anything — about orders, custom cakes, corporate gifting, or just to say hi."
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition resize-none"
+                    rows={5}
+                    placeholder="Tell us what you're looking for — orders, events, feedback, anything."
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition"
                   />
                 </div>
 
@@ -231,17 +235,9 @@ export default function ContactPage() {
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full bg-dark text-light py-4 rounded-xl font-bold hover:bg-primary hover:text-dark transition-all duration-200 disabled:opacity-50"
-                >
-                  {status === 'loading' ? 'Sending…' : 'Send Message'}
-                </button>
-
-                <p className="text-xs text-gray-400 text-center">
-                  We typically respond within 2–4 hours during business hours.
-                </p>
+                <Button type="submit" disabled={status === 'loading'} loading={status === 'loading'} variant="primary" className="w-full" size="md">
+                  Send Message
+                </Button>
               </form>
             )}
           </div>
