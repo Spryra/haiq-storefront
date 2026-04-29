@@ -53,7 +53,7 @@ export default function App() {
             <Route path="/register"        element={withLayout(RegisterPage)} />
             <Route path="/forgot-password" element={withLayout(ForgotPasswordPage)} />
             <Route path="/reset-password"  element={withLayout(ResetPasswordPage)} />
-            <Route path="/privacy-policy"   element={withLayout(PrivacyPolicyPage)} />
+            <Route path="/privacy"           element={withLayout(PrivacyPolicyPage)} />
             <Route path="/terms"            element={withLayout(TermsOfUsePage)} />
             <Route path="/data-compliance"  element={withLayout(DataCompliancePage)} />
 

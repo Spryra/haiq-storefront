@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import SEO from '../components/shared/SEO'
 
-const TERMLY_POLICY_ID = 'YOUR_TERMLY_POLICY_ID'
+const TERMLY_POLICY_ID = 'eyJhbGciOiJIUzI1NiJ9.ImNXRlVHVS9DUk1wYytPaUtiQXRZZ0FINlVuMzMwblc3djhKem1sdmQ3ZkFrZkwzaDdDMGFLWDhZdnVoS0N5NTZsMU9LSTFJTW1sSUxUZEhkS1FRcitMVDlEcDZiKzZodmRNczF4ekF0djRUWUdtSGlMWFRVbWlMQzRSNk5CSW4zWVZLZG5HVFFJRzVUR3F4K3FKQXlyUT09LS0wWFVJekd2OGZwMlZUUkJOLS1OYkNTZHJ5Mkc1NEJuTUlhbklVMFNBPT0i.m0MkGiBLxgKJGx2k_vCFvNDDTn9CatxVQNQGnHDmcd8'
 
 export default function PrivacyPolicyPage() {
   useEffect(() => {

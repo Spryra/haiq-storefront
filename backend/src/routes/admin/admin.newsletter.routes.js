@@ -50,12 +50,12 @@ router.post('/campaign', requireSuperAdmin, async (req, res, next) => {
       [subject, body_html, req.admin.id, subs.length]
     );
 
-    // Send emails (fire and forget — don't wait for all)
+    // Send emails with unsubscribe footer
     let sent = 0;
     for (const sub of subs) {
       try {
-        await emailService.send({
-          to:      sub.email,
+        await emailService.sendCampaign({
+          email:   sub.email,
           subject,
           html:    body_html,
         });

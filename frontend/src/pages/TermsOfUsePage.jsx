@@ -33,7 +33,7 @@ export default function TermsOfUsePage() {
               <ul className="list-disc pl-5 space-y-1 text-[13px]" style={{ color: '#8C7355' }}>
                 <li>you are at least 18 years of age, or have the consent of a parent or guardian;</li>
                 <li>you have read and agree to these Terms of Use;</li>
-                <li>you have read and agree to our Privacy Policy at /privacy-policy;</li>
+                <li>you have read and agree to our <a href="/privacy" style={{ color: '#B8752A' }}>Privacy Policy</a>;</li>
                 <li>you have the legal capacity to enter into a binding contract under Ugandan law.</li>
               </ul>
               <p className="mt-2">If you do not agree with any part of these terms, do not use our platform.</p>

@@ -68,6 +68,18 @@ function baseLayout(bodyHtml) {
 </html>`;
 }
 
+const API_BASE = process.env.API_BASE_URL || 'https://haiq-api.onrender.com/v1';
+
+function unsubscribeUrl(email) {
+  return `${API_BASE}/newsletter/unsubscribe?token=${Buffer.from(email, 'utf-8').toString('base64url')}`;
+}
+
+function unsubscribeFooter(email) {
+  return `<p style="margin:24px 0 0;text-align:center;">
+    <a href="${unsubscribeUrl(email)}" style="color:${BRAND.muted};font-family:'Arial',sans-serif;font-size:11px;text-decoration:underline;">Unsubscribe</a>
+  </p>`;
+}
+
 function ctaBtn(text, url) {
   return `<table cellpadding="0" cellspacing="0" style="margin:28px 0 0;">
     <tr><td style="background:${BRAND.primary};">
@@ -161,6 +173,18 @@ async function sendNewsletterWelcome({ email, name = 'Cookie Lover' }) {
       ${para('You\'re now in the HAIQ inner circle. You\'ll be the first to know about new flavours, special days, and everything that comes out of our kitchen.')}
       ${para('We bake fresh every morning. Every order is personal.')}
       ${ctaBtn('Shop Now', `${process.env.FRONTEND_URL || 'https://haiq.ug'}/shop`)}
+      ${unsubscribeFooter(email)}
+    `),
+  });
+}
+
+async function sendCampaign({ email, subject, html }) {
+  return send({
+    to:      email,
+    subject,
+    html:    baseLayout(`
+      ${html}
+      ${unsubscribeFooter(email)}
     `),
   });
 }
@@ -224,11 +248,13 @@ async function sendLoyaltyDispatched({ email, name, deliveryAddress }) {
 }
 
 module.exports = {
+  send,
   sendWelcome,
   sendOrderConfirmation,
   sendStatusUpdate,
   sendPasswordReset,
   sendNewsletterWelcome,
+  sendCampaign,
   sendLoyaltyApproved,
   sendLoyaltyRejected,
   sendLoyaltyDispatched,

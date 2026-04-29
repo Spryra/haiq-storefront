@@ -160,7 +160,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-5 flex-wrap">
             <div className="flex gap-6 flex-wrap">
-              <Link to="/privacy-policy" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
+              <Link to="/privacy" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
                 Privacy Policy
               </Link>
               <Link to="/terms" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">

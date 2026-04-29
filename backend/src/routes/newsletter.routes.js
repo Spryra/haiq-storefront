@@ -56,4 +56,28 @@ router.post('/subscribe', newsletterLimiter, optionalAuth, validate(newsletterSu
   }
 });
 
+// ── GET /unsubscribe?token=<base64email> — one-click unsubscribe ─────────────
+router.get('/unsubscribe', async (req, res, next) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(400).send('Missing token.');
+
+    const email = Buffer.from(token, 'base64url').toString('utf-8').toLowerCase();
+    const { rowCount } = await query(
+      `UPDATE newsletter_subscribers SET is_active = false, subscribed = false WHERE email = $1`,
+      [email]
+    );
+
+    // Render a simple branded confirmation page
+    res.send(`<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Unsubscribed | HAIQ</title></head>
+<body style="margin:0;padding:60px 20px;background:#1A0A00;font-family:Georgia,serif;text-align:center;">
+  <p style="color:#B8752A;font-size:28px;font-weight:bold;letter-spacing:0.12em;">HAIQ</p>
+  <p style="color:#F2EAD8;font-size:20px;margin:24px 0 8px;">You've been unsubscribed.</p>
+  <p style="color:#8C7355;font-size:14px;">${rowCount ? 'You will no longer receive newsletter emails from us.' : 'This email was not found in our list.'}</p>
+  <a href="${process.env.FRONTEND_URL || 'https://haiqweb.vercel.app'}" style="display:inline-block;margin-top:32px;padding:14px 32px;background:#B8752A;color:#1A0A00;font-size:11px;font-weight:bold;letter-spacing:0.22em;text-transform:uppercase;text-decoration:none;">Back to HAIQ</a>
+</body></html>`);
+  } catch (err) { next(err); }
+});
+
 module.exports = router;

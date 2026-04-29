@@ -433,7 +433,7 @@ export default function CheckoutPage() {
                   <p className="text-xs leading-relaxed" style={{ color: '#8C7355' }}>
                     I agree to HAIQ's{' '}
                     <a href="/terms" target="_blank" style={{ color: '#B8752A' }}>Terms of Use</a>{' '}and{' '}
-                    <a href="/privacy-policy" target="_blank" style={{ color: '#B8752A' }}>Privacy Policy</a>, and I consent to my personal data being processed for order fulfilment.
+                    <a href="/privacy" target="_blank" style={{ color: '#B8752A' }}>Privacy Policy</a>, and I consent to my personal data being processed for order fulfilment.
                   </p>
                 </label>
 

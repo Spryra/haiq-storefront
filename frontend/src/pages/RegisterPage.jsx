@@ -169,7 +169,7 @@ export default function RegisterPage() {
         <p className="text-[10px] text-center mt-3" style={{ color: '#8C7355' }}>
           By creating an account, you agree to our{' '}
           <Link to="/terms" style={{ color: '#B8752A' }}>Terms of Use</Link>{' '}and{' '}
-          <Link to="/privacy-policy" style={{ color: '#B8752A' }}>Privacy Policy</Link>.
+          <Link to="/privacy" style={{ color: '#B8752A' }}>Privacy Policy</Link>.
         </p>
 
         <p className="text-light/30 text-xs text-center mt-6">
