@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import adminApi from '../services/adminApi'
 import Button from '../components/shared/Button'
+import { Package, X, Plus, Star } from 'lucide-react'
 
 function ProductModal({ product, onClose, onSaved }) {
   const isEdit = !!product?.id
@@ -102,7 +103,9 @@ function ProductModal({ product, onClose, onSaved }) {
             <h2 className="font-serif font-bold text-lg" style={{ color: '#F2EAD8' }}>
               {isEdit ? `Edit: ${product.name}` : 'Add New Product'}
             </h2>
-            <button onClick={onClose} className="text-xl hover:opacity-60 transition" style={{ color: '#8C7355' }}>✕</button>
+            <button onClick={onClose} className="hover:opacity-60 transition" style={{ color: '#8C7355' }}>
+              <X size={20} strokeWidth={1.5} />
+            </button>
           </div>
 
           <div className="p-6 space-y-5">
@@ -118,9 +121,9 @@ function ProductModal({ product, onClose, onSaved }) {
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 flex-shrink-0 flex items-center justify-center text-2xl"
+                  <div className="w-24 h-24 flex-shrink-0 flex items-center justify-center"
                     style={{ border: '1px dashed rgba(184,117,42,0.3)', background: '#1A0A00', color: '#8C7355' }}>
-                    🍪
+                    <Package size={32} strokeWidth={1.5} />
                   </div>
                 )}
                 <div>
@@ -195,7 +198,9 @@ function ProductModal({ product, onClose, onSaved }) {
               <div className="flex justify-between mb-2">
                 <label className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#8C7355' }}>Variants</label>
                 <button onClick={() => setVariants(vs => [...vs, { label:'', price:'', stock_qty:'', is_default: false }])}
-                  className="text-xs" style={{ color: '#B8752A' }}>+ Add</button>
+                  className="flex items-center gap-1 text-xs" style={{ color: '#B8752A' }}>
+                  <Plus size={14} strokeWidth={1.5} /> Add
+                </button>
               </div>
               {variants.map((v, i) => (
                 <div key={i} className="flex gap-2 mb-2">
@@ -206,8 +211,10 @@ function ProductModal({ product, onClose, onSaved }) {
                   <input type="number" value={v.stock_qty} onChange={e => setVariants(vs => vs.map((x,j) => j===i?{...x,stock_qty:e.target.value}:x))}
                     placeholder="Stock" className="w-20 px-3 py-2 text-sm focus:outline-none" style={inputSty} />
                   <button onClick={() => setVariants(vs => vs.map((x,j) => ({...x,is_default:j===i})))}
-                    className="px-2 py-1 text-xs font-bold" style={{ background: v.is_default ? '#B8752A' : '#3D2000', color: v.is_default ? '#1A0A00' : '#8C7355' }}>★</button>
-                  {variants.length > 1 && <button onClick={() => setVariants(vs => vs.filter((_,j) => j!==i))} className="text-red-400 text-sm px-1">✕</button>}
+                    className="px-2 py-1 text-xs font-bold" style={{ background: v.is_default ? '#B8752A' : '#3D2000', color: v.is_default ? '#1A0A00' : '#8C7355' }}>
+                    <Star size={12} strokeWidth={1.5} fill={v.is_default ? 'currentColor' : 'none'} />
+                  </button>
+                  {variants.length > 1 && <button onClick={() => setVariants(vs => vs.filter((_,j) => j!==i))} className="text-red-400 text-sm px-1"><X size={14} strokeWidth={1.5} /></button>}
                 </div>
               ))}
             </div>
@@ -216,13 +223,15 @@ function ProductModal({ product, onClose, onSaved }) {
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#8C7355' }}>Ingredients</label>
-                <button onClick={() => setItems(is => [...is, ''])} className="text-xs" style={{ color: '#B8752A' }}>+ Add</button>
+                <button onClick={() => setItems(is => [...is, ''])} className="flex items-center gap-1 text-xs" style={{ color: '#B8752A' }}>
+                  <Plus size={14} strokeWidth={1.5} /> Add
+                </button>
               </div>
               {items.map((item, i) => (
                 <div key={i} className="flex gap-2 mb-2">
                   <input value={item} onChange={e => setItems(is => is.map((x,j) => j===i?e.target.value:x))}
                     placeholder={`Ingredient ${i+1}`} className="flex-1 px-3 py-2 text-sm focus:outline-none" style={inputSty} />
-                  {items.length > 1 && <button onClick={() => setItems(is => is.filter((_,j) => j!==i))} className="text-red-400 text-sm px-1">✕</button>}
+                  {items.length > 1 && <button onClick={() => setItems(is => is.filter((_,j) => j!==i))} className="text-red-400 text-sm px-1"><X size={14} strokeWidth={1.5} /></button>}
                 </div>
               ))}
             </div>
@@ -295,7 +304,7 @@ export default function ProductsPage() {
         </div>
         {tab === 'products' && (
           <Button onClick={() => setModal('new')} variant="primary" size="sm">
-            + Add Product
+            <Plus size={14} strokeWidth={1.5} /> Add Product
           </Button>
         )}
       </div>

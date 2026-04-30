@@ -1,16 +1,30 @@
 import { useState } from 'react'
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAdminAuth } from '../../context/AdminAuthContext'
-import Crown from '../shared/Crown';
+import Crown from '../shared/Crown'
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Package,
+  MessageSquare,
+  CreditCard,
+  Mail,
+  CalendarHeart,
+  MapPin,
+  LogOut,
+  X,
+  Menu
+} from 'lucide-react'
 
 const NAV = [
-  { to: '/dashboard',    label: 'Dashboard',    icon: '▦'  },
-  { to: '/orders',       label: 'Orders',       icon: '📦' },
-  { to: '/products',     label: 'Products',     icon: '🍪' },
-  { to: '/messages',     label: 'Messages',     icon: '💬' },
-  { to: '/loyalty',      label: 'Loyalty',      icon: '🃏' },
-  { to: '/newsletter',   label: 'Newsletter',   icon: '✉'  },
-  { to: '/special-days', label: 'Special Days', icon: '⭐' },
+  { to: '/dashboard',    label: 'Dashboard',    Icon: LayoutDashboard },
+  { to: '/orders',       label: 'Orders',       Icon: ShoppingBag },
+  { to: '/products',     label: 'Products',     Icon: Package },
+  { to: '/messages',     label: 'Messages',     Icon: MessageSquare },
+  { to: '/loyalty',      label: 'Loyalty Cards', Icon: CreditCard },
+  { to: '/newsletter',   label: 'Newsletter',   Icon: Mail },
+  { to: '/special-days', label: 'Special Days', Icon: CalendarHeart },
+  { to: '/delivery-zones', label: 'Delivery Zones', Icon: MapPin },
 ]
 
 const PAGE_TITLES = {
@@ -21,6 +35,7 @@ const PAGE_TITLES = {
   '/loyalty':      'Loyalty Cards',
   '/newsletter':   'Newsletter',
   '/special-days': 'Special Days',
+  '/delivery-zones': 'Delivery Zones',
 }
 
 export default function AdminLayout({ children }) {
@@ -69,7 +84,7 @@ export default function AdminLayout({ children }) {
                 color:       isActive ? '#E8C88A'                 : 'rgba(242,234,216,0.45)',
                 textDecoration: 'none',
               })}>
-              <span className="text-base w-5 text-center">{item.icon}</span>
+              <item.Icon size={16} strokeWidth={1.5} className="flex-shrink-0" />
               <span className="truncate">{item.label}</span>
             </NavLink>
           ))}
@@ -82,6 +97,7 @@ export default function AdminLayout({ children }) {
           <button onClick={handleLogout}
             className="flex items-center gap-2 text-xs transition-colors hover:opacity-70"
             style={{ color: '#8C7355' }}>
+            <LogOut size={14} strokeWidth={1.5} />
             Sign Out
           </button>
         </div>
@@ -96,11 +112,9 @@ export default function AdminLayout({ children }) {
 
           {/* Mobile hamburger */}
           <button onClick={() => setSidebarOpen(true)}
-            className="lg:hidden flex flex-col gap-1.5 p-1 flex-shrink-0"
+            className="lg:hidden p-1 flex-shrink-0"
             style={{ color: 'rgba(242,234,216,0.6)' }}>
-            <span className="block w-5 h-px bg-current" />
-            <span className="block w-5 h-px bg-current" />
-            <span className="block w-5 h-px bg-current" />
+            <Menu size={20} strokeWidth={1.5} />
           </button>
 
           <h1 className="font-serif font-bold text-lg flex-1 truncate" style={{ color: '#F2EAD8' }}>{title}</h1>
@@ -131,7 +145,7 @@ export default function AdminLayout({ children }) {
                   color:          isActive ? '#B8752A' : 'rgba(242,234,216,0.4)',
                   textDecoration: 'none',
                 })}>
-                <span className="text-lg leading-none">{item.icon}</span>
+                <item.Icon size={18} strokeWidth={1.5} />
                 <span className="text-[9px] font-semibold tracking-wide leading-none mt-0.5">{item.label.split(' ')[0]}</span>
               </NavLink>
             ))}
@@ -149,7 +163,9 @@ export default function AdminLayout({ children }) {
             <div className="flex items-center justify-between px-5 py-4"
               style={{ borderBottom: '1px solid rgba(61,32,0,0.8)' }}>
               <p className="font-serif font-bold" style={{ color: '#E8C88A' }}>HAIQ Admin</p>
-              <button onClick={() => setSidebarOpen(false)} className="text-xl" style={{ color: '#8C7355' }}>x</button>
+              <button onClick={() => setSidebarOpen(false)} style={{ color: '#8C7355' }}>
+                <X size={18} strokeWidth={1.5} />
+              </button>
             </div>
             <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
               {NAV.map(item => (
@@ -161,14 +177,15 @@ export default function AdminLayout({ children }) {
                     color:       isActive ? '#E8C88A'                 : 'rgba(242,234,216,0.5)',
                     textDecoration: 'none',
                   })}>
-                  <span className="text-base">{item.icon}</span>
+                  <item.Icon size={16} strokeWidth={1.5} />
                   <span>{item.label}</span>
                 </NavLink>
               ))}
             </nav>
             <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(61,32,0,0.8)' }}>
-              <button onClick={handleLogout} className="text-sm w-full text-left py-2"
+              <button onClick={handleLogout} className="flex items-center gap-2 text-sm w-full text-left py-2"
                 style={{ color: '#f87171' }}>
+                <LogOut size={16} strokeWidth={1.5} />
                 Sign Out
               </button>
             </div>

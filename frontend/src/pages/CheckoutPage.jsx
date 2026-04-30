@@ -101,7 +101,7 @@ function BoxSummaryRow({ item }) {
   )
 }
 
-function OrderSummary({ items, subtotal }) {
+function OrderSummary({ items, subtotal, deliveryFee, total }) {
   return (
     <div className="sticky top-6 p-5" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
       <p className="text-[10px] font-semibold uppercase tracking-[0.25em] mb-4" style={{ color: '#8C7355' }}>
@@ -126,11 +126,15 @@ function OrderSummary({ items, subtotal }) {
           <span style={{ color: '#F2EAD8' }}>Subtotal</span>
           <span style={{ color: '#E8C88A' }}>UGX {subtotal.toLocaleString()}</span>
         </div>
-        {/* Delivery notice instead of fixed fee */}
-        <div className="px-3 py-2.5 mt-2" style={{ background: 'rgba(184,117,42,0.07)', border: '1px solid rgba(184,117,42,0.2)' }}>
-          <p className="text-[10px] leading-relaxed" style={{ color: '#8C7355' }}>
-            {DELIVERY_NOTICE}
-          </p>
+        {deliveryFee > 0 && (
+          <div className="flex justify-between text-sm mb-2">
+            <span style={{ color: '#8C7355' }}>Delivery</span>
+            <span style={{ color: '#E8C88A' }}>UGX {deliveryFee.toLocaleString()}</span>
+          </div>
+        )}
+        <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
+          <span style={{ color: '#F2EAD8' }}>Total</span>
+          <span style={{ color: '#B8752A' }}>UGX {total.toLocaleString()}</span>
         </div>
       </div>
     </div>
@@ -211,7 +215,30 @@ export default function CheckoutPage() {
   const [submitting,  setSubmitting]  = useState(false)
   const [submitError, setSubmitError] = useState(null)
 
+  // Delivery zones state
+  const [zones, setZones] = useState([])
+  const [selectedZone, setSelectedZone] = useState(null)
+  const [zonesLoading, setZonesLoading] = useState(false)
+
   const upd = f => e => setDetails(d => ({ ...d, [f]: e.target.value }))
+
+  // Fetch delivery zones on mount
+  useEffect(() => {
+    const fetchZones = async () => {
+      setZonesLoading(true)
+      try {
+        const { data } = await api.get('/delivery-zones')
+        if (data.success) {
+          setZones(data.zones)
+        }
+      } catch (err) {
+        console.error('Failed to fetch delivery zones:', err)
+      } finally {
+        setZonesLoading(false)
+      }
+    }
+    fetchZones()
+  }, [])
 
   useEffect(() => {
     // Wait for auth to finish loading, then redirect if not authenticated
@@ -236,8 +263,11 @@ export default function CheckoutPage() {
   const detailsValid =
     details.first_name.trim() && details.last_name.trim() &&
     details.email.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email) &&
-    details.phone.trim() && details.delivery_address.trim().length >= 5 &&
+    details.phone.trim() && selectedZone && details.delivery_address.trim().length >= 5 &&
     !detailsFields.some(containsHtml)
+
+  const deliveryFee = selectedZone ? parseFloat(selectedZone.price) : 0
+  const total = subtotal + deliveryFee
 
   const paymentValid = payMethod !== ''
 
@@ -253,6 +283,7 @@ export default function CheckoutPage() {
         phone:            details.phone.trim(),
         delivery_address: details.delivery_address.trim(),
         delivery_note:    details.delivery_note.trim() || undefined,
+        delivery_zone_id: selectedZone?.id || null,
         items:            toOrderItems(),
         payment_method:   payMethod,
         consent_given:    true,
@@ -349,7 +380,40 @@ export default function CheckoutPage() {
                   </div>
                   <div>{lbl('Email',true)}<input type="email" className={inputCls} style={inputSty} value={details.email} onChange={upd('email')} /></div>
                   <div>{lbl('Phone',true)}<input type="tel" className={inputCls} style={inputSty} value={details.phone} onChange={upd('phone')} placeholder="+256 700 000 000"/></div>
-                  <div>{lbl('Delivery Address',true)}<textarea rows={2} className={`${inputCls} resize-none`} style={inputSty} value={details.delivery_address} onChange={upd('delivery_address')} placeholder="Plot 12, Muyenga Hill, Kampala..."/></div>
+                  <div>
+                    {lbl('Delivery Zone', true)}
+                    {zonesLoading ? (
+                      <div className="text-xs py-3" style={{ color: '#8C7355' }}>Loading zones...</div>
+                    ) : (
+                      <select
+                        className={inputCls}
+                        style={inputSty}
+                        value={selectedZone?.id || ''}
+                        onChange={e => {
+                          const zone = zones.find(z => z.id === e.target.value)
+                          setSelectedZone(zone || null)
+                        }}
+                      >
+                        <option value="">Select your delivery zone</option>
+                        {zones.map(zone => (
+                          <option key={zone.id} value={zone.id}>
+                            {zone.name} — UGX {zone.price.toLocaleString()}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                  <div>
+                    {lbl('Specific Address', true)}
+                    <textarea
+                      rows={2}
+                      className={`${inputCls} resize-none`}
+                      style={inputSty}
+                      value={details.delivery_address}
+                      onChange={upd('delivery_address')}
+                      placeholder="House number, landmark, building name..."
+                    />
+                  </div>
                   <div>{lbl('Delivery Note')}<input className={inputCls} style={inputSty} value={details.delivery_note} onChange={upd('delivery_note')} placeholder="Leave at gate / call on arrival"/></div>
                 </div>
                 <div className="flex gap-3 mt-6">
@@ -409,6 +473,9 @@ export default function CheckoutPage() {
                     <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#B8752A' }}>Delivery To</p>
                     <p className="text-sm" style={{ color: '#F2EAD8' }}>{details.first_name} {details.last_name}</p>
                     <p className="text-xs mt-1" style={{ color: '#8C7355' }}>{details.phone}</p>
+                    {selectedZone && (
+                      <p className="text-xs" style={{ color: '#8C7355' }}>{selectedZone.name}</p>
+                    )}
                     <p className="text-xs" style={{ color: '#8C7355' }}>{details.delivery_address}</p>
                   </div>
                   <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.15)' }}>
@@ -420,7 +487,16 @@ export default function CheckoutPage() {
                       <span style={{ color: '#F2EAD8' }}>Subtotal</span>
                       <span style={{ color: '#E8C88A' }}>UGX {subtotal.toLocaleString()}</span>
                     </div>
-                    <p className="text-[10px] mt-2" style={{ color: '#8C7355' }}>{DELIVERY_NOTICE}</p>
+                    {deliveryFee > 0 && (
+                      <div className="flex justify-between text-sm mt-2">
+                        <span style={{ color: '#8C7355' }}>Delivery</span>
+                        <span style={{ color: '#E8C88A' }}>UGX {deliveryFee.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
+                      <span style={{ color: '#F2EAD8' }}>Total</span>
+                      <span style={{ color: '#B8752A' }}>UGX {total.toLocaleString()}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -464,7 +540,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="md:col-span-2">
-            <OrderSummary items={items} subtotal={subtotal} />
+            <OrderSummary items={items} subtotal={subtotal} deliveryFee={deliveryFee} total={total} />
           </div>
         </div>
       </div>

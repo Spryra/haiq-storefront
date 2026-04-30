@@ -1,6 +1,7 @@
 // ReviewsPage.jsx
 import { useEffect, useState } from 'react'
 import adminApi from '../services/adminApi'
+import { Star, Check } from 'lucide-react'
 
 const STATUS_STYLE = {
   pending:  { label: 'Pending',  bg: 'bg-yellow-500/15', text: 'text-yellow-400' },
@@ -12,7 +13,13 @@ function Stars({ rating }) {
   return (
     <div className="flex gap-0.5">
       {Array(5).fill(null).map((_, i) => (
-        <span key={i} className={i < rating ? 'text-haiq-gold' : 'text-light/20'}>★</span>
+        <Star
+          key={i}
+          size={14}
+          strokeWidth={1.5}
+          fill={i < rating ? '#B8752A' : 'none'}
+          color={i < rating ? '#B8752A' : '#8C7355'}
+        />
       ))}
     </div>
   )
@@ -55,7 +62,7 @@ export default function ReviewsPage() {
 
       {pending > 0 && (
         <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-5 py-3 flex items-center gap-3">
-          <span className="text-yellow-400 text-lg">⭐</span>
+          <Star className="text-yellow-400" size={20} strokeWidth={1.5} fill="#FACC15" />
           <p className="text-yellow-300 text-sm">
             <strong>{pending}</strong> review{pending > 1 ? 's' : ''} awaiting moderation.
           </p>
@@ -103,7 +110,9 @@ export default function ReviewsPage() {
                     <Stars rating={review.rating} />
                     <span className={`status-badge ${st.bg} ${st.text}`}>{st.label}</span>
                     {review.verified_purchase && (
-                      <span className="status-badge bg-primary/15 text-primary">✓ Verified</span>
+                      <span className="status-badge bg-primary/15 text-primary flex items-center gap-1">
+                        <Check size={12} strokeWidth={1.5} /> Verified
+                      </span>
                     )}
                   </div>
                   <p className="text-primary/60 text-xs uppercase tracking-wider">

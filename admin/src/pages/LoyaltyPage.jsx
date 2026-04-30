@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import adminApi from '../services/adminApi'
 import Crown from '../components/shared/Crown'
 import Button from '../components/shared/Button'
+import { X, Check, XCircle, Clock } from 'lucide-react'
 
 const STATUS_STYLES = {
   pending:    { label: 'Pending',        color: '#E8C88A',  bg: 'rgba(232,200,138,0.12)' },
@@ -56,7 +57,9 @@ function ReviewModal({ card, onClose, onDone }) {
         <div className="flex items-center gap-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(184,117,42,0.2)' }}>
           <Crown size={14} color="#B8752A" />
           <h2 className="font-serif font-bold text-lg" style={{ color: '#F2EAD8' }}>Review Application</h2>
-          <button onClick={onClose} className="ml-auto text-xl hover:opacity-60 transition" style={{ color: '#8C7355' }}>✕</button>
+          <button onClick={onClose} className="ml-auto hover:opacity-60 transition" style={{ color: '#8C7355' }}>
+            <X size={20} strokeWidth={1.5} />
+          </button>
         </div>
 
         <div className="p-6 space-y-5">

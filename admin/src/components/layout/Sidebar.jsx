@@ -3,15 +3,28 @@ import { useAdminAuth } from '../../context/AdminAuthContext'
 import { useState, useEffect } from 'react'
 import adminApi from '../../services/adminApi'
 import Crown from '../shared/Crown'
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Package,
+  MessageSquare,
+  CreditCard,
+  Mail,
+  CalendarHeart,
+  MapPin,
+  LogOut,
+  X
+} from 'lucide-react'
 
 const NAV = [
-  { to: '/dashboard',    label: 'Dashboard',    icon: '▦'  },
-  { to: '/orders',       label: 'Orders',       icon: '📦' },
-  { to: '/products',     label: 'Products',     icon: '🍪' },
-  { to: '/messages',     label: 'Messages',     icon: '💬' },
-  { to: '/loyalty',      label: 'Loyalty Cards',icon: '🃏' },
-  { to: '/newsletter',   label: 'Newsletter',   icon: '✉'  },
-  { to: '/special-days', label: 'Special Days', icon: '⭐' },
+  { to: '/dashboard',    label: 'Dashboard',    Icon: LayoutDashboard },
+  { to: '/orders',       label: 'Orders',       Icon: ShoppingBag },
+  { to: '/products',     label: 'Products',     Icon: Package },
+  { to: '/messages',     label: 'Messages',     Icon: MessageSquare },
+  { to: '/loyalty',      label: 'Loyalty Cards',Icon: CreditCard },
+  { to: '/newsletter',   label: 'Newsletter',   Icon: Mail },
+  { to: '/special-days', label: 'Special Days', Icon: CalendarHeart },
+  { to: '/delivery-zones', label: 'Delivery Zones', Icon: MapPin },
 ]
 
 export default function Sidebar({ mobileOpen, onClose }) {
@@ -85,7 +98,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
             <p className="text-[9px] tracking-[0.25em] uppercase mt-0.5" style={{ color: '#8C7355' }}>Admin Panel</p>
           </div>
           {/* Mobile close */}
-          <button onClick={onClose} className="ml-auto lg:hidden text-lg" style={{ color: '#8C7355' }} aria-label="Close menu">✕</button>
+          <button onClick={onClose} className="ml-auto lg:hidden" style={{ color: '#8C7355' }} aria-label="Close menu">
+            <X size={16} strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Nav */}
@@ -109,7 +124,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
                   color:        isActive ? '#E8C88A'                 : 'rgba(242,234,216,0.5)',
                 })}
               >
-                <span className="text-base w-5 text-center flex-shrink-0">{item.icon}</span>
+                <item.Icon size={16} strokeWidth={1.5} className="flex-shrink-0" />
                 <span className="flex-1 truncate">{item.label}</span>
                 {badge && (
                   <span
@@ -151,7 +166,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
             onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
             onMouseLeave={e => e.currentTarget.style.color = 'rgba(242,234,216,0.35)'}
           >
-            <span>🚪</span>
+            <LogOut size={16} strokeWidth={1.5} />
             <span>Sign Out</span>
           </button>
         </div>

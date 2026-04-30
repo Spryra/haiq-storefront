@@ -85,6 +85,7 @@ const createOrderSchema = z.object({
   delivery_address: safeText(5, 500),
   delivery_note: safeText(0, 300).optional().nullable(),
   gift_note: safeText(0, 300).optional().nullable(),
+  delivery_zone_id: safeUUID().optional().nullable(),
   items: z.array(z.object({
     product_id: safeUUID(),
     variant_id: safeUUID(),

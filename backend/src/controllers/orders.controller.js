@@ -9,7 +9,7 @@ const { generateOrderNumber, generateTrackingToken } = require('../utils/tokenGe
 const emailService  = require('../services/email.service')
 const paymentsService = require('../services/payments.service')
 
-const DELIVERY_FEE = 0  // Delivery is confirmed separately — no fixed fee
+const DELIVERY_FEE = 0  // Default fallback - overridden by zone price
 
 async function create(req, res, next) {
   const client = await getClient()
@@ -20,9 +20,30 @@ async function create(req, res, next) {
       first_name, last_name, email, phone,
       delivery_address, delivery_note, gift_note,
       items, payment_method, consent_given,
+      delivery_zone_id,
     } = req.body
 
     const user_id = req.user?.id || null
+
+    // Resolve delivery zone if provided
+    let delivery_fee = DELIVERY_FEE
+    let delivery_zone_name = null
+
+    if (delivery_zone_id) {
+      const { rows: [zone] } = await client.query(
+        'SELECT name, price FROM delivery_zones WHERE id = $1 AND is_active = true',
+        [delivery_zone_id]
+      )
+      if (!zone) {
+        await client.query('ROLLBACK')
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid delivery zone selected.',
+        })
+      }
+      delivery_fee = parseFloat(zone.price)
+      delivery_zone_name = zone.name
+    }
 
     // Validate: one email per account (if not guest)
     if (user_id) {
@@ -85,9 +106,14 @@ async function create(req, res, next) {
       })
     }
 
-    const total         = subtotal + DELIVERY_FEE
+    const total         = subtotal + delivery_fee
     const order_number  = generateOrderNumber()
     const tracking_token = generateTrackingToken()
+
+    // Combine zone name with specific address for full delivery address
+    const full_delivery_address = delivery_zone_name
+      ? `${delivery_zone_name} — ${delivery_address}`
+      : delivery_address
 
     // Create order
     const { rows: [order] } = await client.query(`
@@ -95,15 +121,17 @@ async function create(req, res, next) {
         order_number, tracking_token, user_id,
         first_name, last_name, email, phone,
         delivery_address, delivery_note, gift_note,
+        delivery_zone_id, delivery_zone_name,
         subtotal, delivery_fee, total,
         payment_method, consent_given
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
       RETURNING id, order_number, tracking_token, total
     `, [
       order_number, tracking_token, user_id,
       first_name, last_name, email.toLowerCase(), phone,
-      delivery_address, delivery_note || null, gift_note || null,
-      subtotal, DELIVERY_FEE, total,
+      full_delivery_address, delivery_note || null, gift_note || null,
+      delivery_zone_id || null, delivery_zone_name,
+      subtotal, delivery_fee, total,
       payment_method, consent_given,
     ])
 

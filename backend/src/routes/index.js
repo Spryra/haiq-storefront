@@ -19,6 +19,10 @@ router.use('/loyalty',    require('./loyalty.routes'));
 // GET /v1/special-days/active-today — used by frontend to determine box price
 router.use('/special-days', require('./specialdays.routes'));
 
+// ── Public delivery-zones endpoint (no auth) ─────────────────────────────
+// GET /v1/delivery-zones — returns active zones for checkout
+router.use('/delivery-zones', require('./deliveryzones.routes'));
+
 // ── All admin routes (protected inside each router) ───────────────────────
 router.use('/admin', require('./admin'));
 
