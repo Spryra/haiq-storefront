@@ -15,7 +15,18 @@ async function runMigrations() {
     .filter(f => f.endsWith('.sql'))
     .sort();
 
-  const client = await pool.connect();
+  let client;
+  try {
+    client = await pool.connect();
+    logger.info(`✅ DB connected for migrations`);
+  } catch (err) {
+    logger.error('❌ Failed to connect to database for migrations', {
+      error: err.message,
+      code: err.code
+    });
+    throw err;
+  }
+
   try {
     await client.query(`
       CREATE TABLE IF NOT EXISTS _migrations (
@@ -25,31 +36,40 @@ async function runMigrations() {
     `);
 
     for (const file of files) {
-      const { rows } = await client.query(
-        'SELECT 1 FROM _migrations WHERE filename = $1',
-        [file]
-      );
-      if (rows.length > 0) {
-        logger.info(`⏭  Skipping ${file} (already run)`);
-        continue;
-      }
+      try {
+        const { rows } = await client.query(
+          'SELECT 1 FROM _migrations WHERE filename = $1',
+          [file]
+        );
+        if (rows.length > 0) {
+          logger.info(`⏭  Skipping ${file} (already run)`);
+          continue;
+        }
 
-      logger.info(`▶  Running migration: ${file}`);
-      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-      await client.query('BEGIN');
-      await client.query(sql);
-      await client.query('INSERT INTO _migrations (filename) VALUES ($1)', [file]);
-      await client.query('COMMIT');
-      logger.info(`✅ Completed: ${file}`);
+        logger.info(`▶  Running migration: ${file}`);
+        const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+        await client.query('BEGIN');
+        await client.query(sql);
+        await client.query('INSERT INTO _migrations (filename) VALUES ($1)', [file]);
+        await client.query('COMMIT');
+        logger.info(`✅ Completed: ${file}`);
+      } catch (fileErr) {
+        await client.query('ROLLBACK').catch(() => {});
+        logger.error(`❌ Migration failed for ${file}`, {
+          error: fileErr.message,
+          detail: fileErr.detail,
+          code: fileErr.code
+        });
+        throw fileErr;
+      }
     }
 
     logger.info('🎉 All migrations complete');
   } catch (err) {
-    await client.query('ROLLBACK').catch(() => {});
-    logger.error('Migration failed', { error: err.message });
+    logger.error('❌ Critical migration error', { error: err.message });
     throw err;
   } finally {
-    client.release();
+    if (client) client.release();
   }
 }
 
