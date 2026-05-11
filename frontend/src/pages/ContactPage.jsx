@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import DOMPurify from 'dompurify'
 import api from '../services/api'
 import Button from '../components/shared/Button'
 
@@ -57,13 +58,27 @@ export default function ContactPage() {
   const [form,   setForm]   = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState(null) // null | loading | success | error
 
-  const containsHtml = (value = '') => /<[^>]*>/.test(value) || /javascript:/i.test(value)
+  const containsInvalidContent = (value = '') => {
+    if (!value) return false
+    const patterns = [
+      /<[^>]*>/,           // HTML tags
+      /javascript:/i,      // javascript: protocol
+      /data:/i,            // data: protocol
+      /<script/i,          // script tags
+      /eval\s*\(/i,        // eval
+      /on\w+\s*=/i,        // event handlers
+      /<iframe/i,          // iframe
+      /<object/i,          // object tags
+      /<embed/i,           // embed tags
+    ]
+    return patterns.some(p => p.test(value))
+  }
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if ([form.name, form.email, form.message].some(containsHtml)) {
+    if ([form.name, form.email, form.message].some(containsInvalidContent)) {
       setStatus('error')
       return
     }
@@ -230,9 +245,10 @@ export default function ContactPage() {
                 </div>
 
                 {status === 'error' && (
-                  <p className="text-sm text-red-500">
-                    Something went wrong. Please try calling or emailing us directly.
-                  </p>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                    <p className="font-medium">Unable to send message</p>
+                    <p className="text-xs mt-1">Please check your input and try again. If the issue persists, call or email us directly.</p>
+                  </div>
                 )}
 
                 <Button type="submit" disabled={status === 'loading'} loading={status === 'loading'} variant="primary" className="w-full" size="md">
