@@ -11,7 +11,14 @@ const safeText = (min = 1, max = 500) =>
     .transform(v => v.trim())
     .refine(v => !/<[^>]*>/.test(v), { message: 'HTML tags are not allowed' })
     .refine(v => !/javascript:/i.test(v), { message: 'Invalid input' })
-    .refine(v => !/on\w+\s*=/i.test(v), { message: 'Invalid input' });
+    .refine(v => !/on\w+\s*=/i.test(v), { message: 'Invalid input' })
+    .refine(v => !/data:/i.test(v), { message: 'Invalid input' })
+    .refine(v => !/<script/i.test(v), { message: 'Scripts are not allowed' })
+    .refine(v => !/eval\s*\(/i.test(v), { message: 'Invalid input' })
+    .refine(v => !/expression\s*\(/i.test(v), { message: 'Invalid input' })
+    .refine(v => !/<iframe/i.test(v), { message: 'Iframes are not allowed' })
+    .refine(v => !/<object/i.test(v), { message: 'Objects are not allowed' })
+    .refine(v => !/<embed/i.test(v), { message: 'Embeds are not allowed' });
 
 const safeEmail = () =>
   z.string()
