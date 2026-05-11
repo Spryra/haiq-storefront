@@ -7,12 +7,13 @@ export default function OrderConfirmationPage() {
   const { state }  = useLocation()
   const [order, setOrder] = useState(state?.order || null)
   const [loading, setLoading] = useState(!state?.order)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!order && token) {
       api.get(`/orders/track/${token}`)
         .then(res => setOrder(res.data.order))
-        .catch(() => {})
+        .catch(err => setError(err.message || 'Unable to load order'))
         .finally(() => setLoading(false))
     }
   }, [token, order])
@@ -21,6 +22,23 @@ export default function OrderConfirmationPage() {
     return (
       <div className="min-h-screen bg-light flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-light flex items-center justify-center px-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-5xl">⚠️</span>
+          </div>
+          <h1 className="font-serif text-3xl font-bold text-dark mb-2">Couldn't Load Order</h1>
+          <p className="text-gray-500 mb-8">{error}</p>
+          <Link to="/account" className="block w-full bg-primary text-dark py-3 rounded-xl font-bold hover:bg-primary/90 transition">
+            View My Orders
+          </Link>
+        </div>
       </div>
     )
   }

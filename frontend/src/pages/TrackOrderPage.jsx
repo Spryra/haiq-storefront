@@ -284,12 +284,14 @@ export default function TrackOrderPage() {
   const [selected,  setSelected]  = useState(null)
   const [tab,       setTab]       = useState('active')  // 'active' | 'past'
   const [loading,   setLoading]   = useState(true)
+  const [error,     setError]     = useState(null)
 
   const loadOrders = () => {
     if (!user) { setLoading(false); return }
+    setError(null)
     api.get('/orders/my?limit=50')
       .then(res => setOrders(res.data.orders || []))
-      .catch(() => {})
+      .catch(err => setError(err.message || 'Failed to load orders'))
       .finally(() => setLoading(false))
   }
 
@@ -376,7 +378,16 @@ export default function TrackOrderPage() {
             </div>
 
             {/* Order list */}
-            {loading ? (
+            {error && !loading ? (
+              <div className="text-center py-16">
+                <p className="font-serif font-bold text-xl mb-2" style={{ color: '#F2EAD8' }}>⚠️ Couldn't Load Orders</p>
+                <p className="text-sm mb-6" style={{ color: '#8C7355' }}>{error}</p>
+                <button onClick={loadOrders} className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
+                  style={{ background: '#B8752A', color: '#1A0A00' }}>
+                  Try Again
+                </button>
+              </div>
+            ) : loading ? (
               <div className="space-y-3">
                 {[1,2,3].map(i => <div key={i} className="h-20 skeleton" style={{ background: 'rgba(184,117,42,0.06)' }} />)}
               </div>

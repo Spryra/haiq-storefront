@@ -93,11 +93,21 @@ function ProfileTab({ user, onUpdated }) {
 function OrdersTab() {
   const [orders, setOrders]  = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError]    = useState(null)
   useEffect(() => {
-    api.get('/orders/my').then(r => setOrders(r.data.orders || [])).catch(() => {}).finally(() => setLoading(false))
+    api.get('/orders/my').then(r => setOrders(r.data.orders || [])).catch(err => setError(err.message || 'Failed to load orders')).finally(() => setLoading(false))
   }, [])
 
   if (loading) return <div className="space-y-3">{[1,2,3].map(i=><div key={i} className="h-14 skeleton" style={{ background: 'rgba(184,117,42,0.06)' }} />)}</div>
+
+  if (error) return (
+    <div className="py-12 text-center">
+      <p className="font-serif text-xl font-bold mb-3" style={{ color: '#F2EAD8' }}>⚠️ Couldn't Load Orders</p>
+      <p className="text-sm mb-4" style={{ color: '#8C7355' }}>{error}</p>
+      <button onClick={() => window.location.reload()} className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
+        style={{ background: '#B8752A', color: '#1A0A00' }}>Try Again</button>
+    </div>
+  )
 
   if (!orders.length) return (
     <div className="py-12 text-center">

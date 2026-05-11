@@ -131,6 +131,7 @@ export default function ShopPage() {
   const [loading,  setLoading]  = useState(true)
   const [hasMore,  setHasMore]  = useState(false)
   const [page,     setPage]     = useState(1)
+  const [error,    setError]    = useState(null)
 
   useEffect(() => {
     setPage(1)
@@ -140,6 +141,7 @@ export default function ShopPage() {
   useEffect(() => {
     if (activeTab === 'build-your-box') return
     setLoading(true)
+    setError(null)
     const params = new URLSearchParams({ page, limit: 12, category: 'cookies' })
     api.get(`/products?${params}`)
       .then(res => {
@@ -147,7 +149,7 @@ export default function ShopPage() {
         setProducts(prev => page === 1 ? incoming : [...prev, ...incoming])
         setHasMore(incoming.length === 12)
       })
-      .catch(() => {})
+      .catch(err => setError(err.message || 'Failed to load products'))
       .finally(() => setLoading(false))
   }, [page, activeTab])
 
@@ -228,7 +230,23 @@ export default function ShopPage() {
               {loading && Array(8).fill(null).map((_, i) => <SkeletonCard key={i} />)}
             </div>
 
-            {!loading && products.length === 0 && (
+            {!loading && error && (
+              <div className="text-center py-20">
+                <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F2EAD8' }}>
+                  ⚠️ Couldn't Load Products
+                </p>
+                <p style={{ color: '#8C7355' }} className="text-sm mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
+                  style={{ border: '1px solid rgba(184,117,42,0.5)', color: '#B8752A' }}
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {!loading && !error && products.length === 0 && (
               <div className="text-center py-20">
                 <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F2EAD8' }}>
                   Nothing here yet.

@@ -20,6 +20,7 @@ export default function BuildYourBoxPage() {
   const [products,    setProducts]    = useState([])
   const [boxProduct,  setBoxProduct]  = useState(null)
   const [loading,     setLoading]     = useState(true)
+  const [error,       setError]       = useState(null)
   const [selections,  setSelections]  = useState({})
   const [isSpecialDay,setIsSpecialDay]= useState(false)
   const [checkingDay, setCheckingDay] = useState(true)
@@ -41,6 +42,7 @@ export default function BuildYourBoxPage() {
 
   useEffect(() => {
     setLoading(true)
+    setError(null)
     api.get('/products?limit=50')
       .then(res => {
         const cookies = (res.data.products || [])
@@ -54,7 +56,7 @@ export default function BuildYourBoxPage() {
         setBoxProduct(box)
         setBoxPrice(box.off_peak_price || 80000)
       })
-      .catch(() => {})
+      .catch(err => setError(err.message || 'Failed to load build options'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -154,7 +156,16 @@ export default function BuildYourBoxPage() {
       </div>
 
       <div className="container mx-auto px-6 md:px-16 py-12">
-        {loading ? (
+        {error && !loading ? (
+          <div className="text-center py-16">
+            <p className="font-serif font-bold text-xl mb-2" style={{ color: '#F2EAD8' }}>⚠️ Couldn't Load Options</p>
+            <p className="text-sm mb-6" style={{ color: '#8C7355' }}>{error}</p>
+            <button onClick={() => window.location.reload()} className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
+              style={{ background: '#B8752A', color: '#1A0A00' }}>
+              Try Again
+            </button>
+          </div>
+        ) : loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {Array(5).fill(null).map((_,i) => (
               <div key={i} className="aspect-square skeleton" style={{ background: 'rgba(184,117,42,0.06)' }} />

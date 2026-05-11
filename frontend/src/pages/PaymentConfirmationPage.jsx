@@ -23,11 +23,13 @@ export default function PaymentConfirmationPage() {
   const { token } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const [status, setStatus] = useState('waiting') // waiting | verified | failed | timeout
+  const [status, setStatus] = useState('waiting') // waiting | verified | failed | timeout | error
   const [attempts, setAttempts] = useState(0)
   const [paymentMethod, setPaymentMethod] = useState(location.state?.paymentMethod || 'mtn_momo')
   const [orderData, setOrderData] = useState(null)
   const [timeRemaining, setTimeRemaining] = useState(300) // 5 minutes
+  const [pollError, setPollError] = useState(null)
+  const [failureCount, setFailureCount] = useState(0)
 
   const config = PAYMENT_METHODS[paymentMethod]
 
@@ -42,6 +44,8 @@ export default function PaymentConfirmationPage() {
       try {
         const { data } = await api.get(`/orders/track/${token}`)
         setOrderData(data)
+        setFailureCount(0)
+        setPollError(null)
 
         if (data.payment_status === 'paid') {
           setStatus('verified')
@@ -53,6 +57,13 @@ export default function PaymentConfirmationPage() {
         }
       } catch (err) {
         console.error('Failed to check payment status:', err)
+        setFailureCount(c => c + 1)
+        setPollError(err.message || 'Network error checking payment status')
+        // Show error after 3 consecutive failures (9 seconds)
+        if (failureCount >= 2) {
+          setStatus('error')
+          clearInterval(pollInterval)
+        }
       }
 
       setAttempts(a => a + 1)
@@ -97,6 +108,43 @@ export default function PaymentConfirmationPage() {
           <div className="text-6xl mb-6">✓</div>
           <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Payment Verified!</h1>
           <p style={{ color: '#8C7355' }}>Your order is being confirmed...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'error') {
+    return (
+      <div style={{ background: '#0E0600', minHeight: '100vh' }} className="flex items-center justify-center">
+        <div className="max-w-md px-4">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-6">⚠️</div>
+            <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Connection Error</h1>
+            <p style={{ color: '#8C7355' }} className="mb-6">
+              {pollError || 'Unable to check payment status. Please try again.'}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setStatus('waiting')
+                setFailureCount(0)
+                setPollError(null)
+                setAttempts(0)
+              }}
+              className="flex-1 py-3 font-bold text-[11px] tracking-[0.2em] uppercase"
+              style={{ background: '#B8752A', color: '#1A0A00' }}
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => navigate('/shop', { replace: true })}
+              className="flex-1 py-3 font-bold text-[11px] tracking-[0.2em] uppercase"
+              style={{ background: 'transparent', color: '#8C7355', border: '1px solid rgba(184,117,42,0.3)' }}
+            >
+              Return to Shop
+            </button>
+          </div>
         </div>
       </div>
     )
