@@ -54,6 +54,7 @@ cookie.txt
 # ── Local testing scripts ──────────────────────────────────────
 test-*.js
 test-*.ps1
+test-*.sh
 *.key
 
 codedump/
@@ -69,6 +70,13 @@ haiq_final_implementation_apply.ps1
 fix-admin-html.ps1
 
 final_implementation.md
+AUDIT_IMPROVEMENTS_CHECKLIST.md
+IMPLEMENTATION_GUIDE.md
+LUCIDE_UPGRADE_PLAN.md
+
+# ── Root-level documentation (keep only essential: README.md, LICENSE) ────
+/*.md
+!README.md
 
 # ── SENSITIVE DOCUMENTATION — Files that may contain credentials/secrets
 million.md
