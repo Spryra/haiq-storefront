@@ -139,6 +139,7 @@ function OrderDetail({ order, onBack, onCancelled }) {
   const [messages,  setMessages]  = useState([])
   const [msgBody,   setMsgBody]   = useState('')
   const [sending,   setSending]   = useState(false)
+  const [msgError,  setMsgError]  = useState(null)
   const [showCancel,setShowCancel]= useState(false)
 
   const canCancel = ACTIVE_STATUSES.includes(order.status) && order.status !== 'en_route'
@@ -153,12 +154,15 @@ function OrderDetail({ order, onBack, onCancelled }) {
   const sendMessage = async () => {
     if (!msgBody.trim() || containsHtml(msgBody)) return
     setSending(true)
+    setMsgError(null)
     try {
       await api.post('/messages', { order_id: order.id, body: msgBody.trim() })
       setMsgBody('')
       const res = await api.get(`/messages/${order.id}`)
       setMessages(res.data.messages || [])
-    } catch {} finally { setSending(false) }
+    } catch (err) {
+      setMsgError(err.message || 'Failed to send message. Try again.')
+    } finally { setSending(false) }
   }
 
   return (
@@ -249,6 +253,9 @@ function OrderDetail({ order, onBack, onCancelled }) {
               {sending ? '…' : 'Send'}
             </button>
           </div>
+          {msgError && (
+            <p className="text-xs mt-2" style={{ color: '#f87171' }}>{msgError}</p>
+          )}
         </div>
       )}
 

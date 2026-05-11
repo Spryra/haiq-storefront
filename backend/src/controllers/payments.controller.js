@@ -86,6 +86,19 @@ async function webhookMTN(req, res, next) {
       return res.status(400).json({ success: false, error: 'Stale timestamp' });
     }
 
+    // Idempotency check: ensure same webhook isn't processed twice
+    const webhookRef = payload.externalId || payload.transactionId || payload.reference;
+    if (webhookRef) {
+      const { rows: [existing] } = await query(
+        'SELECT id FROM payments WHERE provider_ref = $1 AND provider = $2',
+        [webhookRef, 'mtn_momo']
+      );
+      if (existing) {
+        logger.info('MTN webhook: already processed', { webhookRef });
+        return res.status(200).json({ success: true, message: 'Webhook already processed' });
+      }
+    }
+
     const result = await paymentsService.handleWebhook('mtn_momo', payload);
     res.status(200).json({ success: true, ...result });
   } catch (err) { next(err); }
@@ -129,6 +142,19 @@ async function webhookAirtel(req, res, next) {
 
     if (!verifySignature(payload, process.env.AIRTEL_WEBHOOK_SECRET, sig)) {
       return res.status(400).json({ success: false, error: 'Invalid signature' });
+    }
+
+    // Idempotency check: ensure same webhook isn't processed twice
+    const webhookRef = payload.externalId || payload.transactionId || payload.reference;
+    if (webhookRef) {
+      const { rows: [existing] } = await query(
+        'SELECT id FROM payments WHERE provider_ref = $1 AND provider = $2',
+        [webhookRef, 'airtel']
+      );
+      if (existing) {
+        logger.info('Airtel webhook: already processed', { webhookRef });
+        return res.status(200).json({ success: true, message: 'Webhook already processed' });
+      }
     }
 
     const result = await paymentsService.handleWebhook('airtel', payload);
