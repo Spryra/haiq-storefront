@@ -99,6 +99,24 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ─── Debug: Check if delivery_zones table exists ─────────────────
+app.get('/debug/tables', async (req, res, next) => {
+  try {
+    const { rows: tables } = await require('./config/db').query(`
+      SELECT table_name FROM information_schema.tables
+      WHERE table_schema = 'public'
+      ORDER BY table_name
+    `);
+    res.json({
+      success: true,
+      tableCount: tables.length,
+      tables: tables.map(t => t.table_name),
+      hasMigrations: tables.some(t => t.table_name === '_migrations'),
+      hasDeliveryZones: tables.some(t => t.table_name === 'delivery_zones'),
+    });
+  } catch (err) { next(err); }
+});
+
 // ─── API Routes ────────────────────────────────────────────────
 app.use('/v1', routes);
 
