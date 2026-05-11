@@ -1732,7 +1732,7 @@ jobs:
 
 ```env
 # Database
-DATABASE_URL=postgresql://neondb_owner:REDACTED_NEON_PASSWORD@REDACTED_NEON_HOST/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://[user]:[password]@[neon-pool-url]/[dbname]?sslmode=require&channel_binding=require
 
 # JWT
 JWT_SECRET=[32+ character random string]
@@ -1750,9 +1750,9 @@ EMAIL_FROM=onboarding@resend.dev     # Use until custom domain verified
 FRONTEND_URL=https://haiqweb.vercel.app
 
 # Cloudinary
-CLOUDINARY_cloud_name=ddu7dsoml
-CLOUDINARY_api_key=REDACTED_CLOUDINARY_API_KEY
-CLOUDINARY_api_secret=REDACTED_CLOUDINARY_API_SECRET
+CLOUDINARY_cloud_name=[cloud_name]
+CLOUDINARY_api_key=[from Cloudinary dashboard]
+CLOUDINARY_api_secret=[from Cloudinary dashboard]
 
 # Rate limiting (optional overrides)
 RATE_LIMIT_WINDOW_MS=60000
