@@ -124,3 +124,72 @@ SECRETS.md
 PASSWORDS.md
 *implementation-guide*.md
 # Note: IMPLEMENTATION_GUIDE.md is allowed, but variants should be reviewed
+
+# ── Repository Access Protection ──────────────────────────────────
+# Prevent repository structure enumeration
+.git/hooks/
+.git/objects/
+.git/refs/
+
+# ── OAuth & Token Files ───────────────────────────────────────────
+.oauth
+.access_token
+.refresh_token
+.github_token
+.gitlab_token
+
+# ── SSH Keys ──────────────────────────────────────────────────────
+*.pem
+*.ppk
+*.key
+*.pub
+id_rsa
+id_ed25519
+
+# ── Database Credentials ──────────────────────────────────────────
+.pgpass
+pgpass
+db_credentials.json
+database.yml
+config/database.yml
+
+# ── AWS & Cloud Credentials ──────────────────────────────────────
+.aws/
+.s3cfg
+s3_credentials
+cloud_credentials.json
+
+# ── Deployment Secrets ────────────────────────────────────────────
+.deploy
+.env.deploy
+.env.prod
+.env.production.local
+deploy_key
+deploy_id_rsa
+
+# ── Development Artifacts ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+# ── Package Manager Cache ─────────────────────────────────────────
+node_modules/
+bower_components/
+vendor/
+.bundle/
+Gemfile.lock
+
+# ── Temporary & Build Files ───────────────────────────────────────
+/tmp/
+/temp/
+/build/
+/dist/
+*.tmp
+*.bak
+*.cache
