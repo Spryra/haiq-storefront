@@ -4,6 +4,7 @@ const reviewsCtrl = require('../controllers/reviews.controller');
 
 router.get('/', productsCtrl.list);
 router.get('/featured', productsCtrl.featured);
+router.get('/box-office', productsCtrl.boxOffice);
 router.get('/:slug', productsCtrl.getBySlug);
 router.get('/:slug/reviews', reviewsCtrl.getByProductSlug);
 router.post('/:slug/reviews', reviewsCtrl.create);

@@ -109,4 +109,44 @@ async function getBySlug(req, res, next) {
   } catch (err) { next(err); }
 }
 
-module.exports = { list, featured, getBySlug };
+async function boxOffice(req, res, next) {
+  try {
+    const { rows } = await query(`
+      SELECT
+        999 as id,
+        'box-office' as slug,
+        'Box Office' as name,
+        'Build Your Own Box' as subtitle,
+        'Create your perfect box of 4 cookies' as description,
+        '[]'::json as tasting_notes,
+        40000 as base_price,
+        80000 as off_peak_price,
+        true as is_active,
+        false as is_featured,
+        false as is_limited,
+        999 as sort_order,
+        NOW() as created_at,
+        NOW() as updated_at,
+        null as category,
+        '[]'::json as images,
+        json_agg(jsonb_build_object(
+          'id', 999, 'label', 'Standard Box', 'price', 80000,
+          'stock_qty', 999, 'is_default', true, 'sku', 'BOX-001'
+        )) as variants,
+        '[]'::json as items
+    `);
+
+    res.json({ success: true, product: rows[0] || {
+      id: 999,
+      slug: 'box-office',
+      name: 'Box Office',
+      subtitle: 'Build Your Own Box',
+      description: 'Create your perfect box of 4 cookies',
+      base_price: 40000,
+      off_peak_price: 80000,
+      variants: [{ id: 999, label: 'Standard Box', price: 80000, stock_qty: 999, is_default: true, sku: 'BOX-001' }]
+    }});
+  } catch (err) { next(err); }
+}
+
+module.exports = { list, featured, getBySlug, boxOffice };
