@@ -69,4 +69,50 @@ haiq_final_implementation_apply.ps1
 fix-admin-html.ps1
 
 final_implementation.md
-#million.md
+
+# ── SENSITIVE DOCUMENTATION — Files that may contain credentials/secrets
+million.md
+credentials*.md
+secrets*.md
+password*.md
+keys*.md
+tokens*.md
+api-keys*.md
+*-credentials.md
+*-secrets.md
+*-passwords.md
+sensitive*.md
+private*.md
+
+# ── Database backups & sensitive data ─────────────────────────
+*.sql.bak
+*.sql.backup
+*.dump
+*.backup
+data-export*.sql
+data-dump*.sql
+
+# ── API credentials & tokens in any format ──────────────────────
+*.token
+*.secret
+*.credentials
+.credentials
+*.apikey
+api.key
+access-token
+refresh-token
+jwt-secret
+webhook-secret
+
+# ── OS-specific hidden files that might contain secrets ─────────
+.vscode/
+.env.*.bak
+.env.*.backup
+
+# ── Documentation with sensitive examples ───────────────────────
+CREDENTIALS.md
+API_KEYS.md
+SECRETS.md
+PASSWORDS.md
+*implementation-guide*.md
+# Note: IMPLEMENTATION_GUIDE.md is allowed, but variants should be reviewed

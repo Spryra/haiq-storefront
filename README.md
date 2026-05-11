@@ -257,12 +257,12 @@ npm run dev            # Runs on http://localhost:5174
 # Check backend health
 curl https://haiq-api.onrender.com/health
 
-# Login as admin
+# Login as admin (use actual admin credentials from your .env)
 curl -X POST https://haiq-api.onrender.com/v1/admin/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@haiq.ug","password":"HAIQAdmin2024!"}'
+  -d '{"email":"admin@haiq.ug","password":"[YOUR_ADMIN_PASSWORD]"}'
 
-# List orders
+# List orders (replace [TOKEN] with the JWT returned from login)
 curl -X GET https://haiq-api.onrender.com/v1/admin/orders \
   -H "Authorization: Bearer [TOKEN]"
 ```
