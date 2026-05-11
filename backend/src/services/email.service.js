@@ -6,12 +6,17 @@
 const { Resend } = require('resend');
 const { logger } = require('../config/logger');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+try {
+  resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+} catch (e) {
+  logger.warn('Failed to initialize Resend email client', { error: e.message });
+}
 const FROM   = `${process.env.EMAIL_FROM_NAME || 'HAIQ Bakery'} <${process.env.EMAIL_FROM || 'orders@haiq.ug'}>`;
 
 async function send({ to, subject, html }) {
-  if (!process.env.RESEND_API_KEY) {
-    logger.info('Email skipped (no RESEND_API_KEY)', { to, subject });
+  if (!process.env.RESEND_API_KEY || !resend) {
+    logger.info('Email skipped (no RESEND_API_KEY or client unavailable)', { to, subject });
     return;
   }
   try {
