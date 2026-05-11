@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 const CartContext = createContext(null);
 
@@ -17,10 +17,26 @@ const CartContext = createContext(null);
  */
 
 const parsePrice = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+const STORAGE_KEY = 'haiq_cart_items';
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch (err) {
+      console.error('Failed to save cart to localStorage:', err);
+    }
+  }, [items]);
 
   const addItem = useCallback((product, variant, quantity = 1, options = {}) => {
     const { itemType = 'single' } = options;
