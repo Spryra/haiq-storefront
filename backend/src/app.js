@@ -92,6 +92,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'haiq-api',
+    version: '1.0.1',
     timestamp: new Date().toISOString(),
     uptime: Math.floor(process.uptime()),
     env: process.env.NODE_ENV,
