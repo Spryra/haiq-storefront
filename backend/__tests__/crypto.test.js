@@ -5,7 +5,7 @@ describe('Crypto utils', () => {
     const payload = { test: 'data' };
     const secret = 'secret';
     const signature = require('crypto').createHmac('sha256', secret).update(JSON.stringify(payload)).digest('hex');
-    expect(verifySignature(payload, signature, secret)).toBe(true);
+    expect(verifySignature(payload, secret, signature)).toBe(true);
   });
 
   test('verifySignature should return false for invalid signature', () => {
