@@ -1,10 +1,57 @@
 require('dotenv').config();
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const app = require('./app');
 const { logger } = require('./config/logger');
-const { testConnection } = require('./config/db');
+const { testConnection, pool } = require('./config/db');
 
 const PORT = process.env.PORT || 3001;
+
+async function runMigrations() {
+  logger.info('🔄 Running database migrations...');
+  const migrationsDir = path.join(__dirname, 'db', 'migrations');
+  const files = fs.readdirSync(migrationsDir)
+    .filter(f => f.endsWith('.sql'))
+    .sort();
+
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS _migrations (
+        filename VARCHAR(255) PRIMARY KEY,
+        run_at   TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+
+    for (const file of files) {
+      const { rows } = await client.query(
+        'SELECT 1 FROM _migrations WHERE filename = $1',
+        [file]
+      );
+      if (rows.length > 0) {
+        logger.info(`⏭  Skipping ${file} (already run)`);
+        continue;
+      }
+
+      logger.info(`▶  Running migration: ${file}`);
+      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+      await client.query('BEGIN');
+      await client.query(sql);
+      await client.query('INSERT INTO _migrations (filename) VALUES ($1)', [file]);
+      await client.query('COMMIT');
+      logger.info(`✅ Completed: ${file}`);
+    }
+
+    logger.info('🎉 All migrations complete');
+  } catch (err) {
+    await client.query('ROLLBACK').catch(() => {});
+    logger.error('Migration failed', { error: err.message });
+    throw err;
+  } finally {
+    client.release();
+  }
+}
 
 async function start() {
   try {
@@ -19,7 +66,7 @@ async function start() {
       host: process.env.DB_HOST || 'from DATABASE_URL',
     });
     logger.info('🔄 Retrying database connection in 2 seconds...');
-    
+
     // Retry once after 2 seconds
     await new Promise(resolve => setTimeout(resolve, 2000));
     try {
@@ -29,6 +76,14 @@ async function start() {
       logger.error('❌ Database connection failed on retry', { error: retryErr.message });
       process.exit(1);
     }
+  }
+
+  // Run migrations before starting server
+  try {
+    await runMigrations();
+  } catch (err) {
+    logger.error('❌ Failed to run migrations', { error: err.message });
+    process.exit(1);
   }
 
   const server = http.createServer(app);
