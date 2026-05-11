@@ -7,7 +7,7 @@ import Button from '../components/shared/Button'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
-  const { setUser, setToken } = useAuth()
+  const { login } = useAuth()
 
   const [form,    setForm]    = useState({ full_name: '', phone: '', email: '', password: '' })
   const [error,   setError]   = useState(null)
@@ -53,12 +53,12 @@ export default function RegisterPage() {
         password:   form.password,
       })
 
-      // Auto-login after register
-      if (data.token) {
-        setToken(data.token)
-        setUser(data.user)
+      // Auto-login after register with the credentials just used
+      try {
+        await login(form.email.trim().toLowerCase(), form.password)
         navigate('/account')
-      } else {
+      } catch (_) {
+        // Login failed (unlikely) — user can manually sign in
         navigate('/login')
       }
     } catch (err) {

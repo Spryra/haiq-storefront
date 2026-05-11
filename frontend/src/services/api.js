@@ -3,6 +3,7 @@ import axios from 'axios'
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://haiq-api.onrender.com/v1',
   withCredentials: true, // sends the refresh_token HttpOnly cookie automatically
+  timeout: 15000, // 15 seconds — prevents requests from hanging indefinitely
 })
 
 // ─── Request interceptor: attach access token from memory ──────

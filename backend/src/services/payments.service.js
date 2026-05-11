@@ -1,6 +1,6 @@
 // backend/src/services/payments.service.js
 
-const { query } = require('../config/db');
+const { query, getClient } = require('../config/db');
 const { generatePaymentRef } = require('../utils/tokenGenerator');
 
 async function initiate({ order_id, amount, method, payer_phone, order_number }) {
@@ -39,16 +39,26 @@ async function confirm({ internal_ref, status }) {
 
   const mapped = status === 'success' ? 'successful' : 'failed';
 
-  await query(
-    `UPDATE payments SET status = $1, updated_at = NOW() WHERE internal_ref = $2`,
-    [mapped, internal_ref]
-  );
-
-  if (mapped === 'successful') {
-    await query(
-      `UPDATE orders SET payment_status = 'paid' WHERE id = $1`,
-      [payment.order_id]
+  const client = await getClient();
+  try {
+    await client.query('BEGIN');
+    await client.query(
+      `UPDATE payments SET status = $1, updated_at = NOW() WHERE internal_ref = $2`,
+      [mapped, internal_ref]
     );
+
+    if (mapped === 'successful') {
+      await client.query(
+        `UPDATE orders SET payment_status = 'paid' WHERE id = $1`,
+        [payment.order_id]
+      );
+    }
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 
   return {

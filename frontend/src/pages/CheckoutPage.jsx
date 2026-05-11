@@ -290,8 +290,7 @@ export default function CheckoutPage() {
       }
       
       const { data } = await api.post('/orders', body)
-      clearCart()
-      
+
       // For mobile money, redirect to payment verification page
       if (payMethod === 'mtn_momo' || payMethod === 'airtel') {
         navigate(`/payment-confirmation/${data.tracking_token || data.order?.tracking_token}`, {
@@ -301,6 +300,7 @@ export default function CheckoutPage() {
         // For COD, go directly to order confirmation
         navigate(`/order-confirmation/${data.tracking_token || data.order?.tracking_token}`)
       }
+      clearCart()
     } catch (err) {
       setSubmitError(err.response?.data?.error || err.response?.data?.message || 'Something went wrong. Please try again.')
     } finally { setSubmitting(false) }
