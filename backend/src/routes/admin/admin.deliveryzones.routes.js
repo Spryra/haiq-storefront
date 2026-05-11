@@ -14,7 +14,7 @@ router.get('/', requireStaff, async (req, res, next) => {
 });
 
 // POST /v1/admin/delivery-zones — create
-router.post('/', requireSuperAdmin, async (req, res, next) => {
+router.post('/', requireStaff, async (req, res, next) => {
   try {
     const { name, price, sort_order } = req.body;
     if (!name || price === undefined) {
@@ -30,7 +30,7 @@ router.post('/', requireSuperAdmin, async (req, res, next) => {
 });
 
 // PUT /v1/admin/delivery-zones/:id — update
-router.put('/:id', requireSuperAdmin, async (req, res, next) => {
+router.put('/:id', requireStaff, async (req, res, next) => {
   try {
     const { name, price, sort_order, is_active } = req.body;
     const { rows: [zone] } = await query(
@@ -51,7 +51,7 @@ router.put('/:id', requireSuperAdmin, async (req, res, next) => {
 });
 
 // DELETE /v1/admin/delivery-zones/:id
-router.delete('/:id', requireSuperAdmin, async (req, res, next) => {
+router.delete('/:id', requireStaff, async (req, res, next) => {
   try {
     await query('DELETE FROM delivery_zones WHERE id = $1', [req.params.id]);
     res.json({ success: true });
