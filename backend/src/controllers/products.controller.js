@@ -110,6 +110,7 @@ async function getBySlug(req, res, next) {
 }
 
 async function boxOffice(req, res, next) {
+  // Returns the virtual Box Office product for Build Your Box feature
   const product = {
     id: 999,
     slug: 'box-office',
