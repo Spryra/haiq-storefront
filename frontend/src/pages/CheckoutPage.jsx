@@ -10,24 +10,25 @@ const DELIVERY_NOTICE = 'Delivery pricing varies by location and will be confirm
 
 // Payment methods configuration
 const PAYMENT_METHODS = {
-  mtn_momo: {
-    label: 'MTN Mobile Money',
-    code: '165',
-    merchantCode: '170010',
-    ussd: '*165*3#',
-    logo: '/logos/mtn-logo.svg',
-    color: '#FFD700',
-    description: 'Dial *165*3# to complete payment',
-  },
-  airtel: {
-    label: 'Airtel Money',
-    code: '185',
-    merchantCode: '100010',
-    ussd: '*185*9#',
-    logo: '/logos/airtel-logo.svg',
-    color: '#DC143C',
-    description: 'Dial *185*9# to complete payment',
-  },
+  // Disabled for now - will re-enable when provider integration is ready
+  // mtn_momo: {
+  //   label: 'MTN Mobile Money',
+  //   code: '165',
+  //   merchantCode: '170010',
+  //   ussd: '*165*3#',
+  //   logo: '/logos/mtn-logo.svg',
+  //   color: '#FFD700',
+  //   description: 'Dial *165*3# to complete payment',
+  // },
+  // airtel: {
+  //   label: 'Airtel Money',
+  //   code: '185',
+  //   merchantCode: '100010',
+  //   ussd: '*185*9#',
+  //   logo: '/logos/airtel-logo.svg',
+  //   color: '#DC143C',
+  //   description: 'Dial *185*9# to complete payment',
+  // },
   cash_on_delivery: {
     label: 'Cash on Delivery',
     logo: '/logos/cod-logo.svg',
