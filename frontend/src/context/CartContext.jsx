@@ -121,9 +121,17 @@ export function CartProvider({ children }) {
     const result = [];
     items.forEach(item => {
       if (item.itemType === 'box' && item.boxProductId) {
-        result.push({ product_id: item.boxProductId, variant_id: item.boxVariantId, quantity: 1 });
+        result.push({
+          product_id: String(item.boxProductId),
+          variant_id: String(item.boxVariantId),
+          quantity: 1
+        });
       } else if (item.productId && item.variantId) {
-        result.push({ product_id: item.productId, variant_id: item.variantId, quantity: item.quantity });
+        result.push({
+          product_id: String(item.productId),
+          variant_id: String(item.variantId),
+          quantity: item.quantity
+        });
       }
     });
     return result;
