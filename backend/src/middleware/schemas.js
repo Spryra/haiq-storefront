@@ -170,12 +170,24 @@ const adminCreateProductSchema = z.object({
   items: z.array(safeText(1, 200)).optional(),
 });
 
+// Returns true only when str is a genuinely existing calendar date (catches Feb 30 etc.)
+const isValidCalendarDate = (str) => {
+  const [y, m, d] = str.split('-').map(Number);
+  const dt = new Date(y, m - 1, d); // local constructor — no UTC coercion
+  return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+};
+
 const specialDayCreateSchema = z.object({
   label: safeText(2, 100),
-  date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date_from must be YYYY-MM-DD'),
-  date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date_to must be YYYY-MM-DD'),
+  date_from: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'date_from must be YYYY-MM-DD')
+    .refine(isValidCalendarDate, { message: 'date_from is not a valid calendar date' }),
+  date_to: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'date_to must be YYYY-MM-DD')
+    .refine(isValidCalendarDate, { message: 'date_to is not a valid calendar date' }),
 }).refine(data => new Date(data.date_to) >= new Date(data.date_from), {
   message: 'date_to must be on or after date_from',
+  path: ['date_to'],
 });
 
 const adminMessageReplySchema = z.object({

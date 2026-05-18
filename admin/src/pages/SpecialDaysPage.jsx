@@ -14,7 +14,7 @@ export default function SpecialDaysPage() {
   const load = () => {
     adminApi.get('/admin/special-days')
       .then(r => setDays(r.data.days || []))
-      .catch(() => {})
+      .catch(() => setErr('Could not load special days. Refresh to try again.'))
       .finally(() => setLoading(false))
   }
   useEffect(() => { load() }, [])
@@ -27,17 +27,23 @@ export default function SpecialDaysPage() {
       await adminApi.post('/admin/special-days', { label: label.trim(), date_from: dateFrom, date_to: dateTo })
       setDateFrom(''); setDateTo(''); setLabel('')
       load()
-    } catch (e) { setErr(e.response?.data?.error || 'Failed.') }
+    } catch (e) {
+      const data = e.response?.data
+      const detail = data?.details?.[0]?.message
+      setErr(detail || data?.error || 'Failed to save. Please try again.')
+    }
     finally { setAdding(false) }
   }
 
   const toggle = async (id) => {
-    try { await adminApi.patch(`/admin/special-days/${id}/toggle`); load() } catch {}
+    try { await adminApi.patch(`/admin/special-days/${id}/toggle`); load() }
+    catch { setErr('Could not update status. Please try again.') }
   }
 
   const del = async (id) => {
     if (!confirm('Delete this special day?')) return
-    try { await adminApi.delete(`/admin/special-days/${id}`); load() } catch {}
+    try { await adminApi.delete(`/admin/special-days/${id}`); load() }
+    catch { setErr('Could not delete. Please try again.') }
   }
 
   const today = new Date().toISOString().slice(0, 10)
