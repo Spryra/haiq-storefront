@@ -165,6 +165,22 @@ router.get('/payment-methods', requireStaff, async (req, res, next) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GET /v1/admin/analytics/orders-by-status
+// Order count breakdown by status.
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/orders-by-status', requireStaff, async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT status, COUNT(*) AS count
+      FROM orders
+      GROUP BY status
+      ORDER BY count DESC
+    `);
+    res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /v1/admin/analytics/zone-breakdown
 // Orders and delivery revenue per delivery zone.
 // ─────────────────────────────────────────────────────────────────────────────
