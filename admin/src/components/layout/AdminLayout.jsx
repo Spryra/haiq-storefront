@@ -4,6 +4,7 @@ import { useAdminAuth } from '../../context/AdminAuthContext'
 import Crown from '../shared/Crown'
 import {
   LayoutDashboard,
+  BarChart3,
   ShoppingBag,
   Package,
   MessageSquare,
@@ -18,6 +19,7 @@ import {
 
 const NAV = [
   { to: '/dashboard',    label: 'Dashboard',    Icon: LayoutDashboard },
+  { to: '/analytics',    label: 'Analytics',    Icon: BarChart3 },
   { to: '/orders',       label: 'Orders',       Icon: ShoppingBag },
   { to: '/products',     label: 'Products',     Icon: Package },
   { to: '/messages',     label: 'Messages',     Icon: MessageSquare },
@@ -29,6 +31,7 @@ const NAV = [
 
 const PAGE_TITLES = {
   '/dashboard':    'Dashboard',
+  '/analytics':    'Analytics Dashboard',
   '/orders':       'Orders',
   '/products':     'Products',
   '/messages':     'Messages',

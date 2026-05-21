@@ -11,6 +11,7 @@ import LoyaltyPage     from './pages/LoyaltyPage'
 import NewsletterPage  from './pages/NewsletterPage'
 import SpecialDaysPage from './pages/SpecialDaysPage'
 import DeliveryZonesPage from './pages/DeliveryZonesPage'
+import AnalyticsPage   from './pages/AnalyticsPage'
 
 function RequireAuth({ children }) {
   // AdminAuthContext exposes 'admin' (not 'token') — check admin object
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
 
           <Route path="/dashboard"    element={<ProtectedLayout><DashboardPage /></ProtectedLayout>} />
+          <Route path="/analytics"    element={<ProtectedLayout><AnalyticsPage /></ProtectedLayout>} />
           <Route path="/orders"       element={<ProtectedLayout><OrdersPage /></ProtectedLayout>} />
           <Route path="/orders/:id"   element={<ProtectedLayout><OrderDetailPage /></ProtectedLayout>} />
           <Route path="/products"     element={<ProtectedLayout><ProductsPage /></ProtectedLayout>} />
