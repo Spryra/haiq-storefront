@@ -177,4 +177,96 @@ const zoneBreakdown = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus, zoneBreakdown };
+// ── Order activity heatmap (day of week × hour of day) ──────────────────────
+const orderHeatmap = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        EXTRACT(DOW FROM created_at AT TIME ZONE 'Africa/Kampala')::int AS day_of_week,
+        EXTRACT(HOUR FROM created_at AT TIME ZONE 'Africa/Kampala')::int AS hour_of_day,
+        COUNT(*) AS order_count
+      FROM orders
+      WHERE payment_status = 'paid'
+        AND created_at >= NOW() - interval '90 days'
+      GROUP BY 1, 2
+      ORDER BY 1, 2
+    `);
+
+    res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+};
+
+// ── Special days revenue impact comparison ────────────────────────────────────
+const specialDaysImpact = async (req, res, next) => {
+  try {
+    const [specialRes, normalRes] = await Promise.all([
+      query(`
+        SELECT
+          AVG(daily_revenue) AS avg_revenue,
+          AVG(daily_orders) AS avg_orders
+        FROM (
+          SELECT
+            DATE(o.created_at) AS d,
+            SUM(o.subtotal) AS daily_revenue,
+            COUNT(o.id) AS daily_orders
+          FROM orders o
+          JOIN special_days sd ON o.created_at::date BETWEEN sd.date_from AND sd.date_to
+          WHERE o.payment_status = 'paid' AND sd.is_active = true
+          GROUP BY 1
+        ) sub
+      `),
+      query(`
+        SELECT
+          AVG(daily_revenue) AS avg_revenue,
+          AVG(daily_orders) AS avg_orders
+        FROM (
+          SELECT
+            DATE(o.created_at) AS d,
+            SUM(o.subtotal) AS daily_revenue,
+            COUNT(o.id) AS daily_orders
+          FROM orders o
+          WHERE o.payment_status = 'paid'
+            AND NOT EXISTS (
+              SELECT 1 FROM special_days sd
+              WHERE sd.is_active = true
+                AND o.created_at::date BETWEEN sd.date_from AND sd.date_to
+            )
+          GROUP BY 1
+        ) sub
+      `),
+    ]);
+
+    res.json({
+      success: true,
+      special_days: {
+        avg_revenue: parseFloat(specialRes.rows[0]?.avg_revenue || 0),
+        avg_orders: parseFloat(specialRes.rows[0]?.avg_orders || 0),
+      },
+      normal_days: {
+        avg_revenue: parseFloat(normalRes.rows[0]?.avg_revenue || 0),
+        avg_orders: parseFloat(normalRes.rows[0]?.avg_orders || 0),
+      },
+    });
+  } catch (err) { next(err); }
+};
+
+// ── Customer growth over time (last 90 days, cumulative) ──────────────────────
+const customerGrowth = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        DATE(created_at AT TIME ZONE 'Africa/Kampala') AS day,
+        COUNT(*) AS new_customers,
+        SUM(COUNT(*)) OVER (ORDER BY DATE(created_at AT TIME ZONE 'Africa/Kampala')) AS cumulative
+      FROM users
+      WHERE is_guest = false
+        AND created_at >= NOW() - interval '90 days'
+      GROUP BY 1
+      ORDER BY 1 ASC
+    `);
+
+    res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+};
+
+module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus, zoneBreakdown, orderHeatmap, specialDaysImpact, customerGrowth };
