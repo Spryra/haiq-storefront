@@ -46,39 +46,46 @@ function KPICard({ label, value, change, icon }) {
 export default function AnalyticsPage() {
   const [summary,              setSummary]              = useState(null)
   const [revenue,              setRevenue]              = useState([])
-  const [payBreakdown,         setPayBreakdown]         = useState([])
   const [statusBreak,          setStatusBreak]          = useState([])
   const [topCustomers,         setTopCustomers]         = useState([])
   const [topProducts,          setTopProducts]          = useState([])
   const [zones,                setZones]                = useState([])
+  const [customerTiers,        setCustomerTiers]        = useState([])
   const [heatmapData,          setHeatmapData]          = useState([])
   const [specialDaysData,      setSpecialDaysData]      = useState(null)
   const [customerGrowthData,   setCustomerGrowthData]   = useState([])
   const [loading,              setLoading]              = useState(true)
   const [expandedAccordion,    setExpandedAccordion]    = useState(false)
+  const [isMobile,             setIsMobile]             = useState(window.innerWidth < 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     Promise.all([
       adminApi.get('/admin/analytics/summary'),
       adminApi.get('/admin/analytics/revenue'),
-      adminApi.get('/admin/analytics/payment-methods'),
       adminApi.get('/admin/analytics/orders-by-status'),
       adminApi.get('/admin/analytics/top-customers'),
       adminApi.get('/admin/analytics/top-products'),
       adminApi.get('/admin/analytics/zone-breakdown'),
+      adminApi.get('/admin/analytics/customer-tiers'),
       adminApi.get('/admin/analytics/heatmap'),
       adminApi.get('/admin/analytics/special-days-impact'),
       adminApi.get('/admin/analytics/customer-growth'),
     ]).then(([
-      summ, rev, pay, stat, cust, prod, zo, heat, special, growth
+      summ, rev, stat, cust, prod, zo, tiers, heat, special, growth
     ]) => {
       setSummary(summ.data.summary || null)
       setRevenue(rev.data.data || [])
-      setPayBreakdown(pay.data.data || [])
       setStatusBreak(stat.data.data || [])
       setTopCustomers(cust.data.customers || [])
       setTopProducts(prod.data.products || [])
       setZones(zo.data.zones || [])
+      setCustomerTiers(tiers.data.tiers || [])
       setHeatmapData(heat.data.data || [])
       setSpecialDaysData(special.data || null)
       setCustomerGrowthData(growth.data.data || [])
@@ -166,10 +173,54 @@ export default function AnalyticsPage() {
         </div>
       )}
 
+      {/* Customer Tiers Breakdown */}
+      {customerTiers.length > 0 && (
+        <div className="admin-card">
+          <SectionHeader label="Loyalty" title="Customer Tiers" />
+          <p className="text-[10px] mb-4" style={{ color: '#8C7355' }}>
+            Classic = Not yet approved • Reserve = Approved member • Crown = Premium member
+          </p>
+          <div className="grid grid-cols-3 gap-3">
+            {customerTiers.map(tier => (
+              <div
+                key={tier.loyalty_tier}
+                className="p-4 rounded text-center border"
+                style={{
+                  background: tier.loyalty_tier === 'Crown' ? 'rgba(232,200,138,0.1)' :
+                             tier.loyalty_tier === 'Reserve' ? 'rgba(184,117,42,0.1)' :
+                             'rgba(140,115,85,0.1)',
+                  border: `1px solid ${tier.loyalty_tier === 'Crown' ? '#E8C88A' :
+                                       tier.loyalty_tier === 'Reserve' ? '#B8752A' :
+                                       '#8C7355'}`,
+                }}
+              >
+                <p className="text-xs font-bold mb-2" style={{ color: '#8C7355' }}>
+                  {tier.loyalty_tier.toUpperCase()}
+                </p>
+                <p
+                  className="font-serif font-bold text-3xl mb-2"
+                  style={{
+                    color: tier.loyalty_tier === 'Crown' ? '#E8C88A' :
+                           tier.loyalty_tier === 'Reserve' ? '#B8752A' :
+                           '#8C7355',
+                  }}
+                >
+                  {tier.tier_count}
+                </p>
+                <p className="text-[10px]" style={{ color: '#8C7355' }}>
+                  Avg: UGX {fmt(tier.avg_spent)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Revenue chart — dual lines */}
       <div className="admin-card">
         <SectionHeader label="Last 30 Days" title="Revenue Breakdown" />
-        <ResponsiveContainer width="100%" height={220}>
+        <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📊 Product vs Delivery revenue</p>
+        <ResponsiveContainer width="100%" height={isMobile ? 200 : 240}>
           <LineChart data={revenue} margin={{ left: 0, right: 8 }}>
             <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
             <YAxis tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false}
@@ -189,10 +240,11 @@ export default function AnalyticsPage() {
         {/* Zone Distribution */}
         <div className="admin-card">
           <SectionHeader label="By Location" title="Zone Distribution" />
+          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📍 Zones with active orders</p>
           {zones.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No zone data yet.</p>
           ) : (
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={isMobile ? 200 : 220}>
               <PieChart>
                 <Pie data={zones} dataKey="order_count" nameKey="zone_name"
                   cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={2}>
@@ -209,36 +261,31 @@ export default function AnalyticsPage() {
           )}
         </div>
 
-        {/* Payment method breakdown */}
-        <div className="admin-card">
-          <SectionHeader label="Breakdown" title="Payment Methods" />
-          {payBreakdown.length === 0 ? (
-            <p className="text-light/30 text-sm py-4">No payment data yet.</p>
-          ) : (
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie data={payBreakdown} dataKey="revenue" nameKey="payment_method"
-                  cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3}>
-                  {payBreakdown.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend
-                  formatter={(v) => <span style={{ color: '#F2EAD8', fontSize: 11 }}>{v?.replace('_', ' ')}</span>}
-                />
-                <Tooltip content={customTooltip} />
-              </PieChart>
-            </ResponsiveContainer>
-          )}
+        {/* Payment Method Card */}
+        <div className="admin-card flex flex-col justify-between">
+          <div>
+            <SectionHeader label="Current" title="Payment Method" />
+            <p className="text-[10px] mb-4" style={{ color: '#8C7355' }}>Only cash payments accepted</p>
+          </div>
+          <div className="mt-auto">
+            <div className="inline-flex items-center gap-3 px-4 py-3 rounded" style={{ background: 'rgba(184,117,42,0.15)', border: '1px solid #B8752A' }}>
+              <span className="text-2xl">💳</span>
+              <div>
+                <p className="text-xs font-bold mb-1" style={{ color: '#B8752A' }}>Cash on Delivery</p>
+                <p className="text-[10px]" style={{ color: '#8C7355' }}>Primary payment method</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Orders by status */}
         <div className="admin-card">
           <SectionHeader label="Breakdown" title="Orders by Status" />
+          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📈 Current order distribution</p>
           {statusBreak.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No order data yet.</p>
           ) : (
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
               <BarChart data={statusBreak} margin={{ left: -10 }}>
                 <XAxis dataKey="status" tick={{ fill: '#8C7355', fontSize: 9 }}
                   tickLine={false} axisLine={false}
@@ -306,8 +353,9 @@ export default function AnalyticsPage() {
         {/* Special Days Impact */}
         <div className="admin-card">
           <SectionHeader label="Comparison" title="Special Days Impact" />
+          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>🎉 vs Normal days performance</p>
           {specialDaysData ? (
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={isMobile ? 180 : 220}>
               <BarChart data={[
                 { name: 'Special Days', revenue: specialDaysData.special_days?.avg_revenue || 0, orders: specialDaysData.special_days?.avg_orders || 0 },
                 { name: 'Normal Days', revenue: specialDaysData.normal_days?.avg_revenue || 0, orders: specialDaysData.normal_days?.avg_orders || 0 },
@@ -329,10 +377,11 @@ export default function AnalyticsPage() {
         {/* Customer Growth */}
         <div className="admin-card">
           <SectionHeader label="90 Days" title="Customer Growth" />
+          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>👥 Cumulative new signups</p>
           {customerGrowthData.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No customer data yet.</p>
           ) : (
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={isMobile ? 180 : 220}>
               <AreaChart data={customerGrowthData} margin={{ left: 0, right: 8 }}>
                 <defs>
                   <linearGradient id="colorCumulative" x1="0" y1="0" x2="0" y2="1">
@@ -356,24 +405,35 @@ export default function AnalyticsPage() {
         {topProducts.length === 0 ? (
           <p className="text-light/30 text-sm">No sales yet.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {topProducts.map((p, i) => (
-              <div key={p.id} className="flex items-center gap-4">
-                <span className="text-primary/40 font-serif font-bold text-sm w-6 flex-shrink-0">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div className="flex-1">
-                  <div className="flex justify-between mb-1">
-                    <p className="text-light text-sm font-medium">{p.name}</p>
-                    <p className="text-primary text-xs font-bold">UGX {fmt(p.revenue)}</p>
+              <div key={p.id} className="p-4 rounded border" style={{ background: '#2A1200', border: '1px solid #3D2000' }}>
+                {/* Product image */}
+                <div className="mb-3 h-32 bg-black/30 rounded overflow-hidden flex items-center justify-center">
+                  <img
+                    src={p.image_url || '/default-product.png'}
+                    alt={p.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => e.target.src = '/default-product.png'}
+                  />
+                </div>
+
+                {/* Best Seller Badge */}
+                {i === 0 && (
+                  <div className="inline-block px-2 py-1 text-xs rounded mb-2 font-bold" style={{ background: '#B8752A', color: '#1A0A00' }}>
+                    🏆 Best Seller
                   </div>
-                  <div className="h-1 bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${Math.min(100, (p.units_sold / (topProducts[0]?.units_sold || 1)) * 100)}%` }}
-                    />
-                  </div>
-                  <p className="text-light/30 text-xs mt-1">{fmt(p.units_sold)} units</p>
+                )}
+
+                {/* Product name */}
+                <h4 className="font-bold mb-3 text-sm" style={{ color: '#F2EAD8' }}>{p.name}</h4>
+
+                {/* Stats */}
+                <div className="space-y-1">
+                  <p className="text-xs" style={{ color: '#8C7355' }}>📦 {fmt(p.units_sold)} units</p>
+                  <p className="text-xs font-semibold" style={{ color: '#B8752A' }}>
+                    UGX {fmt(p.revenue)}
+                  </p>
                 </div>
               </div>
             ))}

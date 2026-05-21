@@ -133,16 +133,18 @@ router.get('/top-products', requireStaff, async (req, res, next) => {
   try {
     const { rows } = await query(`
       SELECT
-        oi.product_name,
-        SUM(oi.quantity)   AS total_units,
-        SUM(oi.line_total) AS total_revenue
+        p.id,
+        p.name,
+        COALESCE(p.image_url, '') AS image_url,
+        SUM(oi.quantity)   AS units_sold,
+        SUM(oi.line_total) AS revenue
       FROM   order_items oi
+      JOIN   products p ON p.id = oi.product_id
       JOIN   orders o ON o.id = oi.order_id
       WHERE  o.payment_status = 'paid'
-        AND  o.created_at >= NOW() - INTERVAL '30 days'
-      GROUP  BY oi.product_name
-      ORDER  BY total_revenue DESC
-      LIMIT  5
+      GROUP  BY p.id, p.name, p.image_url
+      ORDER  BY units_sold DESC
+      LIMIT  6
     `);
     res.json({ success: true, products: rows });
   } catch (err) { next(err); }
@@ -182,7 +184,7 @@ router.get('/orders-by-status', requireStaff, async (req, res, next) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /v1/admin/analytics/zone-breakdown
-// Orders and delivery revenue per delivery zone.
+// Orders and delivery revenue per delivery zone (only zones with orders).
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/zone-breakdown', requireStaff, async (req, res, next) => {
   try {
@@ -196,6 +198,7 @@ router.get('/zone-breakdown', requireStaff, async (req, res, next) => {
                         AND o.payment_status = 'paid'
       WHERE dz.is_active = true
       GROUP BY dz.id, dz.name
+      HAVING COUNT(o.id) > 0
       ORDER BY order_count DESC
     `);
 
@@ -301,6 +304,40 @@ router.get('/customer-growth', requireStaff, async (req, res, next) => {
     `);
 
     res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /v1/admin/analytics/customer-tiers
+// Customer breakdown by loyalty tier (Classic, Reserve, Crown).
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/customer-tiers', requireStaff, async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        loyalty_tier,
+        COUNT(*)::int AS tier_count,
+        ROUND(AVG(COALESCE(total_spent, 0))::NUMERIC, 0)::int AS avg_spent
+      FROM (
+        SELECT
+          u.loyalty_tier,
+          COALESCE(SUM(o.total), 0) AS total_spent
+        FROM users u
+        LEFT JOIN orders o ON o.user_id = u.id AND o.payment_status = 'paid'
+        WHERE u.is_guest = false
+        GROUP BY u.id, u.loyalty_tier
+      ) sub
+      GROUP BY loyalty_tier
+      ORDER BY
+        CASE loyalty_tier
+          WHEN 'Crown' THEN 1
+          WHEN 'Reserve' THEN 2
+          WHEN 'Classic' THEN 3
+          ELSE 4
+        END
+    `);
+
+    res.json({ success: true, tiers: rows });
   } catch (err) { next(err); }
 });
 
