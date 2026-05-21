@@ -396,7 +396,7 @@ export default function CheckoutPage() {
                             <p className="font-serif font-bold text-sm" style={{ color: '#F2EAD8' }}>{item.name}</p>
                             <p className="text-[10px] mt-0.5" style={{ color: '#8C7355' }}>Box of 4 — tap to see contents</p>
                           </div>
-                          <p className="font-bold text-base" style={{ color: '#E8C88A' }}>
+                          <p className="font-bold text-base" style={{ color: '#B8752A' }}>
                             UGX {item.price.toLocaleString()}
                           </p>
                         </div>

@@ -2,14 +2,33 @@ const { query } = require('../config/db');
 
 async function create(req, res, next) {
   try {
-    const { order_id, body, email, name } = req.body;
+    const { order_id, body, email, name, subject, first_name, last_name } = req.body;
     const sender_id = req.user?.id || null;
 
+    // Determine sender type and fields
+    const is_contact_form = !sender_id;  // Contact form has no authenticated user
+    const sender_type = is_contact_form ? 'contact_form' : 'customer';
+
+    // For contact forms, extract first/last names from name field or use the provided first_name/last_name
+    const sender_name = is_contact_form
+      ? (name || `${first_name || ''} ${last_name || ''}`.trim())
+      : null;
+    const sender_email = is_contact_form ? email : null;
+
     const { rows: [msg] } = await query(`
-      INSERT INTO messages (order_id, sender_type, sender_id, body)
-      VALUES ($1, 'customer', $2, $3)
+      INSERT INTO messages (
+        order_id, sender_type, sender_id, body, sender_name, sender_email, subject
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING id, created_at
-    `, [order_id || null, sender_id, body]);
+    `, [
+      order_id || null,
+      sender_type,
+      sender_id,
+      body,
+      sender_name,
+      sender_email,
+      subject || null,
+    ]);
 
     res.status(201).json({ success: true, message_id: msg.id, created_at: msg.created_at });
   } catch (err) { next(err); }

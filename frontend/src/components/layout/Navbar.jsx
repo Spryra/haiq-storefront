@@ -203,6 +203,12 @@ export default function Navbar() {
                   <line x1="3" y1="6" x2="21" y2="6"/>
                   <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
+                {itemCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{ background: '#B8752A', color: '#1A0A00' }}>
+                    {itemCount > 9 ? '9+' : itemCount}
+                  </span>
+                )}
               </button>
 
               <button onClick={() => setMenuOpen(o => !o)}

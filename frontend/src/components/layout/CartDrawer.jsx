@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
 import Button from '../shared/Button'
-import Crown from '../shared/Crown'
 
 // ── Box item — single row with collapsible cookie list ────────────────────────
 function BoxCartItem({ item, onRemove }) {
@@ -13,12 +12,22 @@ function BoxCartItem({ item, onRemove }) {
     <div className="py-4" style={{ borderBottom: '1px solid rgba(184,117,42,0.12)' }}>
       <div className="flex items-start gap-3">
 
-        {/* Icon */}
+        {/* Thumbnail image */}
         <div
-          className="w-14 h-14 flex-shrink-0 flex items-center justify-center"
+          className="w-14 h-14 flex-shrink-0 overflow-hidden rounded"
           style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}
         >
-          <Crown size={18} color="#B8752A" />
+          <img
+            src="/images/products/unboxing.jpg"
+            alt="Box of cookies"
+            className="w-full h-full object-cover"
+            onError={e => {
+              e.currentTarget.style.display = 'none'
+              e.currentTarget.parentElement.style.display = 'flex'
+              e.currentTarget.parentElement.style.alignItems = 'center'
+              e.currentTarget.parentElement.style.justifyContent = 'center'
+            }}
+          />
         </div>
 
         <div className="flex-1 min-w-0">
