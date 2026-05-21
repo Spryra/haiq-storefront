@@ -73,18 +73,28 @@ async function create(req, res, next) {
     let subtotal = 0
     const resolvedItems = []
 
+    // Check if today is a special day (for box office pricing)
+    const { rows: specialDayRows } = await client.query(`
+      SELECT id FROM special_days
+      WHERE is_active = true
+        AND date_from <= CURRENT_DATE
+        AND date_to >= CURRENT_DATE
+      LIMIT 1
+    `)
+    const isSpecialDay = specialDayRows.length > 0
+
     for (const item of items) {
-      // Special handling for Box Office virtual product (product_id 999)
-      if (item.product_id === 999) {
-        const unit_price = specialDay ? 40000 : 80000
+      // SPECIAL CASE: Box Office (virtual product for Build Your Box feature)
+      if (item.product_id === 999 || item.product_id === '999') {
+        const unit_price = isSpecialDay ? 40000 : 80000
         const line_total = unit_price * item.quantity
         subtotal += line_total
 
         resolvedItems.push({
           product_id:    999,
-          variant_id:    item.variant_id,
+          variant_id:    999,
           product_name:  'Box Office',
-          variant_label: 'Assorted Box',
+          variant_label: 'Standard Box',
           unit_price,
           quantity:      item.quantity,
           line_total,

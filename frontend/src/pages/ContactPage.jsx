@@ -167,10 +167,13 @@ export default function ContactPage() {
 
             {/* Contact items */}
             <div className="space-y-6 mb-12">
-              {CONTACT_ITEMS.map(item => (
+              {CONTACT_ITEMS.map(item => {
+                const IconComponent = item.icon
+                return (
                 <div key={item.label} className="flex gap-4 items-start">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-xl flex-shrink-0">
-                    {item.icon}
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0"
+                    style={{ color: '#B8752A' }}>
+                    <IconComponent />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-primary tracking-widest uppercase mb-1">
@@ -189,7 +192,8 @@ export default function ContactPage() {
                     </a>
                   </div>
                 </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* Social */}
@@ -198,7 +202,9 @@ export default function ContactPage() {
                 Follow Us
               </p>
               <div className="grid grid-cols-2 gap-3">
-                {SOCIAL_ITEMS.map(s => (
+                {SOCIAL_ITEMS.map(s => {
+                  const IconComponent = s.icon
+                  return (
                   <a
                     key={s.platform}
                     href={s.url}
@@ -206,7 +212,7 @@ export default function ContactPage() {
                     rel="noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group"
                   >
-                    <span className="text-xl">{s.icon}</span>
+                    <span style={{ color: '#B8752A' }}><IconComponent /></span>
                     <div>
                       <p className="text-xs font-bold text-dark group-hover:text-primary transition">
                         {s.platform}
@@ -214,7 +220,8 @@ export default function ContactPage() {
                       <p className="text-[11px] text-gray-400">{s.handle}</p>
                     </div>
                   </a>
-                ))}
+                  )
+                })}
               </div>
             </div>
 

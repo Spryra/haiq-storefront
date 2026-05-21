@@ -204,9 +204,9 @@ export default function Navbar() {
                   <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                  <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
                     style={{ background: '#B8752A', color: '#1A0A00' }}>
-                    {itemCount}
+                    {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
               </button>

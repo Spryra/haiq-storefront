@@ -24,6 +24,8 @@ export default function BuildYourBoxPage() {
   const [selections,  setSelections]  = useState({})
   const [isSpecialDay,setIsSpecialDay]= useState(false)
   const [checkingDay, setCheckingDay] = useState(true)
+  const [boxError,    setBoxError]    = useState(null)
+  const [confirmed,   setConfirmed]   = useState(false)
 
   const [boxPrice, setBoxPrice] = useState(80000)
   const originalPrice = 80000
@@ -77,9 +79,16 @@ export default function BuildYourBoxPage() {
   }
 
   const handleAddToCart = () => {
-    if (!boxProduct) return
+    if (!boxProduct) {
+      setBoxError('Box product configuration missing. Please refresh the page.')
+      return
+    }
     const defaultVariant = boxProduct.variants?.find(v => v.is_default) ?? boxProduct.variants?.[0]
-    if (!defaultVariant) return
+    if (!defaultVariant) {
+      setBoxError('Box variant configuration missing. Please contact support.')
+      return
+    }
+    setBoxError(null)
 
     const selectionsList = products
       .filter(p => (selections[p.id]||0) > 0)
@@ -88,7 +97,13 @@ export default function BuildYourBoxPage() {
         return { product: p, variant, count: selections[p.id] }
       })
     addBox(selectionsList, boxPrice, boxProduct.id, defaultVariant.id)
-    openDrawer()
+
+    // Show confirmation
+    setConfirmed(true)
+    setTimeout(() => setConfirmed(false), 2000)
+
+    // Open drawer after a brief delay so user sees the button confirmation
+    setTimeout(() => openDrawer(), 400)
   }
 
   return (
@@ -143,15 +158,31 @@ export default function BuildYourBoxPage() {
               {isFull && <span className="text-xs font-semibold" style={{ color: '#E8C88A' }}>Box complete</span>}
             </div>
             {isFull && (
-              <Button onClick={handleAddToCart} variant="primary" size="sm" className="uppercase tracking-[0.2em]">
-                Add to Cart
-              </Button>
+              <button
+                onClick={handleAddToCart}
+                disabled={!isFull || confirmed}
+                className="px-6 py-2 font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300"
+                style={{
+                  background: confirmed ? '#16a34a' : '#B8752A',
+                  color: confirmed ? '#FFFFFF' : '#1A0A00',
+                  borderRadius: '2px',
+                  opacity: !isFull ? 0.5 : 1,
+                  cursor: !isFull ? 'not-allowed' : 'pointer',
+                  border: 'none',
+                }}>
+                {confirmed ? '✓ Added to Cart' : 'Add to Cart'}
+              </button>
             )}
           </div>
           <div className="h-px overflow-hidden" style={{ background: 'rgba(184,117,42,0.15)' }}>
             <div className="h-full transition-all duration-300"
               style={{ width: `${pct}%`, background: isFull ? '#E8C88A' : '#B8752A' }} />
           </div>
+          {boxError && (
+            <div className="mt-2 text-xs px-3 py-2 rounded" style={{ background: 'rgba(248,113,113,0.15)', color: '#f87171' }}>
+              {boxError}
+            </div>
+          )}
         </div>
       </div>
 
