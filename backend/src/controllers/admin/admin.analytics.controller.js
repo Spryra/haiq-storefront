@@ -83,13 +83,14 @@ const topProducts = async (req, res, next) => {
     const { rows } = await query(`
       SELECT
         p.id, p.name, p.slug,
+        COALESCE(p.image_url, '') AS image_url,
         SUM(oi.quantity)   AS units_sold,
         SUM(oi.line_total) AS revenue
       FROM order_items oi
       JOIN products p ON p.id = oi.product_id
       JOIN orders   o ON o.id = oi.order_id
       WHERE o.payment_status = 'paid'
-      GROUP BY p.id, p.name, p.slug
+      GROUP BY p.id, p.name, p.slug, p.image_url
       ORDER BY units_sold DESC
       LIMIT 6
     `);
@@ -170,6 +171,7 @@ const zoneBreakdown = async (req, res, next) => {
                         AND o.payment_status = 'paid'
       WHERE dz.is_active = true
       GROUP BY dz.id, dz.name
+      HAVING COUNT(o.id) > 0
       ORDER BY order_count DESC
     `);
 
@@ -269,4 +271,35 @@ const customerGrowth = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus, zoneBreakdown, orderHeatmap, specialDaysImpact, customerGrowth };
+// ── Customer breakdown by loyalty tier ────────────────────────────────────────
+const customerTiers = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        loyalty_tier,
+        COUNT(*)::int AS tier_count,
+        ROUND(AVG(COALESCE(total_spent, 0))::NUMERIC, 0)::int AS avg_spent
+      FROM (
+        SELECT
+          u.loyalty_tier,
+          COALESCE(SUM(o.total), 0) AS total_spent
+        FROM users u
+        LEFT JOIN orders o ON o.user_id = u.id AND o.payment_status = 'paid'
+        WHERE u.is_guest = false
+        GROUP BY u.id, u.loyalty_tier
+      ) sub
+      GROUP BY loyalty_tier
+      ORDER BY
+        CASE loyalty_tier
+          WHEN 'Crown' THEN 1
+          WHEN 'Reserve' THEN 2
+          WHEN 'Classic' THEN 3
+          ELSE 4
+        END
+    `);
+
+    res.json({ success: true, tiers: rows });
+  } catch (err) { next(err); }
+};
+
+module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus, zoneBreakdown, orderHeatmap, specialDaysImpact, customerGrowth, customerTiers };
