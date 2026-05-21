@@ -60,11 +60,39 @@ async function create(req, res, next) {
       }
     }
 
+    // Check if today is a special day
+    const today = new Date().toISOString().split('T')[0]
+    const { rows: [specialDay] } = await client.query(`
+      SELECT id FROM special_days
+      WHERE is_active = true
+      AND date_from <= $1::date
+      AND date_to >= $1::date
+    `, [today])
+
     // Validate and price items — PRICES FROM DATABASE ONLY
     let subtotal = 0
     const resolvedItems = []
 
     for (const item of items) {
+      // Special handling for Box Office virtual product (product_id 999)
+      if (item.product_id === 999) {
+        const unit_price = specialDay ? 40000 : 80000
+        const line_total = unit_price * item.quantity
+        subtotal += line_total
+
+        resolvedItems.push({
+          product_id:    999,
+          variant_id:    item.variant_id,
+          product_name:  'Box Office',
+          variant_label: 'Assorted Box',
+          unit_price,
+          quantity:      item.quantity,
+          line_total,
+          stock_qty:     999,
+        })
+        continue
+      }
+
       const { rows: [variant] } = await client.query(`
         SELECT pv.id, pv.price, pv.label, pv.stock_qty,
                p.id AS product_id, p.name AS product_name, p.is_active

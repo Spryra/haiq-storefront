@@ -3,23 +3,70 @@ import DOMPurify from 'dompurify'
 import api from '../services/api'
 import Button from '../components/shared/Button'
 
+// SVG Icons
+const PhoneIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.72 6.72l1.06-1.06a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+  </svg>
+)
+
+const MailIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+  </svg>
+)
+
+const MapPinIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+    <circle cx="12" cy="10" r="3"/>
+  </svg>
+)
+
+const InstagramIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+    <circle cx="17.5" cy="6.5" r="1.5"/>
+  </svg>
+)
+
+const FacebookIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a6 6 0 00-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 011-1h3z"/>
+  </svg>
+)
+
+const TikTokIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/>
+  </svg>
+)
+
+const TwitterIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 8v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+  </svg>
+)
+
 const CONTACT_ITEMS = [
   {
-    icon: '📞',
+    icon: PhoneIcon,
     label: 'Phone',
     lines: ['+256 753 996 786', '+256 791 058 916'],
     link: 'tel:+256753996786',
     linkLabel: 'Call us',
   },
   {
-    icon: '✉',
+    icon: MailIcon,
     label: 'Email',
     lines: ['haiqafrica@gmail.com'],
     link: 'mailto:haiqafrica@gmail.com',
     linkLabel: 'Send email',
   },
   {
-    icon: '📍',
+    icon: MapPinIcon,
     label: 'Location',
     lines: ['Muyenga', 'Kampala, Uganda'],
     link: 'https://maps.google.com/?q=Muyenga+Kampala+Uganda',
@@ -32,30 +79,30 @@ const SOCIAL_ITEMS = [
     platform: 'Instagram',
     handle: '@haiq_ug',
     url: 'https://instagram.com/haiq_ug',
-    icon: '📸',
+    icon: InstagramIcon,
   },
   {
     platform: 'Facebook',
     handle: 'Haiqafrica',
     url: 'https://facebook.com/Haiqafrica',
-    icon: '👥',
+    icon: FacebookIcon,
   },
   {
     platform: 'TikTok',
     handle: 'Haiqafrica',
     url: 'https://tiktok.com/@Haiqafrica',
-    icon: '🎵',
+    icon: TikTokIcon,
   },
   {
     platform: 'Twitter / X',
     handle: 'Haiqafrica',
     url: 'https://twitter.com/Haiqafrica',
-    icon: '🐦',
+    icon: TwitterIcon,
   },
 ]
 
 export default function ContactPage() {
-  const [form,   setForm]   = useState({ name: '', email: '', message: '' })
+  const [form,   setForm]   = useState({ name: '', email: '', subject: '', message: '' })
   const [status, setStatus] = useState(null) // null | loading | success | error
 
   const containsInvalidContent = (value = '') => {
@@ -78,7 +125,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if ([form.name, form.email, form.message].some(containsInvalidContent)) {
+    if ([form.name, form.email, form.subject, form.message].some(containsInvalidContent)) {
       setStatus('error')
       return
     }
@@ -88,10 +135,11 @@ export default function ContactPage() {
         first_name: form.name.split(' ')[0] || form.name,
         last_name:  form.name.split(' ').slice(1).join(' ') || '',
         email:      form.email,
+        subject:    form.subject,
         body:       form.message,
       })
       setStatus('success')
-      setForm({ name: '', email: '', message: '' })
+      setForm({ name: '', email: '', subject: '', message: '' })
     } catch {
       setStatus('error')
     }
@@ -211,6 +259,7 @@ export default function ContactPage() {
                     required
                     placeholder="e.g. Amara Nakato"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition"
+                    style={{ color: '#1A0A00' }}
                   />
                 </div>
 
@@ -226,6 +275,23 @@ export default function ContactPage() {
                     required
                     placeholder="you@example.com"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition"
+                    style={{ color: '#1A0A00' }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-dark mb-1">
+                    Subject <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={form.subject}
+                    onChange={handleChange}
+                    required
+                    placeholder="What's this about?"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition"
+                    style={{ color: '#1A0A00' }}
                   />
                 </div>
 
@@ -241,6 +307,7 @@ export default function ContactPage() {
                     rows={5}
                     placeholder="Tell us what you're looking for — orders, events, feedback, anything."
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary transition"
+                    style={{ color: '#1A0A00' }}
                   />
                 </div>
 
