@@ -308,6 +308,19 @@ export default function CheckoutPage() {
   const handleSubmit = async () => {
     if (!consent) { setSubmitError('Please confirm your agreement.'); return }
     if (detailsFields.some(containsHtml)) { setSubmitError('Please remove HTML or script content from the form.'); return }
+
+    // DIAGNOSTIC — remove after fix confirmed
+    const orderItems = toOrderItems();
+    console.log('[checkout] items count:', orderItems.length);
+    console.log('[checkout] items details:', orderItems);
+    console.log('[checkout] payload preview:', {
+      phone: details.phone,
+      payment_method: payMethod,
+      items_count: orderItems.length,
+      consent_given: true,
+    });
+    // END DIAGNOSTIC
+
     setSubmitting(true); setSubmitError(null)
     try {
       const body = {
