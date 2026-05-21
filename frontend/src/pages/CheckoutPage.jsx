@@ -267,6 +267,39 @@ export default function CheckoutPage() {
     details.phone.trim() && selectedZone && details.delivery_address.trim().length >= 5 &&
     !detailsFields.some(containsHtml)
 
+  // Validation feedback for better UX - now returns array of all errors
+  const getValidationErrors = () => {
+    const errors = []
+    if (!details.first_name.trim()) errors.push('First name is required')
+    if (!details.last_name.trim()) errors.push('Last name is required')
+    if (!details.email.trim()) errors.push('Email is required')
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email)) errors.push('Invalid email format')
+    if (!details.phone.trim()) errors.push('Phone number is required')
+    if (!selectedZone) errors.push('Please select a delivery zone')
+    if (details.delivery_address.trim().length < 5) errors.push('Delivery address must be at least 5 characters')
+    if (detailsFields.some(containsHtml)) errors.push('Please remove HTML or script content')
+    return errors
+  }
+
+  // Get validation error for display (first error)
+  const validationError = getValidationErrors()[0] || null
+
+  // Get all validation errors
+  const validationErrors = getValidationErrors()
+
+  // Helper to check if a specific field is invalid
+  const isFieldInvalid = (field) => {
+    switch(field) {
+      case 'first_name': return !details.first_name.trim()
+      case 'last_name': return !details.last_name.trim()
+      case 'email': return !details.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(details.email)
+      case 'phone': return !details.phone.trim()
+      case 'delivery_zone': return !selectedZone
+      case 'delivery_address': return details.delivery_address.trim().length < 5
+      default: return false
+    }
+  }
+
   const deliveryFee = selectedZone ? parseFloat(selectedZone.price) : 0
   const total = subtotal + deliveryFee
 
@@ -311,11 +344,16 @@ export default function CheckoutPage() {
 
   const inputSty = { background: '#1A0A00', border: '1px solid #3D2000', color: '#F2EAD8' }
   const inputCls = 'w-full px-4 py-3 text-sm focus:outline-none'
-  const lbl = (text, req) => (
-    <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
+  const lbl = (text, req, fieldId) => (
+    <label {...(fieldId && { htmlFor: fieldId })} className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
       {text}{req && <span style={{ color: '#B8752A' }}> *</span>}
     </label>
   )
+
+  // Accessibility IDs for delivery zone
+  const zoneSelectId = 'delivery-zone-select'
+  const zoneErrorId = 'delivery-zone-error'
+  const zoneHelperId = 'delivery-zone-helper'
 
   return (
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
@@ -376,32 +414,146 @@ export default function CheckoutPage() {
                 <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Your Details</h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>{lbl('First Name',true)}<input className={inputCls} style={inputSty} value={details.first_name} onChange={upd('first_name')} /></div>
-                    <div>{lbl('Last Name',true)}<input className={inputCls} style={inputSty} value={details.last_name} onChange={upd('last_name')} /></div>
-                  </div>
-                  <div>{lbl('Email',true)}<input type="email" className={inputCls} style={inputSty} value={details.email} onChange={upd('email')} /></div>
-                  <div>{lbl('Phone',true)}<input type="tel" className={inputCls} style={inputSty} value={details.phone} onChange={upd('phone')} placeholder="+256 700 000 000"/></div>
-                  <div>
-                    {lbl('Delivery Zone', true)}
-                    {zonesLoading ? (
-                      <div className="text-xs py-3" style={{ color: '#8C7355' }}>Loading zones...</div>
-                    ) : (
-                      <select
+                    <div>
+                      {lbl('First Name',true)}
+                      <input
                         className={inputCls}
-                        style={inputSty}
-                        value={selectedZone?.id || ''}
-                        onChange={e => {
-                          const zone = zones.find(z => z.id === e.target.value)
-                          setSelectedZone(zone || null)
+                        style={{
+                          ...inputSty,
+                          borderColor: isFieldInvalid('first_name') ? '#f87171' : inputSty.borderColor,
                         }}
-                      >
-                        <option value="">Select your delivery zone</option>
-                        {zones.map(zone => (
-                          <option key={zone.id} value={zone.id}>
-                            {zone.name} — UGX {zone.price.toLocaleString()}
-                          </option>
-                        ))}
-                      </select>
+                        value={details.first_name}
+                        onChange={upd('first_name')}
+                      />
+                    </div>
+                    <div>
+                      {lbl('Last Name',true)}
+                      <input
+                        className={inputCls}
+                        style={{
+                          ...inputSty,
+                          borderColor: isFieldInvalid('last_name') ? '#f87171' : inputSty.borderColor,
+                        }}
+                        value={details.last_name}
+                        onChange={upd('last_name')}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    {lbl('Email',true)}
+                    <input
+                      type="email"
+                      className={inputCls}
+                      style={{
+                        ...inputSty,
+                        borderColor: isFieldInvalid('email') ? '#f87171' : inputSty.borderColor,
+                      }}
+                      value={details.email}
+                      onChange={upd('email')}
+                    />
+                  </div>
+                  <div>
+                    {lbl('Phone',true)}
+                    <input
+                      type="tel"
+                      className={inputCls}
+                      style={{
+                        ...inputSty,
+                        borderColor: isFieldInvalid('phone') ? '#f87171' : inputSty.borderColor,
+                      }}
+                      value={details.phone}
+                      onChange={upd('phone')}
+                      placeholder="+256 700 000 000"
+                    />
+                  </div>
+                  <div>
+                    {lbl('Delivery Zone', true, zoneSelectId)}
+                    <p id={zoneHelperId} className="text-[10px] mb-3" style={{ color: '#8C7355' }}>
+                      Delivery fee varies by location. Select your zone below.
+                    </p>
+                    {zonesLoading ? (
+                      <div className="text-xs py-3 px-4 rounded" style={{ background: 'rgba(184,117,42,0.1)', color: '#8C7355' }}>
+                        ⏳ Loading delivery zones...
+                      </div>
+                    ) : (
+                      <>
+                        <select
+                          id={zoneSelectId}
+                          className={inputCls}
+                          size={Math.min(7, Math.max(3, zones.length))}
+                          style={{
+                            ...inputSty,
+                            borderColor: isFieldInvalid('delivery_zone') ? '#f87171' : inputSty.borderColor,
+                            cursor: 'pointer',
+                            transition: 'all 150ms ease-in-out',
+                            paddingRight: '8px',
+                            minHeight: '120px',
+                          }}
+                          value={selectedZone?.id || ''}
+                          onChange={e => {
+                            const zone = zones.find(z => z.id === e.target.value)
+                            setSelectedZone(zone || null)
+                          }}
+                          onBlur={e => {
+                            // Ensure state updates on blur if needed
+                            if (e.target.value && !selectedZone) {
+                              const zone = zones.find(z => z.id === e.target.value)
+                              setSelectedZone(zone || null)
+                            }
+                            // Reset focus styling
+                            e.target.style.borderColor = isFieldInvalid('delivery_zone') ? '#f87171' : '#3D2000'
+                            e.target.style.backgroundColor = '#1A0A00'
+                          }}
+                          onFocus={e => {
+                            // Highlight on focus
+                            e.target.style.borderColor = '#B8752A'
+                            e.target.style.backgroundColor = '#2A1200'
+                          }}
+                          aria-label="Select delivery zone"
+                          aria-required="true"
+                          aria-invalid={isFieldInvalid('delivery_zone')}
+                          aria-describedby={`${zoneHelperId} ${isFieldInvalid('delivery_zone') ? zoneErrorId : ''}`}
+                        >
+                          {zones.map(zone => (
+                            <option key={zone.id} value={zone.id}>
+                              {zone.name} — UGX {zone.price.toLocaleString()}
+                            </option>
+                          ))}
+                        </select>
+
+                        {selectedZone && (
+                          <div
+                            className="mt-3 p-3 rounded"
+                            style={{
+                              background: 'rgba(184, 117, 42, 0.08)',
+                              border: '1px solid rgba(184, 117, 42, 0.2)',
+                            }}>
+                            <p className="text-xs mb-1" style={{ color: '#F2EAD8' }}>
+                              <span style={{ color: '#8C7355' }}>📍 Selected Zone:</span>{' '}
+                              <strong>{selectedZone.name}</strong>
+                            </p>
+                            <p className="text-xs font-semibold" style={{ color: '#B8752A' }}>
+                              💰 Delivery Fee: UGX {selectedZone.price.toLocaleString()}
+                            </p>
+                            <p className="text-[10px] mt-1.5" style={{ color: '#8C7355' }}>
+                              ℹ️ Estimated delivery. Final amount confirmed before dispatch.
+                            </p>
+                          </div>
+                        )}
+
+                        {!selectedZone && validationErrors.length > 0 && validationErrors.find(e => e.includes('delivery zone')) && (
+                          <p
+                            id={zoneErrorId}
+                            className="text-[10px] mt-3 px-3 py-2 rounded"
+                            style={{
+                              background: 'rgba(248, 113, 113, 0.15)',
+                              border: '1px solid rgba(248, 113, 113, 0.3)',
+                              color: '#f87171'
+                            }}>
+                            ⚠️ {validationErrors.find(e => e.includes('delivery zone'))}
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                   <div>
@@ -409,7 +561,10 @@ export default function CheckoutPage() {
                     <textarea
                       rows={2}
                       className={`${inputCls} resize-none`}
-                      style={inputSty}
+                      style={{
+                        ...inputSty,
+                        borderColor: isFieldInvalid('delivery_address') ? '#f87171' : inputSty.borderColor,
+                      }}
                       value={details.delivery_address}
                       onChange={upd('delivery_address')}
                       placeholder="House number, landmark, building name..."
@@ -417,6 +572,20 @@ export default function CheckoutPage() {
                   </div>
                   <div>{lbl('Delivery Note')}<input className={inputCls} style={inputSty} value={details.delivery_note} onChange={upd('delivery_note')} placeholder="Leave at gate / call on arrival"/></div>
                 </div>
+                {validationErrors.length > 0 && (
+                  <div className="mb-4 p-4 rounded" style={{ background: 'rgba(248,113,113,0.15)', border: '2px solid #f87171' }}>
+                    <p className="text-sm font-semibold mb-2" style={{ color: '#f87171' }}>
+                      ⚠️ Please complete the following:
+                    </p>
+                    <ul className="space-y-1">
+                      {validationErrors.map((error, i) => (
+                        <li key={i} className="text-xs" style={{ color: '#f87171' }}>
+                          • {error}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className="flex gap-3 mt-6">
                   <Button onClick={() => setStep(1)} variant="secondary" className="flex-1" size="md">
                     Back
@@ -436,8 +605,9 @@ export default function CheckoutPage() {
                   Select how you'd like to pay for your order.
                 </p>
                 <div className="space-y-4 mb-6">
-                  <PayBtn method="mtn_momo" selected={payMethod === 'mtn_momo'} onSelect={setPayMethod} />
-                  <PayBtn method="airtel" selected={payMethod === 'airtel'} onSelect={setPayMethod} />
+                  {/* Mobile money methods disabled pending provider integration */}
+                  {/* <PayBtn method="mtn_momo" selected={payMethod === 'mtn_momo'} onSelect={setPayMethod} />
+                  <PayBtn method="airtel" selected={payMethod === 'airtel'} onSelect={setPayMethod} /> */}
                   <PayBtn method="cash_on_delivery" selected={payMethod === 'cash_on_delivery'} onSelect={setPayMethod} />
                 </div>
 

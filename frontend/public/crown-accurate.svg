@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <filter id="crownShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Crown - Hand-drawn style, minimalist -->
+  <g filter="url(#crownShadow)">
+    <!-- Base band -->
+    <path d="M 80 380 Q 256 360 432 380 L 432 420 Q 432 450 400 450 L 112 450 Q 80 450 80 420 Z"
+          fill="none" stroke="#6B4423" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Left point -->
+    <path d="M 110 380 Q 80 300 110 200 Q 140 140 170 100"
+          fill="none" stroke="#6B4423" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Left-center point -->
+    <path d="M 200 380 Q 160 250 200 120 Q 240 60 280 40"
+          fill="none" stroke="#6B4423" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Center peak (tallest) -->
+    <path d="M 256 380 Q 220 220 256 80 Q 292 20 320 0"
+          fill="none" stroke="#6B4423" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Right-center point -->
+    <path d="M 312 380 Q 352 250 312 120 Q 272 60 232 40"
+          fill="none" stroke="#6B4423" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Right point -->
+    <path d="M 402 380 Q 432 300 402 200 Q 372 140 342 100"
+          fill="none" stroke="#6B4423" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Jewel at peak -->
+    <circle cx="256" cy="30" r="18" fill="#6B4423" opacity="0.8"/>
+  </g>
+</svg>
