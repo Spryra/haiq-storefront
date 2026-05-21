@@ -5,6 +5,9 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend, AreaChart, Area,
 } from 'recharts'
+import {
+  BarChart3, MapPin, Gift, Users, Trophy, Package, TrendingUp, AlertCircle,
+} from 'lucide-react'
 
 const TIER_COLOR = { Crown: '#E8C88A', Reserve: '#B8752A', Classic: '#8C7355' }
 const PIE_COLORS = ['#B8752A', '#D4A574', '#8C7355', '#7A3B1E']
@@ -57,6 +60,41 @@ export default function AnalyticsPage() {
   const [loading,              setLoading]              = useState(true)
   const [expandedAccordion,    setExpandedAccordion]    = useState(false)
   const [isMobile,             setIsMobile]             = useState(window.innerWidth < 768)
+
+  // Handle product image loading with retry limit (max 3 attempts)
+  const handleProductImageError = (e, productName) => {
+    const img = e.target
+    const currentRetries = parseInt(img.dataset.retries || '0')
+
+    console.log(`Image load failed for ${productName}. Attempt ${currentRetries + 1}/3`)
+
+    if (currentRetries < 3) {
+      // Increment retry counter and retry with fallback
+      img.dataset.retries = currentRetries + 1
+      img.src = '/default-product.png'
+    } else {
+      // Max retries reached - hide image and show placeholder
+      img.style.display = 'none'
+      const parent = img.parentElement
+
+      // Create placeholder div with Package icon
+      const placeholder = document.createElement('div')
+      placeholder.className = 'w-full h-32 rounded mb-3 flex items-center justify-center'
+      placeholder.style.background = 'rgba(140, 115, 85, 0.1)'
+      placeholder.style.border = '1px dashed rgba(140, 115, 85, 0.3)'
+
+      const iconDiv = document.createElement('div')
+      iconDiv.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8C7355" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>`
+
+      placeholder.appendChild(iconDiv)
+      parent.insertBefore(placeholder, img.nextSibling)
+    }
+  }
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768)
@@ -150,25 +188,25 @@ export default function AnalyticsPage() {
             label="Total Orders"
             value={summary.total_orders}
             change={null}
-            icon="📦"
+            icon={<Package size={20} strokeWidth={1.5} style={{ color: '#B8752A' }} />}
           />
           <KPICard
             label="Product Revenue"
             value={summary.product_revenue}
             change={null}
-            icon="🍪"
+            icon={<BarChart3 size={20} strokeWidth={1.5} style={{ color: '#B8752A' }} />}
           />
           <KPICard
             label="Active Orders"
             value={summary.active_orders}
             change={null}
-            icon="🚚"
+            icon={<TrendingUp size={20} strokeWidth={1.5} style={{ color: '#B8752A' }} />}
           />
           <KPICard
             label="Total Customers"
             value={summary.total_customers}
             change={summary.weekly_change_pct}
-            icon="👥"
+            icon={<Users size={20} strokeWidth={1.5} style={{ color: '#B8752A' }} />}
           />
         </div>
       )}
@@ -219,27 +257,45 @@ export default function AnalyticsPage() {
       {/* Revenue chart — dual lines */}
       <div className="admin-card">
         <SectionHeader label="Last 30 Days" title="Revenue Breakdown" />
-        <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📊 Product vs Delivery revenue</p>
-        <ResponsiveContainer width="100%" height={isMobile ? 200 : 240}>
-          <LineChart data={revenue} margin={{ left: 0, right: 8 }}>
-            <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false}
-              tickFormatter={v => `${(v/1000).toFixed(0)}k`} width={36} />
-            <Tooltip content={customTooltip} />
-            <Line type="monotone" dataKey="product_revenue" stroke="#B8752A" strokeWidth={2.5}
-              dot={false} activeDot={{ r: 5, fill: '#B8752A' }} name="product_revenue" />
-            <Line type="monotone" dataKey="delivery_revenue" stroke="#8C7355" strokeWidth={2}
-              strokeDasharray="5 5" dot={false} activeDot={{ r: 5, fill: '#8C7355' }} name="delivery_revenue" />
-            <Legend />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="flex items-center gap-2 text-[10px] mb-3" style={{ color: '#8C7355' }}>
+          <BarChart3 size={16} strokeWidth={1.5} />
+          <span>Product vs Delivery revenue</span>
+        </div>
+        {revenue.length === 0 ? (
+          <div className="flex items-center justify-center h-64 rounded"
+            style={{ background: '#2A1200', border: '1px solid #3D2000' }}>
+            <div className="text-center">
+              <BarChart3 size={32} strokeWidth={1.5} style={{ color: '#8C7355', margin: '0 auto 12px' }} />
+              <p style={{ color: '#8C7355' }} className="text-sm">
+                No revenue data available for the selected period
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 240}>
+            <LineChart data={revenue} margin={{ left: 0, right: 8 }}>
+              <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false}
+                tickFormatter={v => `${(v/1000).toFixed(0)}k`} width={36} />
+              <Tooltip content={customTooltip} />
+              <Line type="monotone" dataKey="product_revenue" stroke="#B8752A" strokeWidth={2.5}
+                dot={false} activeDot={{ r: 5, fill: '#B8752A' }} name="product_revenue" />
+              <Line type="monotone" dataKey="delivery_revenue" stroke="#8C7355" strokeWidth={2}
+                strokeDasharray="5 5" dot={false} activeDot={{ r: 5, fill: '#8C7355' }} name="delivery_revenue" />
+              <Legend />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Zone Distribution */}
         <div className="admin-card">
           <SectionHeader label="By Location" title="Zone Distribution" />
-          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📍 Zones with active orders</p>
+          <div className="flex items-center gap-2 text-[10px] mb-3" style={{ color: '#8C7355' }}>
+            <MapPin size={16} strokeWidth={1.5} />
+            <span>Zones with active orders</span>
+          </div>
           {zones.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No zone data yet.</p>
           ) : (
@@ -263,7 +319,10 @@ export default function AnalyticsPage() {
         {/* Orders by status */}
         <div className="admin-card">
           <SectionHeader label="Breakdown" title="Orders by Status" />
-          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>📈 Current order distribution</p>
+          <div className="flex items-center gap-2 text-[10px] mb-3" style={{ color: '#8C7355' }}>
+            <TrendingUp size={16} strokeWidth={1.5} />
+            <span>Current order distribution</span>
+          </div>
           {statusBreak.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No order data yet.</p>
           ) : (
@@ -335,7 +394,10 @@ export default function AnalyticsPage() {
         {/* Special Days Impact */}
         <div className="admin-card">
           <SectionHeader label="Comparison" title="Special Days Impact" />
-          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>🎉 vs Normal days performance</p>
+          <div className="flex items-center gap-2 text-[10px] mb-3" style={{ color: '#8C7355' }}>
+            <Gift size={16} strokeWidth={1.5} />
+            <span>vs Normal days performance</span>
+          </div>
           {specialDaysData ? (
             <ResponsiveContainer width="100%" height={isMobile ? 180 : 220}>
               <BarChart data={[
@@ -359,7 +421,10 @@ export default function AnalyticsPage() {
         {/* Customer Growth */}
         <div className="admin-card">
           <SectionHeader label="90 Days" title="Customer Growth" />
-          <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>👥 Cumulative new signups</p>
+          <div className="flex items-center gap-2 text-[10px] mb-3" style={{ color: '#8C7355' }}>
+            <Users size={16} strokeWidth={1.5} />
+            <span>Cumulative new signups</span>
+          </div>
           {customerGrowthData.length === 0 ? (
             <p className="text-light/30 text-sm py-4">No customer data yet.</p>
           ) : (
@@ -396,14 +461,20 @@ export default function AnalyticsPage() {
                     src={p.image_url || '/default-product.png'}
                     alt={p.name}
                     className="w-full h-full object-cover"
-                    onError={(e) => e.target.src = '/default-product.png'}
+                    data-retries="0"
+                    onError={(e) => handleProductImageError(e, p.name)}
+                    onLoad={(e) => {
+                      // Reset retry counter on successful load
+                      e.target.dataset.retries = '0'
+                    }}
                   />
                 </div>
 
                 {/* Best Seller Badge */}
                 {i === 0 && (
-                  <div className="inline-block px-2 py-1 text-xs rounded mb-2 font-bold" style={{ background: '#B8752A', color: '#1A0A00' }}>
-                    🏆 Best Seller
+                  <div className="inline-block px-2 py-1 text-xs rounded mb-2 font-bold flex items-center gap-1.5" style={{ background: '#B8752A', color: '#1A0A00' }}>
+                    <Trophy size={14} strokeWidth={1.5} />
+                    Best Seller
                   </div>
                 )}
 
@@ -412,7 +483,10 @@ export default function AnalyticsPage() {
 
                 {/* Stats */}
                 <div className="space-y-1">
-                  <p className="text-xs" style={{ color: '#8C7355' }}>📦 {fmt(p.units_sold)} units</p>
+                  <p className="text-xs flex items-center gap-1.5" style={{ color: '#8C7355' }}>
+                    <Package size={14} strokeWidth={1.5} />
+                    {fmt(p.units_sold)} units
+                  </p>
                   <p className="text-xs font-semibold" style={{ color: '#B8752A' }}>
                     UGX {fmt(p.revenue)}
                   </p>
