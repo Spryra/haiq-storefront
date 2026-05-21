@@ -310,8 +310,8 @@ export default function CheckoutPage() {
 
   const inputSty = { background: '#1A0A00', border: '1px solid #3D2000', color: '#F2EAD8' }
   const inputCls = 'w-full px-4 py-3 text-sm focus:outline-none'
-  const lbl = (text, req) => (
-    <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
+  const lbl = (text, req, fieldId) => (
+    <label htmlFor={fieldId} className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
       {text}{req && <span style={{ color: '#B8752A' }}> *</span>}
     </label>
   )
@@ -381,27 +381,99 @@ export default function CheckoutPage() {
                   <div>{lbl('Email',true)}<input type="email" className={inputCls} style={inputSty} value={details.email} onChange={upd('email')} /></div>
                   <div>{lbl('Phone',true)}<input type="tel" className={inputCls} style={inputSty} value={details.phone} onChange={upd('phone')} placeholder="+256 700 000 000"/></div>
                   <div>
-                    {lbl('Delivery Zone', true)}
-                    {zonesLoading ? (
-                      <div className="text-xs py-3" style={{ color: '#8C7355' }}>Loading zones...</div>
-                    ) : (
-                      <select
-                        className={inputCls}
-                        style={inputSty}
-                        value={selectedZone?.id || ''}
-                        onChange={e => {
-                          const zone = zones.find(z => z.id === e.target.value)
-                          setSelectedZone(zone || null)
-                        }}
-                      >
-                        <option value="">Select your delivery zone</option>
-                        {zones.map(zone => (
-                          <option key={zone.id} value={zone.id}>
-                            {zone.name} — UGX {zone.price.toLocaleString()}
-                          </option>
-                        ))}
-                      </select>
-                    )}
+                    {(() => {
+                      const zoneSelectId = 'delivery-zone-select'
+                      const zoneErrorId = 'delivery-zone-error'
+                      const zoneHelperId = 'delivery-zone-helper'
+                      const isZoneInvalid = !selectedZone && validationErrors.some(e => e.includes('delivery zone'))
+
+                      return (
+                        <>
+                          {lbl('Delivery Zone', true, zoneSelectId)}
+                          <p id={zoneHelperId} className="text-[10px] mb-3" style={{ color: '#8C7355' }}>
+                            Delivery fee varies by location. Select your zone below.
+                          </p>
+
+                          {zonesLoading ? (
+                            <div className="text-xs py-3" style={{ color: '#8C7355' }}>Loading zones...</div>
+                          ) : (
+                            <>
+                              <select
+                                id={zoneSelectId}
+                                className={inputCls}
+                                style={{
+                                  ...inputSty,
+                                  borderColor: isZoneInvalid ? '#f87171' : inputSty.borderColor,
+                                  cursor: 'pointer',
+                                  transition: 'all 150ms ease-in-out',
+                                }}
+                                value={selectedZone?.id || ''}
+                                onChange={e => {
+                                  const zone = zones.find(z => z.id === e.target.value)
+                                  setSelectedZone(zone || null)
+                                }}
+                                onBlur={e => {
+                                  if (e.target.value && !selectedZone) {
+                                    const zone = zones.find(z => z.id === e.target.value)
+                                    setSelectedZone(zone || null)
+                                  }
+                                  e.target.style.borderColor = isZoneInvalid ? '#f87171' : '#3D2000'
+                                  e.target.style.backgroundColor = '#1A0A00'
+                                }}
+                                onFocus={e => {
+                                  e.target.style.borderColor = '#B8752A'
+                                  e.target.style.backgroundColor = '#2A1200'
+                                }}
+                                aria-label="Select delivery zone"
+                                aria-required="true"
+                                aria-invalid={isZoneInvalid}
+                                aria-describedby={`${zoneHelperId} ${isZoneInvalid ? zoneErrorId : ''}`}
+                              >
+                                <option value="">Select your delivery zone</option>
+                                {zones.map(zone => (
+                                  <option key={zone.id} value={zone.id}>
+                                    {zone.name} — UGX {zone.price.toLocaleString()}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {selectedZone && (
+                                <div
+                                  className="mt-3 p-3 rounded"
+                                  style={{
+                                    background: 'rgba(184, 117, 42, 0.08)',
+                                    border: '1px solid rgba(184, 117, 42, 0.2)',
+                                  }}>
+                                  <p className="text-xs mb-1" style={{ color: '#F2EAD8' }}>
+                                    <span style={{ color: '#8C7355' }}>📍 Selected Zone:</span>{' '}
+                                    <strong>{selectedZone.name}</strong>
+                                  </p>
+                                  <p className="text-xs font-semibold" style={{ color: '#B8752A' }}>
+                                    💰 Delivery Fee: UGX {selectedZone.price.toLocaleString()}
+                                  </p>
+                                  <p className="text-[10px] mt-1.5" style={{ color: '#8C7355' }}>
+                                    ℹ️ Estimated delivery. Final amount confirmed before dispatch.
+                                  </p>
+                                </div>
+                              )}
+
+                              {isZoneInvalid && validationErrors.find(e => e.includes('delivery zone')) && (
+                                <p
+                                  id={zoneErrorId}
+                                  className="text-[10px] mt-3 px-3 py-2 rounded"
+                                  style={{
+                                    background: 'rgba(248, 113, 113, 0.15)',
+                                    border: '1px solid rgba(248, 113, 113, 0.3)',
+                                    color: '#f87171'
+                                  }}>
+                                  ⚠️ {validationErrors.find(e => e.includes('delivery zone'))}
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </>
+                      )
+                    })()}
                   </div>
                   <div>
                     {lbl('Specific Address', true)}
