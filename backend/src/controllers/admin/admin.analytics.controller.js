@@ -83,14 +83,15 @@ const topProducts = async (req, res, next) => {
     const { rows } = await query(`
       SELECT
         p.id, p.name, p.slug,
-        COALESCE(p.image_url, '') AS image_url,
+        COALESCE(pi.url, '') AS image_url,
         SUM(oi.quantity)   AS units_sold,
         SUM(oi.line_total) AS revenue
       FROM order_items oi
       JOIN products p ON p.id = oi.product_id
+      LEFT JOIN product_images pi ON pi.product_id = p.id AND pi.sort_order = 0
       JOIN orders   o ON o.id = oi.order_id
       WHERE o.payment_status = 'paid'
-      GROUP BY p.id, p.name, p.slug, p.image_url
+      GROUP BY p.id, p.name, p.slug, pi.url
       ORDER BY units_sold DESC
       LIMIT 6
     `);
