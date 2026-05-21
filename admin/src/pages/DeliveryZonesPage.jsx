@@ -152,7 +152,7 @@ export default function DeliveryZonesPage() {
                   style={{ color: '#8C7355' }}>Zone Name</p>
                 <input style={inputSty} value={form.name}
                   onChange={e => setForm(f => ({...f, name: e.target.value}))}
-                  placeholder="e.g. Kololo / Naguru / Ntinda" />
+                  placeholder="e.g. Muyenga" />
               </div>
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5"

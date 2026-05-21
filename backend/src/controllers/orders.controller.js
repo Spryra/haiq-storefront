@@ -60,6 +60,15 @@ async function create(req, res, next) {
       }
     }
 
+    // Check if today is a special day
+    const today = new Date().toISOString().split('T')[0]
+    const { rows: [specialDay] } = await client.query(`
+      SELECT id FROM special_days
+      WHERE is_active = true
+      AND date_from <= $1::date
+      AND date_to >= $1::date
+    `, [today])
+
     // Validate and price items — PRICES FROM DATABASE ONLY
     let subtotal = 0
     const resolvedItems = []

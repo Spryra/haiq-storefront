@@ -6,7 +6,14 @@ const summary = async (req, res, next) => {
   try {
     const [ordersRes, revenueRes, customersRes, pendingRes] = await Promise.all([
       query(`SELECT COUNT(*) AS total FROM orders`),
-      query(`SELECT COALESCE(SUM(total), 0) AS total FROM orders WHERE payment_status = 'paid'`),
+      query(`
+        SELECT
+          COALESCE(SUM(total), 0) AS total,
+          COALESCE(SUM(subtotal), 0) AS product_total,
+          COALESCE(SUM(delivery_fee), 0) AS delivery_total
+        FROM orders
+        WHERE payment_status = 'paid'
+      `),
       query(`SELECT COUNT(*) AS total FROM users WHERE is_guest = false`),
       query(`SELECT COUNT(*) AS total FROM orders WHERE status NOT IN ('delivered','cancelled') AND payment_status = 'paid'`),
     ]);
@@ -37,6 +44,8 @@ const summary = async (req, res, next) => {
       summary: {
         total_orders:     parseInt(ordersRes.rows[0].total),
         total_revenue:    parseFloat(revenueRes.rows[0].total),
+        product_revenue:  parseFloat(revenueRes.rows[0].product_total),
+        delivery_revenue: parseFloat(revenueRes.rows[0].delivery_total),
         total_customers:  parseInt(customersRes.rows[0].total),
         active_orders:    parseInt(pendingRes.rows[0].total),
         revenue_this_week: thisRevenue,
@@ -53,8 +62,10 @@ const revenue = async (req, res, next) => {
     const { rows } = await query(`
       SELECT
         DATE(created_at AT TIME ZONE 'Africa/Kampala') AS day,
-        COALESCE(SUM(total), 0)                         AS revenue,
-        COUNT(*)                                         AS orders
+        COALESCE(SUM(total), 0)          AS revenue,
+        COALESCE(SUM(subtotal), 0)       AS product_revenue,
+        COALESCE(SUM(delivery_fee), 0)   AS delivery_revenue,
+        COUNT(*)                         AS orders
       FROM orders
       WHERE payment_status = 'paid'
         AND created_at >= NOW() - interval '30 days'
@@ -146,4 +157,116 @@ const ordersByStatus = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus };
+// ── Orders and revenue breakdown by delivery zone ────────────────────────────
+const zoneBreakdown = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        dz.name                          AS zone_name,
+        COUNT(o.id)::int                 AS order_count,
+        COALESCE(SUM(o.delivery_fee), 0) AS delivery_revenue
+      FROM delivery_zones dz
+      LEFT JOIN orders o ON o.delivery_zone_id = dz.id
+                        AND o.payment_status = 'paid'
+      WHERE dz.is_active = true
+      GROUP BY dz.id, dz.name
+      ORDER BY order_count DESC
+    `);
+
+    res.json({ success: true, zones: rows });
+  } catch (err) { next(err); }
+};
+
+// ── Order activity heatmap (day of week × hour of day) ──────────────────────
+const orderHeatmap = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        EXTRACT(DOW FROM created_at AT TIME ZONE 'Africa/Kampala')::int AS day_of_week,
+        EXTRACT(HOUR FROM created_at AT TIME ZONE 'Africa/Kampala')::int AS hour_of_day,
+        COUNT(*) AS order_count
+      FROM orders
+      WHERE payment_status = 'paid'
+        AND created_at >= NOW() - interval '90 days'
+      GROUP BY 1, 2
+      ORDER BY 1, 2
+    `);
+
+    res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+};
+
+// ── Special days revenue impact comparison ────────────────────────────────────
+const specialDaysImpact = async (req, res, next) => {
+  try {
+    const [specialRes, normalRes] = await Promise.all([
+      query(`
+        SELECT
+          AVG(daily_revenue) AS avg_revenue,
+          AVG(daily_orders) AS avg_orders
+        FROM (
+          SELECT
+            DATE(o.created_at) AS d,
+            SUM(o.subtotal) AS daily_revenue,
+            COUNT(o.id) AS daily_orders
+          FROM orders o
+          JOIN special_days sd ON o.created_at::date BETWEEN sd.date_from AND sd.date_to
+          WHERE o.payment_status = 'paid' AND sd.is_active = true
+          GROUP BY 1
+        ) sub
+      `),
+      query(`
+        SELECT
+          AVG(daily_revenue) AS avg_revenue,
+          AVG(daily_orders) AS avg_orders
+        FROM (
+          SELECT
+            DATE(o.created_at) AS d,
+            SUM(o.subtotal) AS daily_revenue,
+            COUNT(o.id) AS daily_orders
+          FROM orders o
+          WHERE o.payment_status = 'paid'
+            AND NOT EXISTS (
+              SELECT 1 FROM special_days sd
+              WHERE sd.is_active = true
+                AND o.created_at::date BETWEEN sd.date_from AND sd.date_to
+            )
+          GROUP BY 1
+        ) sub
+      `),
+    ]);
+
+    res.json({
+      success: true,
+      special_days: {
+        avg_revenue: parseFloat(specialRes.rows[0]?.avg_revenue || 0),
+        avg_orders: parseFloat(specialRes.rows[0]?.avg_orders || 0),
+      },
+      normal_days: {
+        avg_revenue: parseFloat(normalRes.rows[0]?.avg_revenue || 0),
+        avg_orders: parseFloat(normalRes.rows[0]?.avg_orders || 0),
+      },
+    });
+  } catch (err) { next(err); }
+};
+
+// ── Customer growth over time (last 90 days, cumulative) ──────────────────────
+const customerGrowth = async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        DATE(created_at AT TIME ZONE 'Africa/Kampala') AS day,
+        COUNT(*) AS new_customers,
+        SUM(COUNT(*)) OVER (ORDER BY DATE(created_at AT TIME ZONE 'Africa/Kampala')) AS cumulative
+      FROM users
+      WHERE is_guest = false
+        AND created_at >= NOW() - interval '90 days'
+      GROUP BY 1
+      ORDER BY 1 ASC
+    `);
+
+    res.json({ success: true, data: rows });
+  } catch (err) { next(err); }
+};
+
+module.exports = { summary, revenue, topProducts, topCustomers, paymentBreakdown, ordersByStatus, zoneBreakdown, orderHeatmap, specialDaysImpact, customerGrowth };

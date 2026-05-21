@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import adminApi from '../services/adminApi'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, Legend,
+  BarChart, Bar, PieChart, Pie, Cell, Legend, AreaChart, Area,
 } from 'recharts'
 
 const TIER_COLOR = { Crown: '#E8C88A', Reserve: '#B8752A', Classic: '#8C7355' }
 const PIE_COLORS = ['#B8752A', '#D4A574', '#8C7355', '#7A3B1E']
+const HEATMAP_COLORS = ['#F2EAD8', '#E8C88A', '#D4A574', '#B8752A', '#8C7355', '#5A4A3A', '#3D2000']
 
 const fmt    = n => Number(n || 0).toLocaleString()
 const fmtDay = s => {
@@ -24,27 +25,63 @@ function SectionHeader({ label, title }) {
   )
 }
 
+function KPICard({ label, value, change, icon }) {
+  const isPositive = change > 0
+  return (
+    <div className="admin-card p-4">
+      <div className="flex items-start justify-between mb-3">
+        <p className="text-light/50 text-[10px] font-semibold uppercase tracking-widest">{label}</p>
+        <p className="text-xl">{icon}</p>
+      </div>
+      <p className="font-serif font-bold text-light text-2xl mb-2">{fmt(value)}</p>
+      {change !== null && (
+        <p className={`text-xs font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+          {isPositive ? '↑' : '↓'} {Math.abs(change)}% vs last week
+        </p>
+      )}
+    </div>
+  )
+}
+
 export default function AnalyticsPage() {
-  const [revenue,       setRevenue]       = useState([])
-  const [payBreakdown,  setPayBreakdown]  = useState([])
-  const [statusBreak,   setStatusBreak]   = useState([])
-  const [topCustomers,  setTopCustomers]  = useState([])
-  const [topProducts,   setTopProducts]   = useState([])
-  const [loading,       setLoading]       = useState(true)
+  const [summary,              setSummary]              = useState(null)
+  const [revenue,              setRevenue]              = useState([])
+  const [payBreakdown,         setPayBreakdown]         = useState([])
+  const [statusBreak,          setStatusBreak]          = useState([])
+  const [topCustomers,         setTopCustomers]         = useState([])
+  const [topProducts,          setTopProducts]          = useState([])
+  const [zones,                setZones]                = useState([])
+  const [heatmapData,          setHeatmapData]          = useState([])
+  const [specialDaysData,      setSpecialDaysData]      = useState(null)
+  const [customerGrowthData,   setCustomerGrowthData]   = useState([])
+  const [loading,              setLoading]              = useState(true)
+  const [expandedAccordion,    setExpandedAccordion]    = useState(false)
 
   useEffect(() => {
     Promise.all([
+      adminApi.get('/admin/analytics/summary'),
       adminApi.get('/admin/analytics/revenue'),
-      adminApi.get('/admin/analytics/payment-breakdown'),
+      adminApi.get('/admin/analytics/payment-methods'),
       adminApi.get('/admin/analytics/orders-by-status'),
       adminApi.get('/admin/analytics/top-customers'),
       adminApi.get('/admin/analytics/top-products'),
-    ]).then(([r, p, s, c, prod]) => {
-      setRevenue(r.data.data || [])
-      setPayBreakdown(p.data.data || [])
-      setStatusBreak(s.data.data || [])
-      setTopCustomers(c.data.customers || [])
+      adminApi.get('/admin/analytics/zone-breakdown'),
+      adminApi.get('/admin/analytics/heatmap'),
+      adminApi.get('/admin/analytics/special-days-impact'),
+      adminApi.get('/admin/analytics/customer-growth'),
+    ]).then(([
+      summ, rev, pay, stat, cust, prod, zo, heat, special, growth
+    ]) => {
+      setSummary(summ.data.summary || null)
+      setRevenue(rev.data.data || [])
+      setPayBreakdown(pay.data.data || [])
+      setStatusBreak(stat.data.data || [])
+      setTopCustomers(cust.data.customers || [])
       setTopProducts(prod.data.products || [])
+      setZones(zo.data.zones || [])
+      setHeatmapData(heat.data.data || [])
+      setSpecialDaysData(special.data || null)
+      setCustomerGrowthData(growth.data.data || [])
     }).catch(console.error)
       .finally(() => setLoading(false))
   }, [])
@@ -56,12 +93,31 @@ export default function AnalyticsPage() {
         <p className="text-light/50 mb-1">{label}</p>
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }}>
-            {p.name === 'revenue' ? `UGX ${fmt(p.value)}` : p.value}
+            {p.name?.includes('revenue') ? `UGX ${fmt(p.value)}` : p.value}
           </p>
         ))}
       </div>
     )
   }
+
+  const getHeatmapColor = (orderCount) => {
+    const maxOrders = heatmapData.reduce((max, d) => Math.max(max, d.order_count), 1)
+    const ratio = orderCount / maxOrders
+    return HEATMAP_COLORS[Math.floor(ratio * (HEATMAP_COLORS.length - 1))]
+  }
+
+  const heatmapGrid = (() => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    const hours = ['00–04', '04–08', '08–12', '12–16', '16–20', '20–24']
+    const grid = {}
+    heatmapData.forEach(d => {
+      const daysIndex = d.day_of_week === 0 ? 6 : d.day_of_week - 1
+      const hourBucket = Math.floor(d.hour_of_day / 4)
+      const key = `${daysIndex}-${hourBucket}`
+      grid[key] = d.order_count
+    })
+    return { days, hours, grid }
+  })()
 
   if (loading) return (
     <div className="space-y-6">
@@ -80,22 +136,78 @@ export default function AnalyticsPage() {
         <h1 className="font-serif font-bold text-light text-3xl">Analytics</h1>
       </div>
 
-      {/* Revenue chart */}
+      {/* KPI Cards */}
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <KPICard
+            label="Total Orders"
+            value={summary.total_orders}
+            change={null}
+            icon="📦"
+          />
+          <KPICard
+            label="Product Revenue"
+            value={summary.product_revenue}
+            change={null}
+            icon="🍪"
+          />
+          <KPICard
+            label="Active Orders"
+            value={summary.active_orders}
+            change={null}
+            icon="🚚"
+          />
+          <KPICard
+            label="Total Customers"
+            value={summary.total_customers}
+            change={summary.weekly_change_pct}
+            icon="👥"
+          />
+        </div>
+      )}
+
+      {/* Revenue chart — dual lines */}
       <div className="admin-card">
-        <SectionHeader label="Last 30 Days" title="Revenue" />
+        <SectionHeader label="Last 30 Days" title="Revenue Breakdown" />
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={revenue} margin={{ left: 0, right: 8 }}>
             <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
             <YAxis tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false}
               tickFormatter={v => `${(v/1000).toFixed(0)}k`} width={36} />
             <Tooltip content={customTooltip} />
-            <Line type="monotone" dataKey="revenue" stroke="#B8752A" strokeWidth={2}
-              dot={false} activeDot={{ r: 5, fill: '#B8752A' }} name="revenue" />
+            <Line type="monotone" dataKey="product_revenue" stroke="#B8752A" strokeWidth={2.5}
+              dot={false} activeDot={{ r: 5, fill: '#B8752A' }} name="product_revenue" />
+            <Line type="monotone" dataKey="delivery_revenue" stroke="#8C7355" strokeWidth={2}
+              strokeDasharray="5 5" dot={false} activeDot={{ r: 5, fill: '#8C7355' }} name="delivery_revenue" />
+            <Legend />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Zone Distribution */}
+        <div className="admin-card">
+          <SectionHeader label="By Location" title="Zone Distribution" />
+          {zones.length === 0 ? (
+            <p className="text-light/30 text-sm py-4">No zone data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie data={zones} dataKey="order_count" nameKey="zone_name"
+                  cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={2}>
+                  {zones.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend
+                  formatter={(v) => <span style={{ color: '#F2EAD8', fontSize: 10 }}>{v}</span>}
+                />
+                <Tooltip content={customTooltip} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
 
         {/* Payment method breakdown */}
         <div className="admin-card">
@@ -140,6 +252,104 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
+      {/* Order Activity Heatmap */}
+      <div className="admin-card">
+        <SectionHeader label="Time Patterns" title="Order Activity Heatmap" />
+        {heatmapData.length === 0 ? (
+          <p className="text-light/30 text-sm py-4">No heatmap data yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th className="p-1 text-light/30 font-semibold uppercase text-[8px]">Time</th>
+                  {heatmapGrid.days.map(day => (
+                    <th key={day} className="p-1 text-light/30 font-semibold uppercase text-[8px]">{day}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {heatmapGrid.hours.map(hour => (
+                  <tr key={hour}>
+                    <td className="p-1 text-light/30 font-semibold text-[8px]">{hour}</td>
+                    {heatmapGrid.days.map((day, dayIdx) => {
+                      const hourBucket = heatmapGrid.hours.indexOf(hour)
+                      const key = `${dayIdx}-${hourBucket}`
+                      const count = heatmapGrid.grid[key] || 0
+                      return (
+                        <td
+                          key={`${day}-${hour}`}
+                          className="p-1 text-center rounded"
+                          style={{
+                            backgroundColor: getHeatmapColor(count),
+                            color: count > 0 ? '#1A0A00' : '#F2EAD8',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                          }}
+                          title={`${day} ${hour}: ${count} orders`}
+                        >
+                          {count > 0 ? count : '—'}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Special Days Impact & Customer Growth */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Special Days Impact */}
+        <div className="admin-card">
+          <SectionHeader label="Comparison" title="Special Days Impact" />
+          {specialDaysData ? (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={[
+                { name: 'Special Days', revenue: specialDaysData.special_days?.avg_revenue || 0, orders: specialDaysData.special_days?.avg_orders || 0 },
+                { name: 'Normal Days', revenue: specialDaysData.normal_days?.avg_revenue || 0, orders: specialDaysData.normal_days?.avg_orders || 0 },
+              ]} margin={{ left: -10 }}>
+                <XAxis dataKey="name" tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
+                <YAxis yAxisId="left" tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} width={36} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} width={36} />
+                <Tooltip content={customTooltip} />
+                <Bar yAxisId="left" dataKey="revenue" fill="#B8752A" radius={[3, 3, 0, 0]} name="Avg Revenue (UGX)" />
+                <Bar yAxisId="right" dataKey="orders" fill="#D4A574" radius={[3, 3, 0, 0]} name="Avg Orders" />
+                <Legend />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-light/30 text-sm py-4">No special days data yet.</p>
+          )}
+        </div>
+
+        {/* Customer Growth */}
+        <div className="admin-card">
+          <SectionHeader label="90 Days" title="Customer Growth" />
+          {customerGrowthData.length === 0 ? (
+            <p className="text-light/30 text-sm py-4">No customer data yet.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={180}>
+              <AreaChart data={customerGrowthData} margin={{ left: 0, right: 8 }}>
+                <defs>
+                  <linearGradient id="colorCumulative" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#B8752A" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3D2000" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fill: '#8C7355', fontSize: 10 }} tickLine={false} axisLine={false} width={36} />
+                <Tooltip content={customTooltip} />
+                <Area type="monotone" dataKey="cumulative" stroke="#B8752A" strokeWidth={2} fillOpacity={1} fill="url(#colorCumulative)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
       {/* Top products */}
       <div className="admin-card">
         <SectionHeader label="Sales" title="Top Cookies" />
@@ -167,6 +377,49 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* More Details Accordion */}
+      <div className="admin-card border-l-2 border-haiq-gold/40">
+        <button
+          onClick={() => setExpandedAccordion(!expandedAccordion)}
+          className="w-full text-left flex items-center justify-between hover:opacity-80 transition-opacity mb-4"
+        >
+          <div>
+            <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-1">Detailed</p>
+            <h2 className="font-serif font-bold text-light text-xl">Zone Breakdown</h2>
+          </div>
+          <span className="text-xl" style={{ transform: expandedAccordion ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 200ms' }}>
+            ▼
+          </span>
+        </button>
+
+        {expandedAccordion && zones.length > 0 && (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-light/30 text-[10px] uppercase tracking-widest border-b border-border">
+                  <th className="text-left py-2 pr-4">#</th>
+                  <th className="text-left py-2 pr-4">Zone Name</th>
+                  <th className="text-left py-2 pr-4">Orders</th>
+                  <th className="text-left py-2">Delivery Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {zones.map((z, i) => (
+                  <tr key={z.zone_name} className="border-b border-border/40 hover:bg-surface/40 transition-colors">
+                    <td className="py-3 pr-4 text-primary/40 font-serif font-bold">
+                      {String(i + 1).padStart(2, '0')}
+                    </td>
+                    <td className="py-3 pr-4 text-light font-medium">{z.zone_name}</td>
+                    <td className="py-3 pr-4 text-light/50">{z.order_count}</td>
+                    <td className="py-3 text-primary font-bold">UGX {fmt(z.delivery_revenue)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

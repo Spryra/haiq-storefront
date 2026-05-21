@@ -358,7 +358,7 @@ export default function CheckoutPage() {
   const inputSty = { background: '#1A0A00', border: '1px solid #3D2000', color: '#F2EAD8' }
   const inputCls = 'w-full px-4 py-3 text-sm focus:outline-none'
   const lbl = (text, req, fieldId) => (
-    <label {...(fieldId && { htmlFor: fieldId })} className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
+    <label htmlFor={fieldId} className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
       {text}{req && <span style={{ color: '#B8752A' }}> *</span>}
     </label>
   )
