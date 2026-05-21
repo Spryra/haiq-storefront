@@ -164,4 +164,27 @@ router.get('/payment-methods', requireStaff, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /v1/admin/analytics/zone-breakdown
+// Orders and delivery revenue per delivery zone.
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/zone-breakdown', requireStaff, async (req, res, next) => {
+  try {
+    const { rows } = await query(`
+      SELECT
+        dz.name                          AS zone_name,
+        COUNT(o.id)::int                 AS order_count,
+        COALESCE(SUM(o.delivery_fee), 0) AS delivery_revenue
+      FROM delivery_zones dz
+      LEFT JOIN orders o ON o.delivery_zone_id = dz.id
+                        AND o.payment_status = 'paid'
+      WHERE dz.is_active = true
+      GROUP BY dz.id, dz.name
+      ORDER BY order_count DESC
+    `);
+
+    res.json({ success: true, zones: rows });
+  } catch (err) { next(err); }
+});
+
 module.exports = router;
