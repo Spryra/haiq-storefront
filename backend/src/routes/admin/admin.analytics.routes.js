@@ -135,34 +135,19 @@ router.get('/top-products', requireStaff, async (req, res, next) => {
       SELECT
         p.id,
         p.name,
-        COALESCE(p.image_url, '') AS image_url,
+        COALESCE(pi.url, '') AS image_url,
         SUM(oi.quantity)   AS units_sold,
         SUM(oi.line_total) AS revenue
       FROM   order_items oi
       JOIN   products p ON p.id = oi.product_id
+      LEFT   JOIN product_images pi ON pi.product_id = p.id AND pi.sort_order = 0
       JOIN   orders o ON o.id = oi.order_id
       WHERE  o.payment_status = 'paid'
-      GROUP  BY p.id, p.name, p.image_url
+      GROUP  BY p.id, p.name, pi.url
       ORDER  BY units_sold DESC
       LIMIT  6
     `);
     res.json({ success: true, products: rows });
-  } catch (err) { next(err); }
-});
-
-router.get('/payment-methods', requireStaff, async (req, res, next) => {
-  try {
-    const { rows } = await query(`
-      SELECT
-        payment_method,
-        COUNT(*)   AS order_count,
-        SUM(total) AS revenue
-      FROM   orders
-      WHERE  payment_status = 'paid'
-        AND  created_at >= NOW() - INTERVAL '30 days'
-      GROUP  BY payment_method
-    `);
-    res.json({ success: true, data: rows });
   } catch (err) { next(err); }
 });
 

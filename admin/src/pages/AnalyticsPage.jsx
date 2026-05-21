@@ -236,7 +236,6 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Zone Distribution */}
         <div className="admin-card">
           <SectionHeader label="By Location" title="Zone Distribution" />
@@ -259,23 +258,6 @@ export default function AnalyticsPage() {
               </PieChart>
             </ResponsiveContainer>
           )}
-        </div>
-
-        {/* Payment Method Card */}
-        <div className="admin-card flex flex-col justify-between">
-          <div>
-            <SectionHeader label="Current" title="Payment Method" />
-            <p className="text-[10px] mb-4" style={{ color: '#8C7355' }}>Only cash payments accepted</p>
-          </div>
-          <div className="mt-auto">
-            <div className="inline-flex items-center gap-3 px-4 py-3 rounded" style={{ background: 'rgba(184,117,42,0.15)', border: '1px solid #B8752A' }}>
-              <span className="text-2xl">💳</span>
-              <div>
-                <p className="text-xs font-bold mb-1" style={{ color: '#B8752A' }}>Cash on Delivery</p>
-                <p className="text-[10px]" style={{ color: '#8C7355' }}>Primary payment method</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Orders by status */}
