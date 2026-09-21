@@ -6,8 +6,8 @@ const LAST_UPDATED   = '18 June 2025'
 function Section({ title, children }) {
   return (
     <section className="mb-10">
-      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8C88A' }}>{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(242,234,216,0.75)' }}>
+      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8D9C3' }}>{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(245,234,216,0.75)' }}>
         {children}
       </div>
     </section>
@@ -17,8 +17,8 @@ function Section({ title, children }) {
 function Sub({ title, children }) {
   return (
     <div className="mb-4">
-      <h3 className="font-semibold text-sm mb-1.5" style={{ color: '#F2EAD8' }}>{title}</h3>
-      <div className="space-y-2 text-sm leading-relaxed" style={{ color: 'rgba(242,234,216,0.7)' }}>
+      <h3 className="font-semibold text-sm mb-1.5" style={{ color: '#F5EAD8' }}>{title}</h3>
+      <div className="space-y-2 text-sm leading-relaxed" style={{ color: 'rgba(245,234,216,0.7)' }}>
         {children}
       </div>
     </div>
@@ -27,7 +27,7 @@ function Sub({ title, children }) {
 
 function List({ items }) {
   return (
-    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(242,234,216,0.7)' }}>
+    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(245,234,216,0.7)' }}>
       {items.map((item, i) => <li key={i}>{item}</li>)}
     </ul>
   )
@@ -43,26 +43,26 @@ export default function PrivacyPolicyPage() {
       <div style={{ background: '#1A0A00', minHeight: '100vh' }} className="px-6 py-16">
         <div className="max-w-3xl mx-auto">
 
-          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>Legal</p>
-          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F2EAD8' }}>Privacy Policy</h1>
-          <div className="w-8 h-px mb-6" style={{ background: '#B8752A' }} />
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>Legal</p>
+          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F5EAD8' }}>Privacy Policy</h1>
+          <div className="w-8 h-px mb-6" style={{ background: '#A67C52' }} />
           <p className="text-xs mb-10" style={{ color: '#8C7355' }}>
             Effective Date: {EFFECTIVE_DATE} &nbsp;·&nbsp; Last Updated: {LAST_UPDATED}
           </p>
 
           {/* Intro */}
-          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(242,234,216,0.7)' }}>
-            HAIQ Bakery ("HAIQ", "we", "us", or "our") is committed to protecting your personal information and your right to privacy. This Privacy Policy explains what information we collect, why we collect it, how we use and store it, who we share it with, how long we keep it, and what rights you have over it. It applies to all personal data processed through our website (haiq.ug) and any related services. We operate under the <strong style={{ color: '#F2EAD8' }}>Uganda Data Protection and Privacy Act 2019 (PDPA)</strong> and its associated Regulations.
+          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(245,234,216,0.7)' }}>
+            HAIQ Bakery ("HAIQ", "we", "us", or "our") is committed to protecting your personal information and your right to privacy. This Privacy Policy explains what information we collect, why we collect it, how we use and store it, who we share it with, how long we keep it, and what rights you have over it. It applies to all personal data processed through our website (haiq.ug) and any related services. We operate under the <strong style={{ color: '#F5EAD8' }}>Uganda Data Protection and Privacy Act 2019 (PDPA)</strong> and its associated Regulations.
           </p>
 
-          <div style={{ borderTop: '1px solid rgba(184,117,42,0.15)' }} className="pt-10">
+          <div style={{ borderTop: '1px solid rgba(166,124,82,0.15)' }} className="pt-10">
 
             <Section title="1. Who We Are">
               <p>
-                <strong style={{ color: '#F2EAD8' }}>Data Controller:</strong> HAIQ Bakery<br />
-                <strong style={{ color: '#F2EAD8' }}>Address:</strong> Muyenga, Kampala, Uganda<br />
-                <strong style={{ color: '#F2EAD8' }}>Email:</strong> privacy@haiq.ug<br />
-                <strong style={{ color: '#F2EAD8' }}>Website:</strong> haiq.ug
+                <strong style={{ color: '#F5EAD8' }}>Data Controller:</strong> HAIQ Bakery<br />
+                <strong style={{ color: '#F5EAD8' }}>Address:</strong> Muyenga, Kampala, Uganda<br />
+                <strong style={{ color: '#F5EAD8' }}>Email:</strong> privacy@haiq.ug<br />
+                <strong style={{ color: '#F5EAD8' }}>Website:</strong> haiq.ug
               </p>
               <p>
                 As the data controller, HAIQ Bakery determines the purposes for which and the means by which your personal data is processed. If you have any questions or concerns about this policy or your data, contact us at the address above.
@@ -151,12 +151,12 @@ export default function PrivacyPolicyPage() {
               <p>Under the PDPA 2019, we must have a lawful basis for processing your personal data. We rely on the following:</p>
 
               <div className="overflow-x-auto mt-3">
-                <table className="w-full text-xs border-collapse" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
+                <table className="w-full text-xs border-collapse" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(184,117,42,0.12)' }}>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Purpose</th>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Data Used</th>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Lawful Basis</th>
+                    <tr style={{ background: 'rgba(166,124,82,0.12)' }}>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Purpose</th>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Data Used</th>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Lawful Basis</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -170,10 +170,10 @@ export default function PrivacyPolicyPage() {
                       ['Comply with legal obligations (e.g. tax records)', 'Order records', 'Legal obligation'],
                       ['Analyse service performance and improve the platform', 'Aggregated, anonymised order data', 'Legitimate interests'],
                     ].map(([purpose, data, basis], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(184,117,42,0.04)' }}>
-                        <td className="p-3" style={{ color: 'rgba(242,234,216,0.7)', border: '1px solid rgba(184,117,42,0.15)' }}>{purpose}</td>
-                        <td className="p-3" style={{ color: 'rgba(242,234,216,0.55)', border: '1px solid rgba(184,117,42,0.15)' }}>{data}</td>
-                        <td className="p-3" style={{ color: '#B8752A', border: '1px solid rgba(184,117,42,0.15)' }}>{basis}</td>
+                      <tr key={i} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(166,124,82,0.04)' }}>
+                        <td className="p-3" style={{ color: 'rgba(245,234,216,0.7)', border: '1px solid rgba(166,124,82,0.15)' }}>{purpose}</td>
+                        <td className="p-3" style={{ color: 'rgba(245,234,216,0.55)', border: '1px solid rgba(166,124,82,0.15)' }}>{data}</td>
+                        <td className="p-3" style={{ color: '#A67C52', border: '1px solid rgba(166,124,82,0.15)' }}>{basis}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -209,10 +209,10 @@ export default function PrivacyPolicyPage() {
               <div className="overflow-x-auto mt-3">
                 <table className="w-full text-xs border-collapse">
                   <thead>
-                    <tr style={{ background: 'rgba(184,117,42,0.12)' }}>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Data Category</th>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Retention Period</th>
-                      <th className="text-left p-3 font-semibold" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>Reason</th>
+                    <tr style={{ background: 'rgba(166,124,82,0.12)' }}>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Data Category</th>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Retention Period</th>
+                      <th className="text-left p-3 font-semibold" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>Reason</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -225,10 +225,10 @@ export default function PrivacyPolicyPage() {
                       ['Product reviews', 'Indefinitely while your account is active; deleted on account deletion', 'Public product feedback record'],
                       ['Server logs', '30 days', 'Security monitoring and error diagnostics'],
                     ].map(([cat, period, reason], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(184,117,42,0.04)' }}>
-                        <td className="p-3" style={{ color: 'rgba(242,234,216,0.7)', border: '1px solid rgba(184,117,42,0.15)' }}>{cat}</td>
-                        <td className="p-3 font-medium" style={{ color: '#B8752A', border: '1px solid rgba(184,117,42,0.15)' }}>{period}</td>
-                        <td className="p-3" style={{ color: 'rgba(242,234,216,0.55)', border: '1px solid rgba(184,117,42,0.15)' }}>{reason}</td>
+                      <tr key={i} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(166,124,82,0.04)' }}>
+                        <td className="p-3" style={{ color: 'rgba(245,234,216,0.7)', border: '1px solid rgba(166,124,82,0.15)' }}>{cat}</td>
+                        <td className="p-3 font-medium" style={{ color: '#A67C52', border: '1px solid rgba(166,124,82,0.15)' }}>{period}</td>
+                        <td className="p-3" style={{ color: 'rgba(245,234,216,0.55)', border: '1px solid rgba(166,124,82,0.15)' }}>{reason}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -258,7 +258,7 @@ export default function PrivacyPolicyPage() {
             </Section>
 
             <Section title="9. Your Rights Under the PDPA 2019">
-              <p>Under the Uganda Data Protection and Privacy Act 2019, you have the following rights in relation to your personal data. You may exercise any of these rights by contacting us at <strong style={{ color: '#F2EAD8' }}>privacy@haiq.ug</strong>. We will respond within <strong style={{ color: '#F2EAD8' }}>21 days</strong> of receiving a verified request.</p>
+              <p>Under the Uganda Data Protection and Privacy Act 2019, you have the following rights in relation to your personal data. You may exercise any of these rights by contacting us at <strong style={{ color: '#F5EAD8' }}>privacy@haiq.ug</strong>. We will respond within <strong style={{ color: '#F5EAD8' }}>21 days</strong> of receiving a verified request.</p>
 
               <Sub title="Right of Access">
                 <p>You have the right to obtain confirmation of whether we hold personal data about you, and to receive a copy of that data along with information about how it is processed.</p>
@@ -285,12 +285,12 @@ export default function PrivacyPolicyPage() {
               </Sub>
 
               <Sub title="Right to Lodge a Complaint">
-                <p>If you believe we have not handled your personal data in accordance with the PDPA 2019, you have the right to lodge a complaint with the <strong style={{ color: '#F2EAD8' }}>National Information Technology Authority Uganda (NITA-U)</strong>, which is the supervisory authority for data protection in Uganda.</p>
+                <p>If you believe we have not handled your personal data in accordance with the PDPA 2019, you have the right to lodge a complaint with the <strong style={{ color: '#F5EAD8' }}>National Information Technology Authority Uganda (NITA-U)</strong>, which is the supervisory authority for data protection in Uganda.</p>
               </Sub>
             </Section>
 
             <Section title="10. Children's Privacy">
-              <p>Our services are not directed at children under the age of 13. We do not knowingly collect personal data from anyone under 13. If you believe a child under 13 has provided us with their personal data, please contact us at <strong style={{ color: '#F2EAD8' }}>privacy@haiq.ug</strong> and we will delete that data promptly.</p>
+              <p>Our services are not directed at children under the age of 13. We do not knowingly collect personal data from anyone under 13. If you believe a child under 13 has provided us with their personal data, please contact us at <strong style={{ color: '#F5EAD8' }}>privacy@haiq.ug</strong> and we will delete that data promptly.</p>
               <p>Users aged 13–17 should have a parent or guardian review this policy before using our services.</p>
             </Section>
 
@@ -305,13 +305,13 @@ export default function PrivacyPolicyPage() {
 
             <Section title="13. Contact Us">
               <p>If you have any questions, concerns, or requests regarding this Privacy Policy or the handling of your personal data, please contact us:</p>
-              <div className="p-4 mt-3" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                <p><strong style={{ color: '#F2EAD8' }}>HAIQ Bakery — Privacy</strong></p>
+              <div className="p-4 mt-3" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                <p><strong style={{ color: '#F5EAD8' }}>HAIQ Bakery — Privacy</strong></p>
                 <p>Muyenga, Kampala, Uganda</p>
-                <p>Email: <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a></p>
-                <p>Website: <a href="https://haiq.ug/contact" style={{ color: '#B8752A' }}>haiq.ug/contact</a></p>
+                <p>Email: <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a></p>
+                <p>Website: <a href="https://haiq.ug/contact" style={{ color: '#A67C52' }}>haiq.ug/contact</a></p>
               </div>
-              <p>We aim to respond to all privacy requests within <strong style={{ color: '#F2EAD8' }}>21 working days</strong>. For complex requests, we will notify you if we need more time.</p>
+              <p>We aim to respond to all privacy requests within <strong style={{ color: '#F5EAD8' }}>21 working days</strong>. For complex requests, we will notify you if we need more time.</p>
             </Section>
 
           </div>

@@ -26,7 +26,7 @@ export default function TimeWarning({ skewSeconds = 0, isVisible = false, onRefr
         background: isCritical
           ? 'rgba(248, 113, 113, 0.1)' // Red at 10% for critical
           : 'rgba(184, 117, 42, 0.1)', // Amber at 10% for warning
-        borderColor: isCritical ? '#f87171' : '#B8752A',
+        borderColor: isCritical ? '#f87171' : '#A67C52',
       }}
       role="alert"
     >
@@ -34,7 +34,7 @@ export default function TimeWarning({ skewSeconds = 0, isVisible = false, onRefr
         size={16}
         strokeWidth={1.5}
         style={{
-          color: isCritical ? '#f87171' : '#B8752A',
+          color: isCritical ? '#f87171' : '#A67C52',
           flexShrink: 0,
           marginTop: '2px',
         }}
@@ -43,7 +43,7 @@ export default function TimeWarning({ skewSeconds = 0, isVisible = false, onRefr
       <div className="flex-1">
         <p
           className="text-sm font-semibold"
-          style={{ color: isCritical ? '#f87171' : '#B8752A' }}
+          style={{ color: isCritical ? '#f87171' : '#A67C52' }}
         >
           {isCritical ? 'Critical Time Mismatch' : 'Device Time Mismatch'}
         </p>
@@ -64,7 +64,7 @@ export default function TimeWarning({ skewSeconds = 0, isVisible = false, onRefr
           <button
             onClick={onRefresh}
             className="mt-2 text-xs font-medium transition-opacity hover:opacity-80"
-            style={{ color: '#B8752A' }}
+            style={{ color: '#A67C52' }}
           >
             Refresh time check
           </button>

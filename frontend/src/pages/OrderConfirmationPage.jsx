@@ -79,15 +79,15 @@ export default function OrderConfirmationPage() {
           <p className="text-primary text-xs font-semibold tracking-widest uppercase mb-3">What's Next</p>
           <div className="space-y-3 text-sm text-light/80">
             <div className="flex items-center gap-2.5">
-              <Mail size={14} style={{ color: '#B8752A', flexShrink: 0 }} />
+              <Mail size={14} style={{ color: '#A67C52', flexShrink: 0 }} />
               <span>Check your email for your order confirmation</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <MessageCircle size={14} style={{ color: '#B8752A', flexShrink: 0 }} />
+              <MessageCircle size={14} style={{ color: '#A67C52', flexShrink: 0 }} />
               <span>We'll message you on WhatsApp with updates</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <Package size={14} style={{ color: '#B8752A', flexShrink: 0 }} />
+              <Package size={14} style={{ color: '#A67C52', flexShrink: 0 }} />
               <span>Same-day delivery if ordered before noon</span>
             </div>
           </div>

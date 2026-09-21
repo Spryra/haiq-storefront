@@ -35,7 +35,7 @@ export default function CTASection() {
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
         `}
       >
-        <Crown size={28} color="#B8752A" className="mx-auto mb-8 opacity-60" />
+        <Crown size={28} color="#A67C52" className="mx-auto mb-8 opacity-60" />
 
         <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-5">
           Made For You
@@ -63,7 +63,7 @@ export default function CTASection() {
             { Icon: CrownIcon,       label: 'Loyalty Rewards'   },
           ].map(({ Icon, label }) => (
             <div key={label} className="flex items-center gap-2">
-              <Icon size={16} style={{ color: '#B8752A' }} />
+              <Icon size={16} style={{ color: '#A67C52' }} />
               <span className="text-light/50 text-xs font-medium tracking-wide">{label}</span>
             </div>
           ))}
@@ -73,7 +73,7 @@ export default function CTASection() {
         <div className="flex items-center justify-center gap-5 flex-wrap">
           <Link
             to="/shop"
-            className="group relative bg-primary text-dark px-10 py-4 font-bold text-[11px] tracking-[0.25em] uppercase overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(184,117,42,0.5)]"
+            className="group relative bg-primary text-dark px-10 py-4 font-bold text-[11px] tracking-[0.25em] uppercase overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(166,124,82,0.5)]"
           >
             <span className="relative z-10">Order Now</span>
             <div className="absolute inset-0 bg-secondary translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300" />

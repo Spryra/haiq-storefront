@@ -7,8 +7,8 @@ const LAST_UPDATED   = '18 June 2025'
 function Section({ title, children }) {
   return (
     <section className="mb-10">
-      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8C88A' }}>{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(242,234,216,0.75)' }}>
+      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8D9C3' }}>{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(245,234,216,0.75)' }}>
         {children}
       </div>
     </section>
@@ -17,7 +17,7 @@ function Section({ title, children }) {
 
 function List({ items }) {
   return (
-    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(242,234,216,0.7)' }}>
+    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(245,234,216,0.7)' }}>
       {items.map((item, i) => <li key={i}>{item}</li>)}
     </ul>
   )
@@ -33,27 +33,27 @@ export default function TermsOfUsePage() {
       <div style={{ background: '#1A0A00', minHeight: '100vh' }} className="px-6 py-16">
         <div className="max-w-3xl mx-auto">
 
-          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>Legal</p>
-          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F2EAD8' }}>Terms of Use</h1>
-          <div className="w-8 h-px mb-6" style={{ background: '#B8752A' }} />
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>Legal</p>
+          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F5EAD8' }}>Terms of Use</h1>
+          <div className="w-8 h-px mb-6" style={{ background: '#A67C52' }} />
           <p className="text-xs mb-10" style={{ color: '#8C7355' }}>
             Effective Date: {EFFECTIVE_DATE} &nbsp;·&nbsp; Last Updated: {LAST_UPDATED}
           </p>
 
-          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(242,234,216,0.7)' }}>
+          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(245,234,216,0.7)' }}>
             These Terms of Use ("Terms") govern your access to and use of the HAIQ Bakery website (haiq.ug) and any services offered through it. By accessing the website, creating an account, or placing an order, you agree to be bound by these Terms. Please read them carefully before using our platform. If you do not agree with any part of these Terms, please do not use our website.
           </p>
 
-          <div style={{ borderTop: '1px solid rgba(184,117,42,0.15)' }} className="pt-10">
+          <div style={{ borderTop: '1px solid rgba(166,124,82,0.15)' }} className="pt-10">
 
             <Section title="1. About HAIQ Bakery">
               <p>
                 HAIQ Bakery is a premium handcrafted cookie brand operated from Muyenga, Kampala, Uganda. We sell cookies, drinks, and cookie boxes online for delivery within Kampala and selected surrounding areas.
               </p>
-              <div className="p-4 mt-2" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                <p><strong style={{ color: '#F2EAD8' }}>HAIQ Bakery</strong></p>
+              <div className="p-4 mt-2" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                <p><strong style={{ color: '#F5EAD8' }}>HAIQ Bakery</strong></p>
                 <p>Muyenga, Kampala, Uganda</p>
-                <p>Email: <a href="mailto:haiqafrica@gmail.com" style={{ color: '#B8752A' }}>haiqafrica@gmail.com</a></p>
+                <p>Email: <a href="mailto:haiqafrica@gmail.com" style={{ color: '#A67C52' }}>haiqafrica@gmail.com</a></p>
               </div>
             </Section>
 
@@ -112,7 +112,7 @@ export default function TermsOfUsePage() {
             </Section>
 
             <Section title="7. Payment">
-              <p>HAIQ Bakery currently accepts <strong style={{ color: '#F2EAD8' }}>Cash on Delivery (COD) only</strong>. Payment is due in full at the time your order is delivered to you.</p>
+              <p>HAIQ Bakery currently accepts <strong style={{ color: '#F5EAD8' }}>Cash on Delivery (COD) only</strong>. Payment is due in full at the time your order is delivered to you.</p>
               <List items={[
                 'You must have the exact cash amount or be prepared to receive change from our delivery driver',
                 'Refusal to pay upon delivery without legitimate cause may result in suspension or permanent ban from our platform',
@@ -123,13 +123,13 @@ export default function TermsOfUsePage() {
             </Section>
 
             <Section title="8. Cancellations">
-              <p><strong style={{ color: '#F2EAD8' }}>By the Customer:</strong></p>
+              <p><strong style={{ color: '#F5EAD8' }}>By the Customer:</strong></p>
               <List items={[
                 'You may cancel your order at any time before its status changes to "En Route." Once an order has been dispatched for delivery, cancellation is no longer available through the platform',
                 'To cancel a pending order, log in to your account, navigate to "Your Orders," select the order, and click "Cancel This Order." You will be asked to provide a reason',
                 'Where a future payment method is introduced, any prepayment will be refunded to you within 5 business days of a successful cancellation',
               ]} />
-              <p className="mt-3"><strong style={{ color: '#F2EAD8' }}>By HAIQ Bakery:</strong></p>
+              <p className="mt-3"><strong style={{ color: '#F5EAD8' }}>By HAIQ Bakery:</strong></p>
               <List items={[
                 'We may cancel your order if we are unable to fulfil it due to stock shortage, kitchen capacity, an incorrect delivery address, our inability to contact you, or suspected fraudulent activity',
                 'We will notify you as soon as possible if we cancel your order',
@@ -215,7 +215,7 @@ export default function TermsOfUsePage() {
 
             <Section title="18. Governing Law and Dispute Resolution">
               <p>These Terms are governed by and construed in accordance with the laws of the Republic of Uganda.</p>
-              <p>If a dispute arises between you and HAIQ Bakery, we ask that you first contact us at <a href="mailto:haiqafrica@gmail.com" style={{ color: '#B8752A' }}>haiqafrica@gmail.com</a> and give us a reasonable opportunity to resolve the matter. We aim to respond to all complaints within 5 business days.</p>
+              <p>If a dispute arises between you and HAIQ Bakery, we ask that you first contact us at <a href="mailto:haiqafrica@gmail.com" style={{ color: '#A67C52' }}>haiqafrica@gmail.com</a> and give us a reasonable opportunity to resolve the matter. We aim to respond to all complaints within 5 business days.</p>
               <p>If a dispute cannot be resolved informally within 30 days, both parties agree to submit to binding arbitration in Kampala under the rules of the Centre for Arbitration and Dispute Resolution (CADER). This does not affect your right to seek urgent injunctive relief from a Ugandan court of competent jurisdiction.</p>
             </Section>
 
@@ -224,7 +224,7 @@ export default function TermsOfUsePage() {
             </Section>
 
             <Section title="20. Entire Agreement">
-              <p>These Terms of Use and our <Link to="/privacy" style={{ color: '#B8752A' }}>Privacy Policy</Link> constitute the entire agreement between you and HAIQ Bakery regarding your use of our platform and supersede all prior agreements, representations, or understandings relating to the same subject matter.</p>
+              <p>These Terms of Use and our <Link to="/privacy" style={{ color: '#A67C52' }}>Privacy Policy</Link> constitute the entire agreement between you and HAIQ Bakery regarding your use of our platform and supersede all prior agreements, representations, or understandings relating to the same subject matter.</p>
             </Section>
 
             <Section title="21. Changes to These Terms">
@@ -233,11 +233,11 @@ export default function TermsOfUsePage() {
             </Section>
 
             <Section title="22. Contact">
-              <div className="p-4" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                <p><strong style={{ color: '#F2EAD8' }}>HAIQ Bakery</strong></p>
+              <div className="p-4" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                <p><strong style={{ color: '#F5EAD8' }}>HAIQ Bakery</strong></p>
                 <p>Muyenga, Kampala, Uganda</p>
-                <p>Email: <a href="mailto:haiqafrica@gmail.com" style={{ color: '#B8752A' }}>haiqafrica@gmail.com</a></p>
-                <p>Website: <a href="https://haiq.ug" style={{ color: '#B8752A' }}>haiq.ug</a></p>
+                <p>Email: <a href="mailto:haiqafrica@gmail.com" style={{ color: '#A67C52' }}>haiqafrica@gmail.com</a></p>
+                <p>Website: <a href="https://haiq.ug" style={{ color: '#A67C52' }}>haiq.ug</a></p>
               </div>
             </Section>
 

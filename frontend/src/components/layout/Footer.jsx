@@ -33,12 +33,12 @@ export default function Footer() {
   }
 
   const inputCls = `w-full px-3 py-2.5 text-xs focus:outline-none transition-colors`
-  const inputSty = { background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)', color: '#F2EAD8' }
-  const inputFocus = e => e.target.style.borderColor = '#B8752A'
-  const inputBlur  = e => e.target.style.borderColor = 'rgba(184,117,42,0.2)'
+  const inputSty = { background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)', color: '#F5EAD8' }
+  const inputFocus = e => e.target.style.borderColor = '#A67C52'
+  const inputBlur  = e => e.target.style.borderColor = 'rgba(166,124,82,0.2)'
 
   return (
-    <footer style={{ background: '#1A0A00', borderTop: '1px solid rgba(184,117,42,0.2)' }}>
+    <footer style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.2)' }}>
 
       <div className="container mx-auto px-6 md:px-16 py-14 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
@@ -46,15 +46,15 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <img src="/HAIQmain.png" alt="HAIQ Bakery" className="h-10 w-auto object-contain mb-4" />
-            <p className="text-xs leading-relaxed mb-5" style={{ color: 'rgba(242,234,216,0.35)' }}>
+            <p className="text-xs leading-relaxed mb-5" style={{ color: 'rgba(245,234,216,0.35)' }}>
               Made For You.<br />Muyenga, Kampala, Uganda.
             </p>
-            <Crown size={18} color="#B8752A" className="opacity-30" />
+            <Crown size={18} color="#A67C52" className="opacity-30" />
           </div>
 
           {/* Shop */}
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8752A' }}>Shop</p>
+            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#A67C52' }}>Shop</p>
             <ul className="space-y-3">
               {[
                 ['All Cookies',    '/shop'],
@@ -64,7 +64,7 @@ export default function Footer() {
               ].map(([label, href]) => (
                 <li key={href}>
                   <Link to={href} className="text-xs hover:opacity-100 transition-opacity"
-                    style={{ color: 'rgba(242,234,216,0.45)', textDecoration: 'none' }}>
+                    style={{ color: 'rgba(245,234,216,0.45)', textDecoration: 'none' }}>
                     {label}
                   </Link>
                 </li>
@@ -74,7 +74,7 @@ export default function Footer() {
 
           {/* Info */}
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8752A' }}>Info</p>
+            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#A67C52' }}>Info</p>
             <ul className="space-y-3">
               {[
                 ['FAQ',          '/faq'],
@@ -84,7 +84,7 @@ export default function Footer() {
               ].map(([label, href]) => (
                 <li key={href}>
                   <Link to={href} className="text-xs hover:opacity-100 transition-opacity"
-                    style={{ color: 'rgba(242,234,216,0.45)', textDecoration: 'none' }}>
+                    style={{ color: 'rgba(245,234,216,0.45)', textDecoration: 'none' }}>
                     {label}
                   </Link>
                 </li>
@@ -94,19 +94,19 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8752A' }}>Stay Close</p>
-            <p className="text-xs leading-relaxed mb-4" style={{ color: 'rgba(242,234,216,0.35)' }}>
+            <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: '#A67C52' }}>Stay Close</p>
+            <p className="text-xs leading-relaxed mb-4" style={{ color: 'rgba(245,234,216,0.35)' }}>
               New flavours, special days, and drops — first in your inbox.
             </p>
 
             {status === 'done' && (
-              <div className="px-4 py-3" style={{ border: '1px solid rgba(184,117,42,0.3)' }}>
-                <p className="text-xs font-medium" style={{ color: '#B8752A' }}>You're in. Watch your inbox.</p>
+              <div className="px-4 py-3" style={{ border: '1px solid rgba(166,124,82,0.3)' }}>
+                <p className="text-xs font-medium" style={{ color: '#A67C52' }}>You're in. Watch your inbox.</p>
               </div>
             )}
 
             {status === 'already' && (
-              <div className="px-4 py-3" style={{ border: '1px solid rgba(184,117,42,0.2)', background: 'rgba(184,117,42,0.06)' }}>
+              <div className="px-4 py-3" style={{ border: '1px solid rgba(166,124,82,0.2)', background: 'rgba(166,124,82,0.06)' }}>
                 <p className="text-xs" style={{ color: '#8C7355' }}>This email is already subscribed.</p>
               </div>
             )}
@@ -153,9 +153,9 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="px-6 md:px-16 py-5" style={{ borderTop: '1px solid rgba(184,117,42,0.12)' }}>
+      <div className="px-6 md:px-16 py-5" style={{ borderTop: '1px solid rgba(166,124,82,0.12)' }}>
         <div className="container mx-auto flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-[10px] tracking-wide" style={{ color: 'rgba(242,234,216,0.2)' }}>
+          <p className="text-[10px] tracking-wide" style={{ color: 'rgba(245,234,216,0.2)' }}>
             © {new Date().getFullYear()} HAIQ Bakery. Made For You.
           </p>
           <div className="flex items-center gap-5 flex-wrap">
@@ -172,11 +172,11 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-5">
               <a href="https://www.instagram.com/haiq_ug" target="_blank" rel="noopener noreferrer"
-                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
+                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(245,234,216,0.2)', textDecoration: 'none' }}>
                 @haiq_ug
               </a>
               <a href="https://www.tiktok.com/@haiq_africa" target="_blank" rel="noopener noreferrer"
-                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(242,234,216,0.2)', textDecoration: 'none' }}>
+                className="text-[10px] tracking-wider hover:opacity-80 transition" style={{ color: 'rgba(245,234,216,0.2)', textDecoration: 'none' }}>
                 @haiq_africa
               </a>
             </div>

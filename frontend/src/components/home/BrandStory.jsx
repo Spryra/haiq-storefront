@@ -29,7 +29,7 @@ export default function BrandStory() {
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
         `}
       >
-        <Crown size={28} color="#B8752A" className="mx-auto mb-8 opacity-60" />
+        <Crown size={28} color="#A67C52" className="mx-auto mb-8 opacity-60" />
 
         <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-6">
           Made For You

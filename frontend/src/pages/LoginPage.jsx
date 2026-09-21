@@ -44,16 +44,16 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
 
         {/* 10% — amber accent mark */}
-        <Crown size={20} color="#B8752A" className="mb-6 opacity-60" />
+        <Crown size={20} color="#A67C52" className="mb-6 opacity-60" />
 
         {/* 30% — label text */}
-        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>
+        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>
           Welcome Back
         </p>
 
         {/* 60% — dominant headline on dark */}
-        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F2EAD8' }}>Sign In</h1>
-        <div className="w-8 h-px mb-8" style={{ background: '#B8752A' }} />
+        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F5EAD8' }}>Sign In</h1>
+        <div className="w-8 h-px mb-8" style={{ background: '#A67C52' }} />
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
@@ -68,9 +68,9 @@ export default function LoginPage() {
               required
               autoComplete="email"
               className="w-full px-4 py-3 text-sm focus:outline-none"
-              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }}
-              onFocus={e => e.target.style.borderColor = '#B8752A'}
-              onBlur={e => e.target.style.borderColor = 'rgba(184,117,42,0.25)'}
+              style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }}
+              onFocus={e => e.target.style.borderColor = '#A67C52'}
+              onBlur={e => e.target.style.borderColor = 'rgba(166,124,82,0.25)'}
             />
           </div>
 
@@ -79,7 +79,7 @@ export default function LoginPage() {
               <label className="block text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8C7355' }}>
                 Password
               </label>
-              <Link to="/forgot-password" className="text-[10px] hover:underline transition" style={{ color: '#B8752A' }}>
+              <Link to="/forgot-password" className="text-[10px] hover:underline transition" style={{ color: '#A67C52' }}>
                 Forgot password?
               </Link>
             </div>
@@ -91,9 +91,9 @@ export default function LoginPage() {
               required
               autoComplete="current-password"
               className="w-full px-4 py-3 text-sm focus:outline-none"
-              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }}
-              onFocus={e => e.target.style.borderColor = '#B8752A'}
-              onBlur={e => e.target.style.borderColor = 'rgba(184,117,42,0.25)'}
+              style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }}
+              onFocus={e => e.target.style.borderColor = '#A67C52'}
+              onBlur={e => e.target.style.borderColor = 'rgba(166,124,82,0.25)'}
             />
           </div>
 
@@ -114,13 +114,13 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="text-xs text-center mt-6" style={{ color: 'rgba(242,234,216,0.35)' }}>
+        <p className="text-xs text-center mt-6" style={{ color: 'rgba(245,234,216,0.35)' }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#B8752A' }} className="hover:underline">Create one</Link>
+          <Link to="/register" style={{ color: '#A67C52' }} className="hover:underline">Create one</Link>
         </p>
 
         {/* One email per account notice */}
-        <p className="text-[10px] text-center mt-3" style={{ color: 'rgba(242,234,216,0.2)' }}>
+        <p className="text-[10px] text-center mt-3" style={{ color: 'rgba(245,234,216,0.2)' }}>
           One account per email address.
         </p>
       </div>

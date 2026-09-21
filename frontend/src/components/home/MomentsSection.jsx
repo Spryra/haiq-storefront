@@ -84,7 +84,7 @@ export default function MomentsSection() {
           <div className="flex items-end justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <Crown size={18} color="#B8752A" />
+                <Crown size={18} color="#A67C52" />
                 <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase">
                   Moments
                 </p>

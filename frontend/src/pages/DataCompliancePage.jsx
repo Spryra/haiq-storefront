@@ -7,8 +7,8 @@ const LAST_UPDATED   = '18 June 2025'
 function Section({ title, children }) {
   return (
     <section className="mb-10">
-      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8C88A' }}>{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(242,234,216,0.75)' }}>
+      <h2 className="font-serif font-bold text-xl mb-4" style={{ color: '#E8D9C3' }}>{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed" style={{ color: 'rgba(245,234,216,0.75)' }}>
         {children}
       </div>
     </section>
@@ -17,7 +17,7 @@ function Section({ title, children }) {
 
 function List({ items }) {
   return (
-    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(242,234,216,0.7)' }}>
+    <ul className="space-y-1.5 pl-4" style={{ listStyleType: 'disc', color: 'rgba(245,234,216,0.7)' }}>
       {items.map((item, i) => <li key={i}>{item}</li>)}
     </ul>
   )
@@ -26,9 +26,9 @@ function List({ items }) {
 function TableHeader({ cols }) {
   return (
     <thead>
-      <tr style={{ background: 'rgba(184,117,42,0.12)' }}>
+      <tr style={{ background: 'rgba(166,124,82,0.12)' }}>
         {cols.map(c => (
-          <th key={c} className="text-left p-3 font-semibold text-xs" style={{ color: '#E8C88A', border: '1px solid rgba(184,117,42,0.2)' }}>{c}</th>
+          <th key={c} className="text-left p-3 font-semibold text-xs" style={{ color: '#E8D9C3', border: '1px solid rgba(166,124,82,0.2)' }}>{c}</th>
         ))}
       </tr>
     </thead>
@@ -37,9 +37,9 @@ function TableHeader({ cols }) {
 
 function TableRow({ cells, i }) {
   return (
-    <tr style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(184,117,42,0.04)' }}>
+    <tr style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(166,124,82,0.04)' }}>
       {cells.map((cell, j) => (
-        <td key={j} className="p-3 text-xs align-top" style={{ color: j === 0 ? 'rgba(242,234,216,0.8)' : 'rgba(242,234,216,0.6)', border: '1px solid rgba(184,117,42,0.15)' }}>
+        <td key={j} className="p-3 text-xs align-top" style={{ color: j === 0 ? 'rgba(245,234,216,0.8)' : 'rgba(245,234,216,0.6)', border: '1px solid rgba(166,124,82,0.15)' }}>
           {cell}
         </td>
       ))}
@@ -57,18 +57,18 @@ export default function DataCompliancePage() {
       <div style={{ background: '#1A0A00', minHeight: '100vh' }} className="px-6 py-16">
         <div className="max-w-3xl mx-auto">
 
-          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>Legal</p>
-          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F2EAD8' }}>Data & Compliance</h1>
-          <div className="w-8 h-px mb-6" style={{ background: '#B8752A' }} />
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>Legal</p>
+          <h1 className="font-serif font-bold text-4xl mb-2" style={{ color: '#F5EAD8' }}>Data & Compliance</h1>
+          <div className="w-8 h-px mb-6" style={{ background: '#A67C52' }} />
           <p className="text-xs mb-10" style={{ color: '#8C7355' }}>
             Effective Date: {EFFECTIVE_DATE} &nbsp;·&nbsp; Last Updated: {LAST_UPDATED}
           </p>
 
-          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(242,234,216,0.7)' }}>
-            HAIQ Bakery is committed to full compliance with the <strong style={{ color: '#F2EAD8' }}>Uganda Data Protection and Privacy Act 2019 (PDPA)</strong> and its Regulations. This page is a technical and legal reference explaining exactly what personal data we hold, where it is stored, how long we keep it, what security controls we apply, and what rights you have. For a plain-language summary of how we use your data day-to-day, see our <Link to="/privacy" style={{ color: '#B8752A' }}>Privacy Policy</Link>.
+          <p className="text-sm leading-relaxed mb-10" style={{ color: 'rgba(245,234,216,0.7)' }}>
+            HAIQ Bakery is committed to full compliance with the <strong style={{ color: '#F5EAD8' }}>Uganda Data Protection and Privacy Act 2019 (PDPA)</strong> and its Regulations. This page is a technical and legal reference explaining exactly what personal data we hold, where it is stored, how long we keep it, what security controls we apply, and what rights you have. For a plain-language summary of how we use your data day-to-day, see our <Link to="/privacy" style={{ color: '#A67C52' }}>Privacy Policy</Link>.
           </p>
 
-          <div style={{ borderTop: '1px solid rgba(184,117,42,0.15)' }} className="pt-10">
+          <div style={{ borderTop: '1px solid rgba(166,124,82,0.15)' }} className="pt-10">
 
             <Section title="1. Legal Framework">
               <p>HAIQ Bakery processes personal data in accordance with the following legislation and regulations:</p>
@@ -78,15 +78,15 @@ export default function DataCompliancePage() {
                 'Uganda Computer Misuse Act 2011',
                 'Uganda Electronic Transactions Act 2011',
               ]} />
-              <p>The supervisory authority for data protection in Uganda is <strong style={{ color: '#F2EAD8' }}>NITA-Uganda (National Information Technology Authority — Uganda)</strong>, through which the Personal Data Protection Office (PDPO) operates.</p>
+              <p>The supervisory authority for data protection in Uganda is <strong style={{ color: '#F5EAD8' }}>NITA-Uganda (National Information Technology Authority — Uganda)</strong>, through which the Personal Data Protection Office (PDPO) operates.</p>
             </Section>
 
             <Section title="2. Data Controller Details">
-              <div className="p-4" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                <p><strong style={{ color: '#F2EAD8' }}>Organisation:</strong> HAIQ Bakery</p>
-                <p><strong style={{ color: '#F2EAD8' }}>Role:</strong> Data Controller</p>
-                <p><strong style={{ color: '#F2EAD8' }}>Address:</strong> Muyenga, Kampala, Uganda</p>
-                <p><strong style={{ color: '#F2EAD8' }}>Data Contact:</strong> <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a></p>
+              <div className="p-4" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                <p><strong style={{ color: '#F5EAD8' }}>Organisation:</strong> HAIQ Bakery</p>
+                <p><strong style={{ color: '#F5EAD8' }}>Role:</strong> Data Controller</p>
+                <p><strong style={{ color: '#F5EAD8' }}>Address:</strong> Muyenga, Kampala, Uganda</p>
+                <p><strong style={{ color: '#F5EAD8' }}>Data Contact:</strong> <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a></p>
               </div>
             </Section>
 
@@ -145,7 +145,7 @@ export default function DataCompliancePage() {
                 </table>
               </div>
 
-              <p className="mt-4"><strong style={{ color: '#F2EAD8' }}>Data we explicitly do NOT collect:</strong></p>
+              <p className="mt-4"><strong style={{ color: '#F5EAD8' }}>Data we explicitly do NOT collect:</strong></p>
               <List items={[
                 'Payment card numbers or banking credentials (we are Cash on Delivery only)',
                 'Mobile money PINs or transaction credentials',
@@ -175,8 +175,8 @@ export default function DataCompliancePage() {
                 </table>
               </div>
 
-              <p className="mt-4"><strong style={{ color: '#F2EAD8' }}>Data-at-rest encryption:</strong> Neon encrypts all data at rest using AES-256. Render's ephemeral environment does not persist any user data between requests.</p>
-              <p><strong style={{ color: '#F2EAD8' }}>Data-in-transit encryption:</strong> All communication between your browser, our CDN, our API, and our database is encrypted via TLS 1.2 or higher (HTTPS). Plaintext HTTP connections are redirected to HTTPS.</p>
+              <p className="mt-4"><strong style={{ color: '#F5EAD8' }}>Data-at-rest encryption:</strong> Neon encrypts all data at rest using AES-256. Render's ephemeral environment does not persist any user data between requests.</p>
+              <p><strong style={{ color: '#F5EAD8' }}>Data-in-transit encryption:</strong> All communication between your browser, our CDN, our API, and our database is encrypted via TLS 1.2 or higher (HTTPS). Plaintext HTTP connections are redirected to HTTPS.</p>
             </Section>
 
             <Section title="5. Data Retention Schedule">
@@ -209,7 +209,7 @@ export default function DataCompliancePage() {
 
               <div className="space-y-4 mt-2">
                 <div>
-                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F2EAD8' }}>Authentication and Access Control</p>
+                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F5EAD8' }}>Authentication and Access Control</p>
                   <List items={[
                     'Passwords are stored exclusively as bcrypt hashes (minimum cost factor 10); we never store, log, or transmit plain-text passwords',
                     'Authentication uses short-lived JSON Web Tokens (JWTs); tokens are stored in the browser\'s local storage and sent as Bearer tokens — no server-side session storage',
@@ -220,7 +220,7 @@ export default function DataCompliancePage() {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F2EAD8' }}>Input Validation and Injection Prevention</p>
+                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F5EAD8' }}>Input Validation and Injection Prevention</p>
                   <List items={[
                     'All user input is validated on the server side using a schema-based validator (Zod) before any processing occurs',
                     'All database queries use parameterised statements via the pg library — SQL injection is structurally prevented',
@@ -230,7 +230,7 @@ export default function DataCompliancePage() {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F2EAD8' }}>Network Security</p>
+                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F5EAD8' }}>Network Security</p>
                   <List items={[
                     'All HTTP traffic is served over HTTPS with TLS 1.2 or higher',
                     'CORS (Cross-Origin Resource Sharing) is configured to allow requests only from our authorised frontend domains',
@@ -239,7 +239,7 @@ export default function DataCompliancePage() {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F2EAD8' }}>Operational Security</p>
+                  <p className="font-semibold text-sm mb-1.5" style={{ color: '#F5EAD8' }}>Operational Security</p>
                   <List items={[
                     'Infrastructure credentials (database connection strings, API keys, JWT secrets) are stored as environment variables; they are never committed to source control',
                     'Access to production environment variables is limited to authorised developers only',
@@ -280,7 +280,7 @@ export default function DataCompliancePage() {
             </Section>
 
             <Section title="9. Your Rights Under the PDPA 2019">
-              <p>The Uganda Data Protection and Privacy Act 2019 grants you the following rights. To exercise any right, contact us at <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a> with the subject line "Data Rights Request." We will verify your identity before processing any request and respond within <strong style={{ color: '#F2EAD8' }}>21 working days</strong>.</p>
+              <p>The Uganda Data Protection and Privacy Act 2019 grants you the following rights. To exercise any right, contact us at <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a> with the subject line "Data Rights Request." We will verify your identity before processing any request and respond within <strong style={{ color: '#F5EAD8' }}>21 working days</strong>.</p>
 
               <div className="space-y-4 mt-2">
                 {[
@@ -293,7 +293,7 @@ export default function DataCompliancePage() {
                   ['Right to Lodge a Complaint', 'If you believe we have violated your rights under the PDPA 2019, you may file a complaint with the Personal Data Protection Office (PDPO), NITA-Uganda, Palm Courts, Plot 7A Rotary Avenue, Kololo, Kampala, Uganda. Website: nita.go.ug.'],
                 ].map(([right, desc], i) => (
                   <div key={i}>
-                    <p className="font-semibold text-sm mb-1" style={{ color: '#F2EAD8' }}>{right}</p>
+                    <p className="font-semibold text-sm mb-1" style={{ color: '#F5EAD8' }}>{right}</p>
                     <p>{desc}</p>
                   </div>
                 ))}
@@ -309,11 +309,11 @@ export default function DataCompliancePage() {
                 'Document the breach, its effects, and the remedial actions taken in an internal incident register',
                 'Take corrective technical and organisational measures to prevent recurrence',
               ]} />
-              <p>If you suspect that your HAIQ account has been compromised, please contact us immediately at <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a> and change your password via the "Forgot Password" link on the login page.</p>
+              <p>If you suspect that your HAIQ account has been compromised, please contact us immediately at <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a> and change your password via the "Forgot Password" link on the login page.</p>
             </Section>
 
             <Section title="11. Children's Data">
-              <p>We do not knowingly collect or process personal data from children under the age of 13. Our platform is not directed at children. If we become aware that we have inadvertently collected data from a child under 13, we will delete it promptly. If you believe a child under 13 has used our platform, please notify us at <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a>.</p>
+              <p>We do not knowingly collect or process personal data from children under the age of 13. Our platform is not directed at children. If we become aware that we have inadvertently collected data from a child under 13, we will delete it promptly. If you believe a child under 13 has used our platform, please notify us at <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a>.</p>
             </Section>
 
             <Section title="12. Updates to This Page">
@@ -322,19 +322,19 @@ export default function DataCompliancePage() {
 
             <Section title="13. Contact and Regulatory Authority">
               <div className="grid sm:grid-cols-2 gap-4 mt-2">
-                <div className="p-4" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                  <p className="font-semibold text-xs mb-2" style={{ color: '#B8752A' }}>HAIQ BAKERY — DATA CONTACT</p>
+                <div className="p-4" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                  <p className="font-semibold text-xs mb-2" style={{ color: '#A67C52' }}>HAIQ BAKERY — DATA CONTACT</p>
                   <p>Muyenga, Kampala, Uganda</p>
-                  <p>Email: <a href="mailto:privacy@haiq.ug" style={{ color: '#B8752A' }}>privacy@haiq.ug</a></p>
+                  <p>Email: <a href="mailto:privacy@haiq.ug" style={{ color: '#A67C52' }}>privacy@haiq.ug</a></p>
                   <p>Response time: 21 working days</p>
                 </div>
-                <div className="p-4" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
-                  <p className="font-semibold text-xs mb-2" style={{ color: '#B8752A' }}>SUPERVISORY AUTHORITY</p>
+                <div className="p-4" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
+                  <p className="font-semibold text-xs mb-2" style={{ color: '#A67C52' }}>SUPERVISORY AUTHORITY</p>
                   <p>Personal Data Protection Office (PDPO)</p>
                   <p>NITA-Uganda</p>
                   <p>Palm Courts, Plot 7A Rotary Avenue</p>
                   <p>Kololo, Kampala, Uganda</p>
-                  <p>Website: <span style={{ color: '#B8752A' }}>nita.go.ug</span></p>
+                  <p>Website: <span style={{ color: '#A67C52' }}>nita.go.ug</span></p>
                 </div>
               </div>
             </Section>

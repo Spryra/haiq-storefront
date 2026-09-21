@@ -25,8 +25,8 @@ function StarRating({ value, onChange, readonly = false, size = 'md' }) {
             className={`transition-transform ${!readonly ? 'cursor-pointer hover:scale-110' : 'cursor-default'}`}
           >
             <Star size={px} strokeWidth={1.5}
-              fill={active ? '#B8752A' : 'none'}
-              color={active ? '#B8752A' : 'rgba(184,117,42,0.35)'} />
+              fill={active ? '#A67C52' : 'none'}
+              color={active ? '#A67C52' : 'rgba(166,124,82,0.35)'} />
           </button>
         )
       })}
@@ -37,7 +37,7 @@ function StarRating({ value, onChange, readonly = false, size = 'md' }) {
 // ── Single review card ────────────────────────────────────────────────────────
 function ReviewCard({ review }) {
   return (
-    <div className="py-5" style={{ borderBottom: '1px solid rgba(184,117,42,0.15)' }}>
+    <div className="py-5" style={{ borderBottom: '1px solid rgba(166,124,82,0.15)' }}>
       <div className="flex items-start justify-between mb-2 gap-4">
         <div>
           <p className="font-semibold text-sm" style={{ color: '#1A0A00' }}>{review.name}</p>
@@ -128,7 +128,7 @@ export default function ProductReviews({ productSlug }) {
       {/* Header */}
       <div className="flex items-end justify-between mb-8 gap-4 flex-wrap">
         <div>
-          <p className="text-[10px] font-semibold tracking-[0.25em] uppercase mb-1" style={{ color: '#B8752A' }}>
+          <p className="text-[10px] font-semibold tracking-[0.25em] uppercase mb-1" style={{ color: '#A67C52' }}>
             Customer Feedback
           </p>
           <h2 className="font-serif text-2xl md:text-3xl font-bold" style={{ color: '#1A0A00' }}>
@@ -153,16 +153,16 @@ export default function ProductReviews({ productSlug }) {
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map(i => (
-            <div key={i} className="py-5" style={{ borderBottom: '1px solid rgba(184,117,42,0.1)' }}>
-              <div className="h-3 skeleton rounded mb-2" style={{ width: '30%', background: 'rgba(184,117,42,0.08)' }} />
-              <div className="h-3 skeleton rounded mb-1" style={{ width: '100%', background: 'rgba(184,117,42,0.06)' }} />
-              <div className="h-3 skeleton rounded" style={{ width: '75%', background: 'rgba(184,117,42,0.06)' }} />
+            <div key={i} className="py-5" style={{ borderBottom: '1px solid rgba(166,124,82,0.1)' }}>
+              <div className="h-3 skeleton rounded mb-2" style={{ width: '30%', background: 'rgba(166,124,82,0.08)' }} />
+              <div className="h-3 skeleton rounded mb-1" style={{ width: '100%', background: 'rgba(166,124,82,0.06)' }} />
+              <div className="h-3 skeleton rounded" style={{ width: '75%', background: 'rgba(166,124,82,0.06)' }} />
             </div>
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="py-10 text-center" style={{ background: '#F2EAD8', border: '1px solid rgba(184,117,42,0.15)' }}>
-          <Star size={32} style={{ color: 'rgba(184,117,42,0.4)' }} className="mb-3 mx-auto" />
+        <div className="py-10 text-center" style={{ background: '#F5EAD8', border: '1px solid rgba(166,124,82,0.15)' }}>
+          <Star size={32} style={{ color: 'rgba(166,124,82,0.4)' }} className="mb-3 mx-auto" />
           <p className="font-serif text-lg font-bold mb-1" style={{ color: '#1A0A00' }}>No reviews yet</p>
           <p className="text-sm" style={{ color: '#8C7355' }}>Be the first to share your experience.</p>
         </div>
@@ -174,8 +174,8 @@ export default function ProductReviews({ productSlug }) {
 
       {/* Success */}
       {status === 'success' && (
-        <div className="mt-4 px-4 py-3 text-sm flex items-center gap-2" style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.25)', color: '#E8C88A' }}>
-          <CheckCircle size={15} style={{ color: '#B8752A', flexShrink: 0 }} />
+        <div className="mt-4 px-4 py-3 text-sm flex items-center gap-2" style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.25)', color: '#E8D9C3' }}>
+          <CheckCircle size={15} style={{ color: '#A67C52', flexShrink: 0 }} />
           Your review has been submitted and is pending approval.
         </div>
       )}
@@ -191,7 +191,7 @@ export default function ProductReviews({ productSlug }) {
       <div className="mt-8">
         {!user ? (
           // Not signed in — prompt to login
-          <div className="px-5 py-4" style={{ background: '#F2EAD8', border: '1px solid rgba(184,117,42,0.2)' }}>
+          <div className="px-5 py-4" style={{ background: '#F5EAD8', border: '1px solid rgba(166,124,82,0.2)' }}>
             <p className="text-sm font-medium mb-2" style={{ color: '#1A0A00' }}>
               Sign in to leave a review
             </p>
@@ -201,7 +201,7 @@ export default function ProductReviews({ productSlug }) {
             <Link
               to="/login"
               className="inline-block font-bold text-[11px] tracking-[0.2em] uppercase px-5 py-2.5 transition-opacity hover:opacity-80"
-              style={{ background: '#B8752A', color: '#1A0A00' }}
+              style={{ background: '#A67C52', color: '#1A0A00' }}
             >
               Sign In to Review
             </Link>
@@ -214,7 +214,7 @@ export default function ProductReviews({ productSlug }) {
           <form
             onSubmit={handleSubmit}
             className="p-5 md:p-6"
-            style={{ background: '#F2EAD8', border: '1px solid rgba(184,117,42,0.2)' }}
+            style={{ background: '#F5EAD8', border: '1px solid rgba(166,124,82,0.2)' }}
           >
             <h3 className="font-serif text-xl font-bold mb-5" style={{ color: '#1A0A00' }}>
               Your Review
@@ -222,9 +222,9 @@ export default function ProductReviews({ productSlug }) {
 
             {/* Signed-in user name — shown but not editable */}
             <div className="flex items-center gap-3 mb-5 px-3 py-2.5"
-              style={{ background: 'rgba(184,117,42,0.08)', border: '1px solid rgba(184,117,42,0.2)' }}>
+              style={{ background: 'rgba(166,124,82,0.08)', border: '1px solid rgba(166,124,82,0.2)' }}>
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                style={{ background: '#B8752A', color: '#1A0A00' }}>
+                style={{ background: '#A67C52', color: '#1A0A00' }}>
                 {autoName?.[0]?.toUpperCase() || '?'}
               </div>
               <div>
@@ -242,7 +242,7 @@ export default function ProductReviews({ productSlug }) {
             {/* Comment */}
             <div className="mb-5">
               <label className="block text-xs font-semibold mb-1.5" style={{ color: '#1A0A00' }}>
-                Your Review <span style={{ color: '#B8752A' }}>*</span>
+                Your Review <span style={{ color: '#A67C52' }}>*</span>
               </label>
               <textarea
                 value={comment}
@@ -253,7 +253,7 @@ export default function ProductReviews({ productSlug }) {
                 className="w-full px-4 py-2.5 text-sm focus:outline-none resize-none"
                 style={{
                   background:  '#fff',
-                  border:      '1px solid rgba(184,117,42,0.3)',
+                  border:      '1px solid rgba(166,124,82,0.3)',
                   color:       '#1A0A00',
                 }}
               />

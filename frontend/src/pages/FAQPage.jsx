@@ -71,7 +71,7 @@ function FAQItem({ q, a, index, sectionIndex }) {
   const id = `faq-${sectionIndex}-${index}`
 
   return (
-    <div style={{ borderBottom: '1px solid rgba(184,117,42,0.15)' }}>
+    <div style={{ borderBottom: '1px solid rgba(166,124,82,0.15)' }}>
       <button
         id={`${id}-btn`}
         aria-expanded={open}
@@ -82,7 +82,7 @@ function FAQItem({ q, a, index, sectionIndex }) {
         <div className="flex items-start gap-5">
           <span
             className="font-serif font-bold text-sm mt-0.5 flex-shrink-0 tabular-nums"
-            style={{ color: 'rgba(184,117,42,0.3)' }}
+            style={{ color: 'rgba(166,124,82,0.3)' }}
           >
             {String(index + 1).padStart(2, '0')}
           </span>
@@ -90,7 +90,7 @@ function FAQItem({ q, a, index, sectionIndex }) {
             className="font-serif font-bold leading-snug transition-colors duration-200"
             style={{
               fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-              color: open ? '#F2EAD8' : 'rgba(242,234,216,0.75)',
+              color: open ? '#F5EAD8' : 'rgba(245,234,216,0.75)',
             }}
           >
             {q}
@@ -99,7 +99,7 @@ function FAQItem({ q, a, index, sectionIndex }) {
         <span
           className="text-2xl flex-shrink-0 mt-0.5 transition-transform duration-300 font-light"
           style={{
-            color:     '#B8752A',
+            color:     '#A67C52',
             transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
           }}
         >
@@ -116,7 +116,7 @@ function FAQItem({ q, a, index, sectionIndex }) {
       >
         <p
           className="text-sm leading-relaxed pb-7 pl-10"
-          style={{ color: 'rgba(242,234,216,0.5)' }}
+          style={{ color: 'rgba(245,234,216,0.5)' }}
         >
           {a}
         </p>
@@ -131,19 +131,19 @@ export default function FAQPage() {
       <FAQSeo />
 
       {/* Page header */}
-      <div className="border-b py-20 md:py-28 px-6 md:px-16" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
-        <Crown size={22} color="#B8752A" className="mb-5 opacity-65" />
-        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: '#B8752A' }}>
+      <div className="border-b py-20 md:py-28 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Crown size={22} color="#A67C52" className="mb-5 opacity-65" />
+        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: '#A67C52' }}>
           Questions
         </p>
         <h1
           className="font-serif font-bold leading-tight mb-4"
-          style={{ fontSize: 'clamp(3.2rem, 8vw, 7rem)', color: '#F2EAD8' }}
+          style={{ fontSize: 'clamp(3.2rem, 8vw, 7rem)', color: '#F5EAD8' }}
         >
           FAQ.
         </h1>
-        <div className="w-10 h-px" style={{ background: '#B8752A' }} />
-        <p className="mt-5 text-base leading-relaxed max-w-md" style={{ color: 'rgba(242,234,216,0.35)' }}>
+        <div className="w-10 h-px" style={{ background: '#A67C52' }} />
+        <p className="mt-5 text-base leading-relaxed max-w-md" style={{ color: 'rgba(245,234,216,0.35)' }}>
           The things people ask most. Answered plainly.
         </p>
       </div>
@@ -155,14 +155,14 @@ export default function FAQPage() {
 
             {/* Section label */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-px flex-shrink-0 w-4" style={{ background: '#B8752A' }} />
+              <div className="h-px flex-shrink-0 w-4" style={{ background: '#A67C52' }} />
               <p
                 className="text-[10px] font-bold uppercase tracking-[0.3em] whitespace-nowrap"
-                style={{ color: '#B8752A' }}
+                style={{ color: '#A67C52' }}
               >
                 {section.section}
               </p>
-              <div className="h-px flex-1" style={{ background: 'rgba(184,117,42,0.2)' }} />
+              <div className="h-px flex-1" style={{ background: 'rgba(166,124,82,0.2)' }} />
             </div>
 
             {section.items.map((item, i) => (
@@ -178,17 +178,17 @@ export default function FAQPage() {
         ))}
 
         {/* Still have a question */}
-        <div className="mt-16 pt-10" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
-          <p className="font-serif font-bold text-xl mb-2" style={{ color: '#F2EAD8' }}>
+        <div className="mt-16 pt-10" style={{ borderTop: '1px solid rgba(166,124,82,0.2)' }}>
+          <p className="font-serif font-bold text-xl mb-2" style={{ color: '#F5EAD8' }}>
             Still have a question?
           </p>
-          <p className="text-sm mb-5" style={{ color: 'rgba(242,234,216,0.35)' }}>
+          <p className="text-sm mb-5" style={{ color: 'rgba(245,234,216,0.35)' }}>
             We're real people. We respond.
           </p>
           <a
             href="/contact"
             className="inline-flex items-center gap-2 font-bold text-[11px] tracking-[0.25em] uppercase transition-opacity hover:opacity-70"
-            style={{ color: '#B8752A' }}
+            style={{ color: '#A67C52' }}
           >
             Contact Us <ArrowRight size={14} />
           </a>

@@ -106,8 +106,8 @@ export default function PaymentConfirmationPage() {
     return (
       <div style={{ background: '#0E0600', minHeight: '100vh' }} className="flex items-center justify-center">
         <div className="text-center px-4">
-          <CheckCircle size={56} style={{ color: '#B8752A' }} className="mb-6 mx-auto" />
-          <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Payment Verified!</h1>
+          <CheckCircle size={56} style={{ color: '#A67C52' }} className="mb-6 mx-auto" />
+          <h1 className="font-serif text-3xl mb-2" style={{ color: '#F5EAD8' }}>Payment Verified!</h1>
           <p style={{ color: '#8C7355' }}>Your order is being confirmed...</p>
         </div>
       </div>
@@ -119,8 +119,8 @@ export default function PaymentConfirmationPage() {
       <div style={{ background: '#0E0600', minHeight: '100vh' }} className="flex items-center justify-center">
         <div className="max-w-md px-4">
           <div className="text-center mb-8">
-            <AlertTriangle size={56} style={{ color: '#B8752A' }} className="mb-6 mx-auto" />
-            <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Connection Error</h1>
+            <AlertTriangle size={56} style={{ color: '#A67C52' }} className="mb-6 mx-auto" />
+            <h1 className="font-serif text-3xl mb-2" style={{ color: '#F5EAD8' }}>Connection Error</h1>
             <p style={{ color: '#8C7355' }} className="mb-6">
               {pollError || 'Unable to check payment status. Please try again.'}
             </p>
@@ -134,14 +134,14 @@ export default function PaymentConfirmationPage() {
                 setAttempts(0)
               }}
               className="flex-1 py-3 font-bold text-[11px] tracking-[0.2em] uppercase"
-              style={{ background: '#B8752A', color: '#1A0A00' }}
+              style={{ background: '#A67C52', color: '#1A0A00' }}
             >
               Try Again
             </button>
             <button
               onClick={() => navigate('/shop', { replace: true })}
               className="flex-1 py-3 font-bold text-[11px] tracking-[0.2em] uppercase"
-              style={{ background: 'transparent', color: '#8C7355', border: '1px solid rgba(184,117,42,0.3)' }}
+              style={{ background: 'transparent', color: '#8C7355', border: '1px solid rgba(166,124,82,0.3)' }}
             >
               Return to Shop
             </button>
@@ -157,7 +157,7 @@ export default function PaymentConfirmationPage() {
         <div className="max-w-md px-4">
           <div className="text-center mb-8">
             <div className="text-6xl mb-6">⏱️</div>
-            <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Payment Timeout</h1>
+            <h1 className="font-serif text-3xl mb-2" style={{ color: '#F5EAD8' }}>Payment Timeout</h1>
             <p style={{ color: '#8C7355' }} className="mb-6">
               We didn't receive payment confirmation after 5 minutes. Please try again.
             </p>
@@ -165,7 +165,7 @@ export default function PaymentConfirmationPage() {
           <button
             onClick={() => navigate('/shop', { replace: true })}
             className="w-full py-3 font-bold text-[11px] tracking-[0.2em] uppercase"
-            style={{ background: '#B8752A', color: '#1A0A00' }}
+            style={{ background: '#A67C52', color: '#1A0A00' }}
           >
             Return to Shop
           </button>
@@ -180,17 +180,17 @@ export default function PaymentConfirmationPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <img src={config.logo} alt={config.label} className="h-16 w-auto object-contain mx-auto mb-6 bg-white rounded p-2" />
-          <h1 className="font-serif text-3xl mb-2" style={{ color: '#F2EAD8' }}>Complete Payment</h1>
+          <h1 className="font-serif text-3xl mb-2" style={{ color: '#F5EAD8' }}>Complete Payment</h1>
           <p style={{ color: '#8C7355' }}>We're waiting for your payment confirmation</p>
         </div>
 
         {/* Main instructions */}
-        <div className="p-6 rounded-lg mb-6" style={{ background: '#2A1200', border: '2px solid rgba(184,117,42,0.3)' }}>
+        <div className="p-6 rounded-lg mb-6" style={{ background: '#2A1200', border: '2px solid rgba(166,124,82,0.3)' }}>
           <div className="text-center mb-6">
-            <p className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: '#B8752A' }}>
+            <p className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: '#A67C52' }}>
               Dial this code from your {config.label.split(' ')[0]} phone:
             </p>
-            <p className="text-4xl font-bold font-mono mb-2" style={{ color: '#B8752A', letterSpacing: '4px' }}>
+            <p className="text-4xl font-bold font-mono mb-2" style={{ color: '#A67C52', letterSpacing: '4px' }}>
               {config.ussd}
             </p>
             <p className="text-[10px]" style={{ color: '#8C7355' }}>
@@ -198,11 +198,11 @@ export default function PaymentConfirmationPage() {
             </p>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(184,117,42,0.2)', paddingTop: '16px' }}>
-            <p className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: '#B8752A' }}>
+          <div style={{ borderTop: '1px solid rgba(166,124,82,0.2)', paddingTop: '16px' }}>
+            <p className="text-[10px] font-semibold uppercase tracking-wide mb-3" style={{ color: '#A67C52' }}>
               Merchant Code:
             </p>
-            <div className="bg-black/20 rounded px-3 py-2 font-mono text-lg font-bold text-center mb-4" style={{ color: '#B8752A' }}>
+            <div className="bg-black/20 rounded px-3 py-2 font-mono text-lg font-bold text-center mb-4" style={{ color: '#A67C52' }}>
               {config.merchantCode}
             </div>
             <p className="text-[10px]" style={{ color: '#8C7355' }}>
@@ -215,8 +215,8 @@ export default function PaymentConfirmationPage() {
         <div className="text-center mb-6">
           <div className="inline-block">
             <div className="w-12 h-12 rounded-full border-4 border-transparent animate-spin" style={{ 
-              borderTopColor: '#B8752A',
-              borderRightColor: 'rgba(184,117,42,0.3)',
+              borderTopColor: '#A67C52',
+              borderRightColor: 'rgba(166,124,82,0.3)',
             }} />
           </div>
           <p className="text-xs mt-4" style={{ color: '#8C7355' }}>
@@ -231,8 +231,8 @@ export default function PaymentConfirmationPage() {
         </div>
 
         {/* Help section */}
-        <div className="p-4 rounded" style={{ background: 'rgba(184,117,42,0.07)', border: '1px solid rgba(184,117,42,0.2)' }}>
-          <p className="text-[10px] font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5" style={{ color: '#B8752A' }}><ListOrdered size={12} /> Steps</p>
+        <div className="p-4 rounded" style={{ background: 'rgba(166,124,82,0.07)', border: '1px solid rgba(166,124,82,0.2)' }}>
+          <p className="text-[10px] font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5" style={{ color: '#A67C52' }}><ListOrdered size={12} /> Steps</p>
           <ol className="text-[10px] space-y-1" style={{ color: '#8C7355', listStyleType: 'decimal', marginLeft: '20px' }}>
             <li>Dial {config.ussd}</li>
             <li>Enter merchant code: {config.merchantCode}</li>
@@ -244,7 +244,7 @@ export default function PaymentConfirmationPage() {
         <button
           onClick={() => navigate('/shop', { replace: true })}
           className="w-full mt-6 py-2 text-xs tracking-widest uppercase"
-          style={{ background: 'transparent', color: '#8C7355', border: '1px solid rgba(184,117,42,0.3)' }}
+          style={{ background: 'transparent', color: '#8C7355', border: '1px solid rgba(166,124,82,0.3)' }}
         >
           Cancel & Return to Shop
         </button>

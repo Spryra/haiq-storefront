@@ -75,7 +75,7 @@ export default function RegisterPage() {
       <RegisterSEO />
       <div className="w-full max-w-sm">
 
-        <Crown size={20} color="#B8752A" className="mb-6 opacity-55" />
+        <Crown size={20} color="#A67C52" className="mb-6 opacity-55" />
 
         <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-2">
           Join HAIQ
@@ -170,8 +170,8 @@ export default function RegisterPage() {
 
         <p className="text-[10px] text-center mt-3" style={{ color: '#8C7355' }}>
           By creating an account, you agree to our{' '}
-          <Link to="/terms" style={{ color: '#B8752A' }}>Terms of Use</Link>{' '}and{' '}
-          <Link to="/privacy" style={{ color: '#B8752A' }}>Privacy Policy</Link>.
+          <Link to="/terms" style={{ color: '#A67C52' }}>Terms of Use</Link>{' '}and{' '}
+          <Link to="/privacy" style={{ color: '#A67C52' }}>Privacy Policy</Link>.
         </p>
 
         <p className="text-light/30 text-xs text-center mt-6">

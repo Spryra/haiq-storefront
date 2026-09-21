@@ -1,4 +1,4 @@
-export default function Crown({ size = 26, color = '#B8752A', className = '' }) {
+export default function Crown({ size = 26, color = '#A67C52', className = '' }) {
   // Triple the size globally
   const multipliedSize = size * 3;
 
@@ -9,7 +9,7 @@ export default function Crown({ size = 26, color = '#B8752A', className = '' }) 
       width={multipliedSize}
       height={Math.round(multipliedSize * 0.72)}
       className={className}
-      style={{ filter: 'drop-shadow(0 0 4px rgba(184,117,42,0.7))' }}
+      style={{ filter: 'drop-shadow(0 0 4px rgba(166,124,82,0.7))' }}
     />
   );
 }

@@ -35,7 +35,7 @@ function ProductCard({ product }) {
   const image = localImgMap[product.slug] || imgSrc
 
   return (
-    <div className="group flex flex-col" style={{ background: '#1A0A00', border: '1px solid rgba(184,117,42,0.12)' }}>
+    <div className="group flex flex-col" style={{ background: '#1A0A00', border: '1px solid rgba(166,124,82,0.12)' }}>
 
       {/* Image */}
       <Link to={product.is_box_item ? "/build-your-box" : `/products/${product.slug}`} className="block relative overflow-hidden" style={{ aspectRatio: '1' }}>
@@ -64,7 +64,7 @@ function ProductCard({ product }) {
           )}
           {product.is_box_item && (
             <span className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-widest"
-              style={{ background: 'rgba(232,200,138,0.9)', color: '#1A0A00' }}>Special Box</span>
+              style={{ background: 'rgba(232,217,195,0.9)', color: '#1A0A00' }}>Special Box</span>
           )}
         </div>
       </Link>
@@ -73,17 +73,17 @@ function ProductCard({ product }) {
       <div className="flex flex-col flex-1 p-4">
         <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
           <p className="font-serif font-bold text-base leading-tight mb-0.5 hover:opacity-80 transition-opacity"
-            style={{ color: '#F2EAD8' }}>{product.name}</p>
+            style={{ color: '#F5EAD8' }}>{product.name}</p>
           <p className="text-[10px] mb-3" style={{ color: '#8C7355' }}>{product.subtitle}</p>
         </Link>
 
         <p className="text-[11px] leading-relaxed mb-4 flex-1 line-clamp-2"
-          style={{ color: 'rgba(242,234,216,0.4)' }}>
+          style={{ color: 'rgba(245,234,216,0.4)' }}>
           {product.tasting_notes || product.description}
         </p>
 
         <div className="flex items-center justify-between mt-auto">
-          <p className="font-bold text-sm" style={{ color: '#B8752A' }}>
+          <p className="font-bold text-sm" style={{ color: '#A67C52' }}>
             UGX {price.toLocaleString()}
           </p>
 
@@ -92,7 +92,7 @@ function ProductCard({ product }) {
             disabled={soldOut || adding}
             className="text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 transition-all disabled:opacity-40"
             style={{
-              background: adding ? '#7A3B1E' : '#B8752A',
+              background: adding ? '#6B4423' : '#A67C52',
               color:      '#1A0A00',
               transform:  adding ? 'scale(0.95)' : 'scale(1)',
               transition: 'all 0.2s',
@@ -108,8 +108,8 @@ function ProductCard({ product }) {
 
 function SkeletonCard() {
   return (
-    <div style={{ background: '#1A0A00', border: '1px solid rgba(184,117,42,0.1)' }}>
-      <div className="skeleton" style={{ aspectRatio: '1', background: 'rgba(184,117,42,0.06)' }} />
+    <div style={{ background: '#1A0A00', border: '1px solid rgba(166,124,82,0.1)' }}>
+      <div className="skeleton" style={{ aspectRatio: '1', background: 'rgba(166,124,82,0.06)' }} />
       <div className="p-4 space-y-2">
         <div className="h-4 skeleton rounded" style={{ width: '60%' }} />
         <div className="h-3 skeleton rounded" style={{ width: '40%' }} />
@@ -170,31 +170,31 @@ export default function ShopPage() {
       <ShopSEO />
 
       {/* Page header */}
-      <div className="border-b py-16 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
-        <Crown size={20} color="#B8752A" className="mb-5 opacity-65" />
+      <div className="border-b py-16 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Crown size={20} color="#A67C52" className="mb-5 opacity-65" />
         <h1
           className="font-serif font-bold leading-tight mb-3"
-          style={{ fontSize: 'clamp(2.8rem, 7vw, 6rem)', color: '#F2EAD8' }}
+          style={{ fontSize: 'clamp(2.8rem, 7vw, 6rem)', color: '#F5EAD8' }}
         >
           The Collection.
         </h1>
-        <div className="w-10 h-px mb-4" style={{ background: '#B8752A' }} />
-        <p style={{ color: 'rgba(242,234,216,0.4)' }} className="text-base max-w-sm leading-relaxed">
+        <div className="w-10 h-px mb-4" style={{ background: '#A67C52' }} />
+        <p style={{ color: 'rgba(245,234,216,0.4)' }} className="text-base max-w-sm leading-relaxed">
           Six cookies. All handcrafted. All made for you.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="px-6 md:px-16 py-6 border-b" style={{ borderColor: 'rgba(184,117,42,0.15)' }}>
-        <div className="flex items-center gap-1 w-fit p-1" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
+      <div className="px-6 md:px-16 py-6 border-b" style={{ borderColor: 'rgba(166,124,82,0.15)' }}>
+        <div className="flex items-center gap-1 w-fit p-1" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)' }}>
           {TABS.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className="px-5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200"
               style={{
-                background: activeTab === t.key ? '#B8752A' : 'transparent',
-                color:      activeTab === t.key ? '#1A0A00' : 'rgba(242,234,216,0.45)',
+                background: activeTab === t.key ? '#A67C52' : 'transparent',
+                color:      activeTab === t.key ? '#1A0A00' : 'rgba(245,234,216,0.45)',
               }}
             >
               {t.label}
@@ -209,18 +209,18 @@ export default function ShopPage() {
         {/* Build Your Box redirect */}
         {activeTab === 'build-your-box' && (
           <div className="max-w-2xl mx-auto text-center py-12">
-            <Crown size={28} color="#B8752A" className="mx-auto mb-6 opacity-60" />
-            <h2 className="font-serif font-bold text-3xl md:text-5xl mb-4" style={{ color: '#F2EAD8' }}>
+            <Crown size={28} color="#A67C52" className="mx-auto mb-6 opacity-60" />
+            <h2 className="font-serif font-bold text-3xl md:text-5xl mb-4" style={{ color: '#F5EAD8' }}>
               Build Your Box.
             </h2>
-            <div className="w-10 h-px mx-auto mb-5" style={{ background: '#B8752A' }} />
-            <p className="text-base leading-relaxed mb-8 max-w-sm mx-auto" style={{ color: 'rgba(242,234,216,0.45)' }}>
-              Choose exactly 4 cookies from our 5 flavours. Mix freely. Your call.
+            <div className="w-10 h-px mx-auto mb-5" style={{ background: '#A67C52' }} />
+            <p className="text-base leading-relaxed mb-8 max-w-sm mx-auto" style={{ color: 'rgba(245,234,216,0.45)' }}>
+              Choose exactly 4 cookies from our 3 buildable flavours. Mix freely. Your call.
             </p>
             <Link
               to="/build-your-box"
               className="inline-flex items-center gap-2 font-bold text-[11px] tracking-[0.28em] uppercase px-10 py-4 transition-all hover:opacity-90"
-              style={{ background: '#B8752A', color: '#1A0A00' }}
+              style={{ background: '#A67C52', color: '#1A0A00' }}
             >
               Start Building <ArrowRight size={15} />
             </Link>
@@ -237,15 +237,15 @@ export default function ShopPage() {
 
             {!loading && error && (
               <div className="text-center py-20">
-                <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F2EAD8' }}>
-                  <AlertTriangle size={22} className="mx-auto mb-2" style={{ color: '#B8752A' }} />
+                <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F5EAD8' }}>
+                  <AlertTriangle size={22} className="mx-auto mb-2" style={{ color: '#A67C52' }} />
                   Couldn't Load Products
                 </p>
                 <p style={{ color: '#8C7355' }} className="text-sm mb-4">{error}</p>
                 <button
                   onClick={() => window.location.reload()}
                   className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
-                  style={{ border: '1px solid rgba(184,117,42,0.5)', color: '#B8752A' }}
+                  style={{ border: '1px solid rgba(166,124,82,0.5)', color: '#A67C52' }}
                 >
                   Try Again
                 </button>
@@ -254,7 +254,7 @@ export default function ShopPage() {
 
             {!loading && !error && products.length === 0 && (
               <div className="text-center py-20">
-                <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F2EAD8' }}>
+                <p className="font-serif text-2xl font-bold mb-2" style={{ color: '#F5EAD8' }}>
                   Nothing here yet.
                 </p>
                 <p style={{ color: '#8C7355' }} className="text-sm">Check back after the next bake.</p>
@@ -266,7 +266,7 @@ export default function ShopPage() {
                 <button
                   onClick={() => setPage(p => p + 1)}
                   className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3 transition-all hover:opacity-90"
-                  style={{ border: '1px solid rgba(184,117,42,0.5)', color: '#B8752A' }}
+                  style={{ border: '1px solid rgba(166,124,82,0.5)', color: '#A67C52' }}
                 >
                   Load More
                 </button>

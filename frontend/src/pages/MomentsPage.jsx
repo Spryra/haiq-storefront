@@ -41,7 +41,7 @@ export default function MomentsPage() {
 
       {/* Hero header */}
       <div className="border-b border-primary/20 py-20 md:py-28 px-6 md:px-16">
-        <Crown size={22} color="#B8752A" className="mb-5 opacity-65" />
+        <Crown size={22} color="#A67C52" className="mb-5 opacity-65" />
         <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-3">
           Made For You
         </p>
@@ -68,7 +68,7 @@ export default function MomentsPage() {
 
       {/* Bottom CTA */}
       <div className="border-t border-primary/20 py-16 px-6 text-center">
-        <Crown size={22} color="#B8752A" className="mx-auto mb-4 opacity-40" />
+        <Crown size={22} color="#A67C52" className="mx-auto mb-4 opacity-40" />
         <p className="text-light/40 text-sm mb-6 tracking-wide">
           Be part of the next moment.
         </p>

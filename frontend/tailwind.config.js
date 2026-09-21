@@ -10,19 +10,22 @@ export default {
 
         // 30% — secondary surfaces and text
         surface: '#2A1200',
-        light:   '#F2EAD8',
+        light:   '#F5EAD8',
         muted:   '#8C7355',
-        border:  'rgba(184,117,42,0.2)',
+        border:  'rgba(166,124,82,0.2)',
 
-        // 10% — amber accent (CTAs, highlights, active states)
-        primary:   '#B8752A',
-        secondary: '#D4A574',
-        gold:      '#E8C88A',
-        sienna:    '#7A3B1E',
+        // 10% — bakery tan accent, pulled from the HAIQ logo itself
+        // (was #B8752A — read as "brewery"; this is the logo's own tan)
+        primary:   '#A67C52',
+        secondary: '#D4C4A8',
+        gold:      '#E8D9C3',
+        sienna:    '#6B4423',
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        // Poppins throughout — bold for headings/labels/buttons,
+        // regular weight for body copy (set per-element, not here)
+        serif: ['Poppins', 'system-ui', 'sans-serif'],
+        sans:  ['Poppins', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         '2xs': '0.625rem',

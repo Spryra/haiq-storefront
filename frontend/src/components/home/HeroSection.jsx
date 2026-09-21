@@ -47,23 +47,23 @@ export default function HeroSection() {
       />
 
       {/* Thin top rule */}
-      <div className="absolute top-0 left-0 right-0 z-20" style={{ height: '1px', background: 'rgba(184,117,42,0.3)' }} />
+      <div className="absolute top-0 left-0 right-0 z-20" style={{ height: '1px', background: 'rgba(166,124,82,0.3)' }} />
 
       {/* Main content — pb reserves space so spec strip never overlaps */}
       <div className="relative z-10 h-full flex flex-col md:pb-[104px]">
 
         {/* Top meta row */}
         <div className="flex items-center justify-between px-8 md:px-20 pt-28 md:pt-32" style={show(0)}>
-          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(184,117,42,0.55)' }}>
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(166,124,82,0.55)' }}>
             Kampala · Uganda
           </p>
           <div
             className="hidden md:flex flex-col items-center justify-center w-14 h-14"
-            style={{ border: '1px solid rgba(184,117,42,0.25)' }}
+            style={{ border: '1px solid rgba(166,124,82,0.25)' }}
           >
-            <span className="text-[8px] font-bold tracking-[0.2em] uppercase" style={{ color: '#B8752A' }}>Est</span>
-            <span className="font-serif text-lg font-bold leading-none" style={{ color: '#F2EAD8' }}>19</span>
-            <span className="text-[8px] font-bold tracking-[0.2em] uppercase" style={{ color: '#B8752A' }}>2019</span>
+            <span className="text-[8px] font-bold tracking-[0.2em] uppercase" style={{ color: '#A67C52' }}>Est</span>
+            <span className="font-serif text-lg font-bold leading-none" style={{ color: '#F5EAD8' }}>19</span>
+            <span className="text-[8px] font-bold tracking-[0.2em] uppercase" style={{ color: '#A67C52' }}>2019</span>
           </div>
         </div>
 
@@ -72,26 +72,26 @@ export default function HeroSection() {
           <div className="max-w-3xl">
 
             <div style={show(60)} className="mb-5">
-              <Crown size={26} color="#B8752A" />
+              <Crown size={26} color="#A67C52" />
             </div>
 
             <h1
               className="font-serif font-bold leading-[0.93] mb-6"
               style={{
                 fontSize: 'clamp(3rem, min(9.5vw, 13vh), 8.5rem)',
-                color: '#F2EAD8',
+                color: '#F5EAD8',
                 ...show(100),
               }}
             >
               Made<br />
-              <span style={{ color: '#B8752A' }}>For You.</span>
+              <span style={{ color: '#A67C52' }}>For You.</span>
             </h1>
 
-            <div className="w-14 h-px mb-6" style={{ background: '#B8752A', ...show(180) }} />
+            <div className="w-14 h-px mb-6" style={{ background: '#A67C52', ...show(180) }} />
 
             <p
               className="text-base md:text-lg leading-relaxed max-w-xs md:max-w-sm mb-10"
-              style={{ color: 'rgba(242,234,216,0.55)', ...show(220) }}
+              style={{ color: 'rgba(245,234,216,0.55)', ...show(220) }}
             >
               Handcrafted cookies. Baked fresh every morning in Kampala.
             </p>
@@ -105,24 +105,24 @@ export default function HeroSection() {
                 className="relative inline-flex items-center justify-center overflow-hidden font-bold text-[11px] tracking-[0.28em] uppercase"
                 style={{
                   padding:    '14px 36px',
-                  background: pressed ? '#7A3B1E' : '#B8752A',
+                  background: pressed ? '#6B4423' : '#A67C52',
                   color:      '#1A0A00',
                   transition: 'background 0.15s ease, transform 0.15s ease, box-shadow 0.3s ease',
                   transform:  pressed ? 'scale(0.96)' : 'scale(1)',
                   boxShadow:  pressed
-                    ? '0 0 0 4px rgba(184,117,42,0.25), 0 0 30px rgba(184,117,42,0.4)'
+                    ? '0 0 0 4px rgba(166,124,82,0.25), 0 0 30px rgba(166,124,82,0.4)'
                     : '0 0 0 0px transparent',
                 }}
                 onMouseEnter={e => {
                   if (!pressed) {
-                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(184,117,42,0.5), 0 0 40px rgba(184,117,42,0.35)'
+                    e.currentTarget.style.boxShadow = '0 0 0 2px rgba(166,124,82,0.5), 0 0 40px rgba(166,124,82,0.35)'
                     e.currentTarget.style.background = '#C8852A'
                   }
                 }}
                 onMouseLeave={e => {
                   if (!pressed) {
                     e.currentTarget.style.boxShadow = '0 0 0 0px transparent'
-                    e.currentTarget.style.background = '#B8752A'
+                    e.currentTarget.style.background = '#A67C52'
                   }
                 }}
               >
@@ -130,7 +130,7 @@ export default function HeroSection() {
                 {pressed && (
                   <span
                     className="absolute inset-0 rounded-full animate-ping"
-                    style={{ background: 'rgba(232,200,138,0.3)' }}
+                    style={{ background: 'rgba(232,217,195,0.3)' }}
                   />
                 )}
               </Link>
@@ -138,12 +138,12 @@ export default function HeroSection() {
               <Link
                 to="/build-your-box"
                 className="flex items-center gap-2 font-semibold text-[11px] tracking-[0.25em] uppercase transition-all duration-200 hover:gap-3"
-                style={{ color: 'rgba(242,234,216,0.5)' }}
-                onMouseEnter={e => e.currentTarget.style.color = '#B8752A'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(242,234,216,0.5)'}
+                style={{ color: 'rgba(245,234,216,0.5)' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#A67C52'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,234,216,0.5)'}
               >
                 Build Your Box
-                <ArrowRight size={15} style={{ color: '#B8752A' }} />
+                <ArrowRight size={15} style={{ color: '#A67C52' }} />
               </Link>
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function HeroSection() {
         className="hidden md:block absolute bottom-0 left-0 right-0 z-10 px-20 pb-10"
         style={show(400)}
       >
-        <div className="w-full mb-6" style={{ height: '1px', background: 'rgba(184,117,42,0.15)' }} />
+        <div className="w-full mb-6" style={{ height: '1px', background: 'rgba(166,124,82,0.15)' }} />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-0">
@@ -163,13 +163,13 @@ export default function HeroSection() {
               <div
                 key={label}
                 className="px-6"
-                style={{ borderLeft: i === 0 ? 'none' : '1px solid rgba(184,117,42,0.2)' }}
+                style={{ borderLeft: i === 0 ? 'none' : '1px solid rgba(166,124,82,0.2)' }}
               >
                 <p className="text-[9px] font-semibold tracking-[0.28em] uppercase mb-1"
-                  style={{ color: 'rgba(184,117,42,0.5)' }}>
+                  style={{ color: 'rgba(166,124,82,0.5)' }}>
                   {label}
                 </p>
-                <p className="text-sm font-bold" style={{ color: 'rgba(242,234,216,0.8)' }}>
+                <p className="text-sm font-bold" style={{ color: 'rgba(245,234,216,0.8)' }}>
                   {value}
                 </p>
               </div>
@@ -177,19 +177,19 @@ export default function HeroSection() {
           </div>
 
           <div className="flex flex-col items-center gap-2">
-            <div className="w-px h-10 relative overflow-hidden" style={{ background: 'rgba(242,234,216,0.1)' }}>
+            <div className="w-px h-10 relative overflow-hidden" style={{ background: 'rgba(245,234,216,0.1)' }}>
               <div
                 className="absolute top-0 w-full h-1/2"
-                style={{ background: '#B8752A', animation: 'scrollDot 1.8s ease-in-out infinite' }}
+                style={{ background: '#A67C52', animation: 'scrollDot 1.8s ease-in-out infinite' }}
               />
             </div>
-            <span className="text-[9px] tracking-[0.25em] uppercase" style={{ color: 'rgba(242,234,216,0.2)' }}>Scroll</span>
+            <span className="text-[9px] tracking-[0.25em] uppercase" style={{ color: 'rgba(245,234,216,0.2)' }}>Scroll</span>
           </div>
         </div>
       </div>
 
       {/* Thin bottom rule */}
-      <div className="absolute bottom-0 left-0 right-0 z-20" style={{ height: '1px', background: 'rgba(184,117,42,0.2)' }} />
+      <div className="absolute bottom-0 left-0 right-0 z-20" style={{ height: '1px', background: 'rgba(166,124,82,0.2)' }} />
     </section>
   )
 }

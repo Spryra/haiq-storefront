@@ -12,7 +12,6 @@ const PROMO_MESSAGES = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
   const [bannerShown, setBannerShown] = useState(true)
   const [promoIdx, setPromoIdx] = useState(0)
   const [promoVisible, setPromoVisible] = useState(true)
@@ -20,7 +19,10 @@ export default function Navbar() {
   const fixedRef = useRef(null)
   const [spacerH, setSpacerH] = useState(0)
 
-  const { itemCount } = useCart()
+  // Shared with every "Add to Cart" button across the app — previously this
+  // was a local useState, so openDrawer() calls elsewhere had no effect on
+  // the drawer actually rendered here. Now wired to the one source of truth.
+  const { itemCount, drawerOpen, openDrawer, closeDrawer } = useCart()
   const { user } = useAuth()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
@@ -65,11 +67,11 @@ export default function Navbar() {
   const isDark = !isHomePage || scrolled
   const textColor = (active) =>
     active
-      ? '#B8752A'
-      : (isDark ? 'rgba(242,234,216,0.6)' : 'rgba(242,234,216,0.8)')
+      ? '#A67C52'
+      : (isDark ? 'rgba(245,234,216,0.6)' : 'rgba(245,234,216,0.8)')
 
   const hoverStyle = {
-    onMouseEnter: e => e.currentTarget.style.color = '#F2EAD8',
+    onMouseEnter: e => e.currentTarget.style.color = '#F5EAD8',
     onMouseLeave: e => e.currentTarget.style.color = textColor(false),
   }
 
@@ -80,25 +82,25 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
         style={{
           background: isDark ? 'rgba(26,10,0,0.97)' : 'transparent',
-          borderBottom: isDark ? '1px solid rgba(184,117,42,0.2)' : 'none',
+          borderBottom: isDark ? '1px solid rgba(166,124,82,0.2)' : 'none',
           backdropFilter: isDark ? 'blur(8px)' : 'none',
         }}
       >
-        <div style={{ height: '1px', background: 'rgba(184,117,42,0.3)' }} />
+        <div style={{ height: '1px', background: 'rgba(166,124,82,0.3)' }} />
 
         {bannerShown && (
           <div
             className="relative overflow-hidden"
             style={{
-              background: isDark ? 'rgba(61,32,0,0.95)' : '#B8752A',
-              borderBottom: '1px solid rgba(184,117,42,0.15)',
+              background: isDark ? 'rgba(61,32,0,0.95)' : '#A67C52',
+              borderBottom: '1px solid rgba(166,124,82,0.15)',
             }}
           >
             <div className="container mx-auto px-12 py-2 flex items-center justify-center">
               <p
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-center transition-opacity duration-300"
                 style={{
-                  color: isDark ? '#D4A574' : '#1A0A00',
+                  color: isDark ? '#D4C4A8' : '#1A0A00',
                   opacity: promoVisible ? 1 : 0,
                 }}
               >
@@ -175,7 +177,7 @@ export default function Navbar() {
               ))}
 
               <button
-                onClick={() => setDrawerOpen(true)}
+                onClick={openDrawer}
                 className="relative transition-colors"
                 style={{ color: textColor(false) }}
               >
@@ -187,7 +189,7 @@ export default function Navbar() {
 
                 {itemCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>
+                    style={{ background: '#A67C52', color: '#1A0A00' }}>
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -196,8 +198,8 @@ export default function Navbar() {
 
             {/* MOBILE */}
             <div className="flex md:hidden items-center gap-4 ml-auto">
-              <button onClick={() => setDrawerOpen(true)} className="relative"
-                style={{ color: 'rgba(242,234,216,0.7)' }}>
+              <button onClick={openDrawer} className="relative"
+                style={{ color: 'rgba(245,234,216,0.7)' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                   <line x1="3" y1="6" x2="21" y2="6"/>
@@ -205,7 +207,7 @@ export default function Navbar() {
                 </svg>
                 {itemCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: '#B8752A', color: '#1A0A00' }}>
+                    style={{ background: '#A67C52', color: '#1A0A00' }}>
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -213,7 +215,7 @@ export default function Navbar() {
 
               <button onClick={() => setMenuOpen(o => !o)}
                 className="flex flex-col gap-1.5 p-1"
-                style={{ color: 'rgba(242,234,216,0.7)' }}>
+                style={{ color: 'rgba(245,234,216,0.7)' }}>
                 <span className={`block w-5 h-px bg-current ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                 <span className={`block w-5 h-px bg-current ${menuOpen ? 'opacity-0' : ''}`} />
                 <span className={`block w-5 h-px bg-current ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
@@ -242,7 +244,7 @@ export default function Navbar() {
             ].map(([href, label]) => (
               <Link key={href} to={href}
                 className="text-[12px] font-semibold tracking-[0.25em] uppercase"
-                style={{ color: 'rgba(242,234,216,0.6)' }}>
+                style={{ color: 'rgba(245,234,216,0.6)' }}>
                 {label}
               </Link>
             ))}
@@ -252,7 +254,7 @@ export default function Navbar() {
 
       {!isHomePage && <div style={{ height: `${spacerH}px` }} />}
 
-      <CartDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <CartDrawer isOpen={drawerOpen} onClose={closeDrawer} />
     </>
   )
 }

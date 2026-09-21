@@ -59,18 +59,18 @@ function StepBar({ step }) {
             <div className="flex flex-col items-center">
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all"
                 style={{
-                  background: step >= n ? '#B8752A' : 'rgba(61,32,0,0.6)',
+                  background: step >= n ? '#A67C52' : 'rgba(61,32,0,0.6)',
                   color:      step >= n ? '#1A0A00' : '#8C7355',
-                  border:     step === n ? '2px solid #E8C88A' : '2px solid transparent',
+                  border:     step === n ? '2px solid #E8D9C3' : '2px solid transparent',
                 }}>
                 {step > n ? 'v' : n}
               </div>
               <p className="text-[9px] mt-1 hidden sm:block whitespace-nowrap"
-                style={{ color: step === n ? '#B8752A' : '#8C7355' }}>{label}</p>
+                style={{ color: step === n ? '#A67C52' : '#8C7355' }}>{label}</p>
             </div>
             {i < steps.length-1 && (
               <div className="flex-1 h-px mx-2"
-                style={{ background: step > n ? '#B8752A' : 'rgba(61,32,0,0.6)' }} />
+                style={{ background: step > n ? '#A67C52' : 'rgba(61,32,0,0.6)' }} />
             )}
           </div>
         )
@@ -87,21 +87,21 @@ function BoxSummaryRow({ item }) {
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
           <button onClick={() => setOpen(o => !o)} className="flex items-center gap-2 text-left">
-            <p className="font-serif font-bold text-sm" style={{ color: '#F2EAD8' }}>{item.name}</p>
+            <p className="font-serif font-bold text-sm" style={{ color: '#F5EAD8' }}>{item.name}</p>
             <span className="text-[10px] transition-transform duration-200"
               style={{ color: '#8C7355', transform: open ? 'rotate(180deg)' : 'rotate(0)' }}>v</span>
           </button>
           <p className="text-[10px] mt-0.5" style={{ color: '#8C7355' }}>Box of 4</p>
         </div>
-        <p className="font-bold text-sm flex-shrink-0" style={{ color: '#B8752A' }}>
+        <p className="font-bold text-sm flex-shrink-0" style={{ color: '#A67C52' }}>
           UGX {(item.price).toLocaleString()}
         </p>
       </div>
       <div className="overflow-hidden transition-all duration-300" style={{ maxHeight: open ? '200px' : '0' }}>
         <div className="mt-2 space-y-1 pl-3"
-          style={{ borderLeft: '2px solid rgba(184,117,42,0.25)', paddingLeft: '10px', paddingTop: '4px' }}>
+          style={{ borderLeft: '2px solid rgba(166,124,82,0.25)', paddingLeft: '10px', paddingTop: '4px' }}>
           {item.boxContents?.map((c,i) => (
-            <p key={i} className="text-[11px]" style={{ color: 'rgba(242,234,216,0.45)' }}>
+            <p key={i} className="text-[11px]" style={{ color: 'rgba(245,234,216,0.45)' }}>
               {c.quantity}x {c.name}
             </p>
           ))}
@@ -113,7 +113,7 @@ function BoxSummaryRow({ item }) {
 
 function OrderSummary({ items, subtotal, deliveryFee, total }) {
   return (
-    <div className="sticky top-6 p-5" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
+    <div className="sticky top-6 p-5" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)' }}>
       <p className="text-[10px] font-semibold uppercase tracking-[0.25em] mb-4" style={{ color: '#8C7355' }}>
         Order Summary
       </p>
@@ -122,29 +122,29 @@ function OrderSummary({ items, subtotal, deliveryFee, total }) {
           ? <BoxSummaryRow key={item.key} item={item} />
           : (
             <div key={item.key} className="flex justify-between mb-2">
-              <p className="text-xs truncate pr-2" style={{ color: '#F2EAD8' }}>
+              <p className="text-xs truncate pr-2" style={{ color: '#F5EAD8' }}>
                 {item.quantity}x {item.name}
               </p>
-              <p className="text-xs font-medium whitespace-nowrap" style={{ color: 'rgba(242,234,216,0.7)' }}>
+              <p className="text-xs font-medium whitespace-nowrap" style={{ color: 'rgba(245,234,216,0.7)' }}>
                 UGX {(item.price * item.quantity).toLocaleString()}
               </p>
             </div>
           )
       )}
-      <div className="pt-3 mt-2" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
+      <div className="pt-3 mt-2" style={{ borderTop: '1px solid rgba(166,124,82,0.2)' }}>
         <div className="flex justify-between text-sm font-bold mb-2">
-          <span style={{ color: '#F2EAD8' }}>Subtotal</span>
-          <span style={{ color: '#E8C88A' }}>UGX {subtotal.toLocaleString()}</span>
+          <span style={{ color: '#F5EAD8' }}>Subtotal</span>
+          <span style={{ color: '#E8D9C3' }}>UGX {subtotal.toLocaleString()}</span>
         </div>
         {deliveryFee > 0 && (
           <div className="flex justify-between text-sm mb-2">
             <span style={{ color: '#8C7355' }}>Delivery</span>
-            <span style={{ color: '#E8C88A' }}>UGX {deliveryFee.toLocaleString()}</span>
+            <span style={{ color: '#E8D9C3' }}>UGX {deliveryFee.toLocaleString()}</span>
           </div>
         )}
-        <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
-          <span style={{ color: '#F2EAD8' }}>Total</span>
-          <span style={{ color: '#B8752A' }}>UGX {total.toLocaleString()}</span>
+        <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(166,124,82,0.2)' }}>
+          <span style={{ color: '#F5EAD8' }}>Total</span>
+          <span style={{ color: '#A67C52' }}>UGX {total.toLocaleString()}</span>
         </div>
       </div>
     </div>
@@ -169,8 +169,8 @@ function PayBtn({ method, selected, onSelect }) {
     <button onClick={() => onSelect(method)}
       className="w-full text-left transition-all overflow-hidden"
       style={{
-        background: selected ? 'rgba(184,117,42,0.15)' : 'rgba(42,18,0,0.5)',
-        border:     selected ? '2px solid #B8752A' : '1px solid rgba(61,32,0,0.8)',
+        background: selected ? 'rgba(166,124,82,0.15)' : 'rgba(42,18,0,0.5)',
+        border:     selected ? '2px solid #A67C52' : '1px solid rgba(61,32,0,0.8)',
         borderRadius: '12px',
       }}>
       <div className="p-4">
@@ -181,31 +181,31 @@ function PayBtn({ method, selected, onSelect }) {
             <span className="text-4xl">{config.icon}</span>
           )}
           <div className="flex-1">
-            <p className="text-sm font-bold" style={{ color: '#F2EAD8' }}>{config.label}</p>
+            <p className="text-sm font-bold" style={{ color: '#F5EAD8' }}>{config.label}</p>
             <p className="text-[10px]" style={{ color: '#8C7355' }}>{config.description}</p>
           </div>
           <div className="w-5 h-5 rounded-full flex-shrink-0 transition-all flex items-center justify-center"
             style={{
-              border:     `2px solid ${selected ? '#B8752A' : '#3D2000'}`,
-              background: selected ? '#B8752A' : 'transparent',
+              border:     `2px solid ${selected ? '#A67C52' : '#3D2000'}`,
+              background: selected ? '#A67C52' : 'transparent',
             }}>
             {selected && <Check size={12} strokeWidth={3} style={{ color: '#1A0A00' }} />}
           </div>
         </div>
         
         {isMobileMoneyMethod && (
-          <div className="pl-2 pt-2 border-t border-opacity-20" style={{ borderColor: 'rgba(184,117,42,0.3)' }}>
+          <div className="pl-2 pt-2 border-t border-opacity-20" style={{ borderColor: 'rgba(166,124,82,0.3)' }}>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: '#8C7355' }}>Merchant Code</p>
-                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#B8752A' }}>{config.merchantCode}</p>
+                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#A67C52' }}>{config.merchantCode}</p>
               </div>
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: '#8C7355' }}>USSD Code</p>
-                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#B8752A' }}>{config.ussd}</p>
+                <p className="text-sm font-bold font-mono mt-1" style={{ color: '#A67C52' }}>{config.ussd}</p>
               </div>
             </div>
-            <p className="text-[10px] mt-3 px-3 py-2 rounded flex items-center gap-1.5" style={{ background: 'rgba(184,117,42,0.1)', color: '#8C7355' }}>
+            <p className="text-[10px] mt-3 px-3 py-2 rounded flex items-center gap-1.5" style={{ background: 'rgba(166,124,82,0.1)', color: '#8C7355' }}>
               <Phone size={12} className="flex-shrink-0" /> Dial <strong>{config.ussd}</strong> from your {config.label.split(' ')[0]} line to complete payment
             </p>
           </div>
@@ -430,11 +430,11 @@ export default function CheckoutPage() {
 
   if (items.length === 0) return null
 
-  const inputSty = { background: '#1A0A00', border: '1px solid #3D2000', color: '#F2EAD8' }
+  const inputSty = { background: '#1A0A00', border: '1px solid #3D2000', color: '#F5EAD8' }
   const inputCls = 'w-full px-4 py-3 text-sm focus:outline-none'
   const lbl = (text, req, fieldId) => (
     <label htmlFor={fieldId} className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>
-      {text}{req && <span style={{ color: '#B8752A' }}> *</span>}
+      {text}{req && <span style={{ color: '#A67C52' }}> *</span>}
     </label>
   )
 
@@ -446,7 +446,7 @@ export default function CheckoutPage() {
   return (
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
       <div className="flex items-center justify-between px-6 md:px-12 py-4"
-        style={{ borderBottom: '1px solid rgba(184,117,42,0.2)', background: '#1A0A00' }}>
+        style={{ borderBottom: '1px solid rgba(166,124,82,0.2)', background: '#1A0A00' }}>
         <Link to="/"><img src="/HAIQmain.png" alt="HAIQ" className="h-9 w-auto" /></Link>
         <Link to="/shop" className="text-[10px] font-semibold uppercase tracking-[0.2em]"
           style={{ color: '#8C7355' }}>Back to Shop</Link>
@@ -487,29 +487,29 @@ export default function CheckoutPage() {
             {/* Step 1 - Order Review */}
             {step === 1 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Review Your Order</h2>
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Review Your Order</h2>
                 <div className="space-y-3 mb-8">
                   {items.map(item => (
                     item.itemType === 'box' ? (
-                      <div key={item.key} className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
+                      <div key={item.key} className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)' }}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <p className="font-serif font-bold text-sm" style={{ color: '#F2EAD8' }}>{item.name}</p>
+                            <p className="font-serif font-bold text-sm" style={{ color: '#F5EAD8' }}>{item.name}</p>
                             <p className="text-[10px] mt-0.5" style={{ color: '#8C7355' }}>Box of 4 — tap to see contents</p>
                           </div>
-                          <p className="font-bold text-base" style={{ color: '#B8752A' }}>
+                          <p className="font-bold text-base" style={{ color: '#A67C52' }}>
                             UGX {item.price.toLocaleString()}
                           </p>
                         </div>
                       </div>
                     ) : (
                       <div key={item.key} className="flex items-center gap-3 p-4"
-                        style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.2)' }}>
+                        style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)' }}>
                         <div className="flex-1">
-                          <p className="text-xs font-medium" style={{ color: '#F2EAD8' }}>{item.name}</p>
+                          <p className="text-xs font-medium" style={{ color: '#F5EAD8' }}>{item.name}</p>
                           <p className="text-[10px]" style={{ color: '#8C7355' }}>Qty: {item.quantity}</p>
                         </div>
-                        <p className="text-xs font-bold" style={{ color: '#B8752A' }}>
+                        <p className="text-xs font-bold" style={{ color: '#A67C52' }}>
                           UGX {(item.price * item.quantity).toLocaleString()}
                         </p>
                       </div>
@@ -525,7 +525,7 @@ export default function CheckoutPage() {
             {/* Step 2 - Details */}
             {step === 2 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Your Details</h2>
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Your Details</h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -598,7 +598,7 @@ export default function CheckoutPage() {
                       Delivery fee varies by location. Select your zone below.
                     </p>
                     {zonesLoading ? (
-                      <div className="text-xs py-3 px-4 rounded" style={{ background: 'rgba(184,117,42,0.1)', color: '#8C7355' }}>
+                      <div className="text-xs py-3 px-4 rounded" style={{ background: 'rgba(166,124,82,0.1)', color: '#8C7355' }}>
                         ⏳ Loading delivery zones...
                       </div>
                     ) : (
@@ -632,7 +632,7 @@ export default function CheckoutPage() {
                           }}
                           onFocus={e => {
                             // Highlight on focus
-                            e.target.style.borderColor = '#B8752A'
+                            e.target.style.borderColor = '#A67C52'
                             e.target.style.backgroundColor = '#2A1200'
                           }}
                           aria-label="Select delivery zone"
@@ -654,12 +654,12 @@ export default function CheckoutPage() {
                               background: 'rgba(184, 117, 42, 0.08)',
                               border: '1px solid rgba(184, 117, 42, 0.2)',
                             }}>
-                            <p className="text-xs mb-1 flex items-center gap-1.5" style={{ color: '#F2EAD8' }}>
+                            <p className="text-xs mb-1 flex items-center gap-1.5" style={{ color: '#F5EAD8' }}>
                               <MapPin size={12} style={{ color: '#8C7355', flexShrink: 0 }} />
                               <span style={{ color: '#8C7355' }}>Selected Zone:</span>{' '}
                               <strong>{selectedZone.name}</strong>
                             </p>
-                            <p className="text-xs font-semibold flex items-center gap-1.5" style={{ color: '#B8752A' }}>
+                            <p className="text-xs font-semibold flex items-center gap-1.5" style={{ color: '#A67C52' }}>
                               <Banknote size={12} style={{ flexShrink: 0 }} />
                               Delivery Fee: UGX {selectedZone.price.toLocaleString()}
                             </p>
@@ -744,7 +744,7 @@ export default function CheckoutPage() {
             {/* Step 3 - Payment */}
             {step === 3 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Choose Payment Method</h2>
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Choose Payment Method</h2>
                 <p className="text-sm mb-6" style={{ color: '#8C7355' }}>
                   Select how you'd like to pay for your order.
                 </p>
@@ -775,35 +775,35 @@ export default function CheckoutPage() {
             {/* Step 4 - Confirm */}
             {step === 4 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F2EAD8' }}>Confirm & Place Order</h2>
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Confirm & Place Order</h2>
                 <div className="space-y-3 mb-6">
-                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.15)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#B8752A' }}>Delivery To</p>
-                    <p className="text-sm" style={{ color: '#F2EAD8' }}>{details.first_name} {details.last_name}</p>
+                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.15)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#A67C52' }}>Delivery To</p>
+                    <p className="text-sm" style={{ color: '#F5EAD8' }}>{details.first_name} {details.last_name}</p>
                     <p className="text-xs mt-1" style={{ color: '#8C7355' }}>{details.phone}</p>
                     {selectedZone && (
                       <p className="text-xs" style={{ color: '#8C7355' }}>{selectedZone.name}</p>
                     )}
                     <p className="text-xs" style={{ color: '#8C7355' }}>{details.delivery_address}</p>
                   </div>
-                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.15)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#B8752A' }}>Payment</p>
-                    <p className="text-sm capitalize" style={{ color: '#F2EAD8' }}>{payMethod.replace(/_/g,' ')}</p>
+                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.15)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-2" style={{ color: '#A67C52' }}>Payment</p>
+                    <p className="text-sm capitalize" style={{ color: '#F5EAD8' }}>{payMethod.replace(/_/g,' ')}</p>
                   </div>
-                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.15)' }}>
+                  <div className="p-4" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.15)' }}>
                     <div className="flex justify-between text-sm font-bold">
-                      <span style={{ color: '#F2EAD8' }}>Subtotal</span>
-                      <span style={{ color: '#E8C88A' }}>UGX {subtotal.toLocaleString()}</span>
+                      <span style={{ color: '#F5EAD8' }}>Subtotal</span>
+                      <span style={{ color: '#E8D9C3' }}>UGX {subtotal.toLocaleString()}</span>
                     </div>
                     {deliveryFee > 0 && (
                       <div className="flex justify-between text-sm mt-2">
                         <span style={{ color: '#8C7355' }}>Delivery</span>
-                        <span style={{ color: '#E8C88A' }}>UGX {deliveryFee.toLocaleString()}</span>
+                        <span style={{ color: '#E8D9C3' }}>UGX {deliveryFee.toLocaleString()}</span>
                       </div>
                     )}
-                    <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(184,117,42,0.2)' }}>
-                      <span style={{ color: '#F2EAD8' }}>Total</span>
-                      <span style={{ color: '#B8752A' }}>UGX {total.toLocaleString()}</span>
+                    <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: '1px solid rgba(166,124,82,0.2)' }}>
+                      <span style={{ color: '#F5EAD8' }}>Total</span>
+                      <span style={{ color: '#A67C52' }}>UGX {total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -811,13 +811,13 @@ export default function CheckoutPage() {
                 <label className="flex items-start gap-3 mb-6 cursor-pointer">
                   <div onClick={() => setConsent(c => !c)}
                     className="w-5 h-5 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all"
-                    style={{ background: consent ? '#B8752A' : 'transparent', border: `2px solid ${consent ? '#B8752A' : '#3D2000'}` }}>
+                    style={{ background: consent ? '#A67C52' : 'transparent', border: `2px solid ${consent ? '#A67C52' : '#3D2000'}` }}>
                     {consent && <span style={{ color: '#1A0A00', fontSize: '11px', fontWeight: 'bold' }}>v</span>}
                   </div>
                   <p className="text-xs leading-relaxed" style={{ color: '#8C7355' }}>
                     I agree to HAIQ's{' '}
-                    <a href="/terms" target="_blank" style={{ color: '#B8752A' }}>Terms of Use</a>{' '}and{' '}
-                    <a href="/privacy" target="_blank" style={{ color: '#B8752A' }}>Privacy Policy</a>, and I consent to my personal data being processed for order fulfilment.
+                    <a href="/terms" target="_blank" style={{ color: '#A67C52' }}>Terms of Use</a>{' '}and{' '}
+                    <a href="/privacy" target="_blank" style={{ color: '#A67C52' }}>Privacy Policy</a>, and I consent to my personal data being processed for order fulfilment.
                   </p>
                 </label>
 

@@ -29,10 +29,10 @@ export function ForgotPasswordPage() {
   return (
     <div style={{ background: '#1A0A00', minHeight: '85vh' }} className="flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <Crown size={20} color="#B8752A" className="mb-6 opacity-60" />
-        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>Reset Password</p>
-        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F2EAD8' }}>Forgot Your Password?</h1>
-        <div className="w-8 h-px mb-6" style={{ background: '#B8752A' }} />
+        <Crown size={20} color="#A67C52" className="mb-6 opacity-60" />
+        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>Reset Password</p>
+        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F5EAD8' }}>Forgot Your Password?</h1>
+        <div className="w-8 h-px mb-6" style={{ background: '#A67C52' }} />
 
         {done ? (
           <div>
@@ -41,13 +41,13 @@ export function ForgotPasswordPage() {
                 If an account exists for <strong>{email}</strong>, we've sent a reset link. Check your inbox.
               </p>
             </div>
-            <Link to="/login" className="text-sm hover:underline" style={{ color: '#B8752A' }}>
+            <Link to="/login" className="text-sm hover:underline" style={{ color: '#A67C52' }}>
               Back to Sign In
             </Link>
           </div>
         ) : (
           <form onSubmit={submit} className="space-y-4">
-            <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(242,234,216,0.45)' }}>
+            <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(245,234,216,0.45)' }}>
               Enter the email address linked to your account and we'll send you a reset link.
             </p>
             <div>
@@ -55,7 +55,7 @@ export function ForgotPasswordPage() {
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 text-sm focus:outline-none"
-                style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }} />
+                style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }} />
             </div>
             {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
             <Button type="submit" variant="primary" className="w-full" loading={loading} disabled={loading}>
@@ -102,9 +102,9 @@ export function ResetPasswordPage() {
   if (!token) return (
     <div style={{ background: '#1A0A00', minHeight: '85vh' }} className="flex items-center justify-center px-6">
       <div className="text-center">
-        <p className="font-serif font-bold text-xl mb-3" style={{ color: '#F2EAD8' }}>Invalid link</p>
+        <p className="font-serif font-bold text-xl mb-3" style={{ color: '#F5EAD8' }}>Invalid link</p>
         <p className="text-sm mb-5" style={{ color: '#8C7355' }}>This reset link is invalid or has expired.</p>
-        <a href="/forgot-password" className="text-sm" style={{ color: '#B8752A' }}>Request a new one</a>
+        <a href="/forgot-password" className="text-sm" style={{ color: '#A67C52' }}>Request a new one</a>
       </div>
     </div>
   )
@@ -112,10 +112,10 @@ export function ResetPasswordPage() {
   return (
     <div style={{ background: '#1A0A00', minHeight: '85vh' }} className="flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <Crown size={20} color="#B8752A" className="mb-6 opacity-60" />
-        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#B8752A' }}>New Password</p>
-        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F2EAD8' }}>Reset Password</h1>
-        <div className="w-8 h-px mb-8" style={{ background: '#B8752A' }} />
+        <Crown size={20} color="#A67C52" className="mb-6 opacity-60" />
+        <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: '#A67C52' }}>New Password</p>
+        <h1 className="font-serif font-bold text-3xl mb-2" style={{ color: '#F5EAD8' }}>Reset Password</h1>
+        <div className="w-8 h-px mb-8" style={{ background: '#A67C52' }} />
 
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -123,14 +123,14 @@ export function ResetPasswordPage() {
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
               placeholder="6+ chars, 1 special character"
               className="w-full px-4 py-3 text-sm focus:outline-none"
-              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }} />
+              style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }} />
           </div>
           <div>
             <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] mb-1.5" style={{ color: '#8C7355' }}>Confirm Password</label>
             <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required
               placeholder="Repeat new password"
               className="w-full px-4 py-3 text-sm focus:outline-none"
-              style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.25)', color: '#F2EAD8' }} />
+              style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }} />
           </div>
           {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
           <Button type="submit" variant="primary" className="w-full" loading={loading} disabled={loading}>

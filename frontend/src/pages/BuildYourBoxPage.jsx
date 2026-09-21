@@ -15,7 +15,9 @@ import {
 } from '../utils/timeSync'
 
 const BOX_SIZE     = 4
-const COOKIE_SLUGS = ['venom','coconut','crimson-sin','campfire-after-dark','blackout']
+// Venom and Coconut are sold only as fixed packs, not as individual
+// Build Your Box components — deliberately excluded here (phase 1 change).
+const COOKIE_SLUGS = ['crimson-sin','campfire-after-dark','blackout']
 const LOCAL_IMGS = {
   'venom':               '/images/products/venom.jpg',
   'coconut':             '/images/products/coconut.jpg',
@@ -165,34 +167,34 @@ export default function BuildYourBoxPage() {
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
       <BuildYourBoxSEO />
 
-      <div className="border-b py-14 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(184,117,42,0.2)' }}>
+      <div className="border-b py-14 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
         <div className="flex items-center gap-3 mb-4">
-          <Crown size={20} color="#B8752A" />
-          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: '#B8752A' }}>
+          <Crown size={20} color="#A67C52" />
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: '#A67C52' }}>
             Box Office
           </p>
         </div>
-        <h1 className="font-serif font-bold leading-tight mb-3" style={{ fontSize: 'clamp(2.6rem,6.5vw,5.5rem)', color: '#F2EAD8' }}>
+        <h1 className="font-serif font-bold leading-tight mb-3" style={{ fontSize: 'clamp(2.6rem,6.5vw,5.5rem)', color: '#F5EAD8' }}>
           Build Your Box.
         </h1>
-        <div className="w-10 h-px mb-5" style={{ background: '#B8752A' }} />
-        <p className="text-base max-w-sm leading-relaxed" style={{ color: 'rgba(242,234,216,0.45)' }}>
+        <div className="w-10 h-px mb-5" style={{ background: '#A67C52' }} />
+        <p className="text-base max-w-sm leading-relaxed" style={{ color: 'rgba(245,234,216,0.45)' }}>
           Pick exactly 4 cookies. Any combination.
         </p>
 
         {!checkingDay && (
           <div className="mt-5 inline-flex items-center gap-3 px-4 py-2.5"
-            style={{ background: '#2A1200', border: '1px solid rgba(184,117,42,0.3)' }}>
+            style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.3)' }}>
             <p className="text-[10px] uppercase tracking-[0.25em] font-semibold" style={{ color: '#8C7355' }}>Box Price</p>
             {isSpecialDay ? (
               <div className="flex items-center gap-2">
                 <span className="font-serif font-bold text-lg line-through" style={{ color: '#8C7355' }}>UGX {originalPrice.toLocaleString()}</span>
-                <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>UGX {boxPrice.toLocaleString()}</p>
+                <p className="font-serif font-bold text-lg" style={{ color: '#E8D9C3' }}>UGX {boxPrice.toLocaleString()}</p>
                 <span className="text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider"
-                  style={{ background: '#B8752A', color: '#1A0A00' }}>Special Day</span>
+                  style={{ background: '#A67C52', color: '#1A0A00' }}>Special Day</span>
               </div>
             ) : (
-              <p className="font-serif font-bold text-lg" style={{ color: '#E8C88A' }}>
+              <p className="font-serif font-bold text-lg" style={{ color: '#E8D9C3' }}>
                 UGX {boxPrice.toLocaleString()}
               </p>
             )}
@@ -201,17 +203,17 @@ export default function BuildYourBoxPage() {
       </div>
 
       <div className="sticky top-0 z-30 border-b"
-        style={{ background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(184,117,42,0.2)', backdropFilter: 'blur(8px)' }}>
+        style={{ background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(166,124,82,0.2)', backdropFilter: 'blur(8px)' }}>
         <div className="container mx-auto px-6 md:px-16 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-4">
-              <span className="font-bold text-sm" style={{ color: isFull ? '#E8C88A' : '#F2EAD8' }}>
-                {total}<span className="font-normal" style={{ color: 'rgba(242,234,216,0.3)' }}> / {BOX_SIZE}</span>
+              <span className="font-bold text-sm" style={{ color: isFull ? '#E8D9C3' : '#F5EAD8' }}>
+                {total}<span className="font-normal" style={{ color: 'rgba(245,234,216,0.3)' }}> / {BOX_SIZE}</span>
               </span>
-              {!isFull && <span className="text-xs" style={{ color: 'rgba(242,234,216,0.35)' }}>
+              {!isFull && <span className="text-xs" style={{ color: 'rgba(245,234,216,0.35)' }}>
                 {BOX_SIZE - total} more {BOX_SIZE-total===1?'cookie':'cookies'} to go
               </span>}
-              {isFull && <span className="text-xs font-semibold" style={{ color: '#E8C88A' }}>Box complete</span>}
+              {isFull && <span className="text-xs font-semibold" style={{ color: '#E8D9C3' }}>Box complete</span>}
             </div>
             {isFull && (
               <button
@@ -219,7 +221,7 @@ export default function BuildYourBoxPage() {
                 disabled={!isFull || confirmed}
                 className="px-6 py-2 font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300"
                 style={{
-                  background: confirmed ? '#16a34a' : '#B8752A',
+                  background: confirmed ? '#16a34a' : '#A67C52',
                   color: confirmed ? '#FFFFFF' : '#1A0A00',
                   borderRadius: '2px',
                   opacity: !isFull ? 0.5 : 1,
@@ -230,9 +232,9 @@ export default function BuildYourBoxPage() {
               </button>
             )}
           </div>
-          <div className="h-px overflow-hidden" style={{ background: 'rgba(184,117,42,0.15)' }}>
+          <div className="h-px overflow-hidden" style={{ background: 'rgba(166,124,82,0.15)' }}>
             <div className="h-full transition-all duration-300"
-              style={{ width: `${pct}%`, background: isFull ? '#E8C88A' : '#B8752A' }} />
+              style={{ width: `${pct}%`, background: isFull ? '#E8D9C3' : '#A67C52' }} />
           </div>
           {boxError && (
             <div className="mt-2 text-xs px-3 py-2 rounded" style={{ background: 'rgba(248,113,113,0.15)', color: '#f87171' }}>
@@ -271,17 +273,17 @@ export default function BuildYourBoxPage() {
 
         {error && !loading ? (
           <div className="text-center py-16">
-            <p className="font-serif font-bold text-xl mb-2 flex items-center justify-center gap-2" style={{ color: '#F2EAD8' }}><AlertTriangle size={20} /> Couldn't Load Options</p>
+            <p className="font-serif font-bold text-xl mb-2 flex items-center justify-center gap-2" style={{ color: '#F5EAD8' }}><AlertTriangle size={20} /> Couldn't Load Options</p>
             <p className="text-sm mb-6" style={{ color: '#8C7355' }}>{error}</p>
             <button onClick={() => window.location.reload()} className="font-bold text-[11px] tracking-[0.2em] uppercase px-8 py-3"
-              style={{ background: '#B8752A', color: '#1A0A00' }}>
+              style={{ background: '#A67C52', color: '#1A0A00' }}>
               Try Again
             </button>
           </div>
         ) : loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {Array(5).fill(null).map((_,i) => (
-              <div key={i} className="aspect-square skeleton" style={{ background: 'rgba(184,117,42,0.06)' }} />
+              <div key={i} className="aspect-square skeleton" style={{ background: 'rgba(166,124,82,0.06)' }} />
             ))}
           </div>
         ) : (
@@ -294,8 +296,8 @@ export default function BuildYourBoxPage() {
                   className="group relative overflow-hidden transition-all duration-200"
                   style={{
                     background: '#1A0A00',
-                    border:     `1px solid ${count > 0 ? '#B8752A' : 'rgba(184,117,42,0.15)'}`,
-                    boxShadow:  count > 0 ? '0 0 20px rgba(184,117,42,0.15)' : 'none',
+                    border:     `1px solid ${count > 0 ? '#A67C52' : 'rgba(166,124,82,0.15)'}`,
+                    boxShadow:  count > 0 ? '0 0 20px rgba(166,124,82,0.15)' : 'none',
                     opacity:    soldOut ? 0.4 : 1,
                   }}>
                   <div className="overflow-hidden" style={{ aspectRatio: '1' }}>
@@ -304,19 +306,19 @@ export default function BuildYourBoxPage() {
                   </div>
                   {count > 0 && (
                     <div className="absolute top-2 right-2 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center"
-                      style={{ background: '#B8752A', color: '#1A0A00' }}>{count}</div>
+                      style={{ background: '#A67C52', color: '#1A0A00' }}>{count}</div>
                   )}
                   <div className="p-3">
-                    <p className="font-serif font-bold text-sm leading-tight mb-0.5" style={{ color: '#F2EAD8' }}>{p.name}</p>
+                    <p className="font-serif font-bold text-sm leading-tight mb-0.5" style={{ color: '#F5EAD8' }}>{p.name}</p>
                     <p className="text-[10px] mb-3 line-clamp-1" style={{ color: '#8C7355' }}>{p.subtitle}</p>
                     <div className="flex items-center justify-between">
                       <button onClick={() => rem(p.id)} disabled={count===0}
                         className="w-8 h-8 flex items-center justify-center text-lg transition disabled:opacity-20"
-                        style={{ border: '1px solid rgba(184,117,42,0.3)', color: '#F2EAD8' }}>-</button>
-                      <span className="font-bold text-sm w-8 text-center" style={{ color: '#F2EAD8' }}>{count}</span>
+                        style={{ border: '1px solid rgba(166,124,82,0.3)', color: '#F5EAD8' }}>-</button>
+                      <span className="font-bold text-sm w-8 text-center" style={{ color: '#F5EAD8' }}>{count}</span>
                       <button onClick={() => add(p.id)} disabled={isFull || soldOut}
                         className="w-8 h-8 flex items-center justify-center text-lg transition disabled:opacity-20"
-                        style={{ background: 'rgba(184,117,42,0.2)', border: '1px solid rgba(184,117,42,0.5)', color: '#B8752A' }}>+</button>
+                        style={{ background: 'rgba(166,124,82,0.2)', border: '1px solid rgba(166,124,82,0.5)', color: '#A67C52' }}>+</button>
                     </div>
                   </div>
                 </div>
@@ -328,10 +330,10 @@ export default function BuildYourBoxPage() {
 
       {isFull && (
         <div className="fixed bottom-0 left-0 right-0 z-40 py-4 px-6"
-          style={{ background: '#1A0A00', borderTop: '1px solid rgba(184,117,42,0.4)' }}>
+          style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.4)' }}>
           <div className="container mx-auto max-w-2xl flex items-center justify-between gap-4">
             <div>
-              <p className="font-bold text-sm" style={{ color: '#F2EAD8' }}>Your Box Office is ready.</p>
+              <p className="font-bold text-sm" style={{ color: '#F5EAD8' }}>Your Box Office is ready.</p>
               <p className="text-xs mt-0.5 line-clamp-1" style={{ color: '#8C7355' }}>
                 {Object.entries(selections).map(([id,count]) => {
                   const p = products.find(pr => pr.id === id)

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,19 +7,19 @@
 /* ============================================================
    HAIQ 60-30-10 Color System
    60% — #1A0A00  (deep espresso — dominant background)
-   30% — #2A1200 / #F2EAD8  (dark surface / warm cream — secondary)
-   10% — #B8752A / #E8C88A  (amber / gold — accent)
+   30% — #2A1200 / #F5EAD8  (dark surface / warm cream — secondary)
+   10% — #A67C52 / #E8D9C3  (amber / gold — accent)
    ============================================================ */
 
 :root {
   --haiq-60:       #1A0A00;   /* dominant dark */
   --haiq-60-mid:   #0E0600;   /* deeper dark for contrast */
   --haiq-30-dark:  #2A1200;   /* secondary dark surface */
-  --haiq-30-cream: #F2EAD8;   /* secondary warm cream */
+  --haiq-30-cream: #F5EAD8;   /* secondary warm cream */
   --haiq-30-muted: #8C7355;   /* muted text / borders */
-  --haiq-10:       #B8752A;   /* amber accent — CTA, highlights */
-  --haiq-10-gold:  #E8C88A;   /* gold accent — premium elements */
-  --haiq-border:   rgba(184, 117, 42, 0.2);
+  --haiq-10:       #A67C52;   /* amber accent — CTA, highlights */
+  --haiq-10-gold:  #E8D9C3;   /* gold accent — premium elements */
+  --haiq-border:   rgba(166, 124, 82, 0.2);
 }
 
 /* Base — 60% rule: dark background everywhere */
@@ -30,7 +30,8 @@ html { scroll-behavior: smooth; }
 body {
   background-color: var(--haiq-60);
   color: var(--haiq-30-cream);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -39,25 +40,26 @@ body {
 /* Scrollbar — subtle amber tint */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--haiq-60-mid); }
-::-webkit-scrollbar-thumb { background: rgba(184,117,42,0.35); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(184,117,42,0.6); }
+::-webkit-scrollbar-thumb { background: rgba(166,124,82,0.35); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(166,124,82,0.6); }
 
 /* Typography — 30% rule: cream text on dark, dark text on cream */
 h1,h2,h3,h4,h5,h6 {
-  font-family: 'Playfair Display', 'Georgia', serif;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 700;
   color: var(--haiq-30-cream);
 }
 
 /* Selections — 10% amber */
-::selection { background: rgba(184,117,42,0.35); color: var(--haiq-30-cream); }
+::selection { background: rgba(166,124,82,0.35); color: var(--haiq-30-cream); }
 
 /* ── Skeleton loading animation ── */
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(184,117,42,0.06) 0%,
-    rgba(184,117,42,0.12) 50%,
-    rgba(184,117,42,0.06) 100%
+    rgba(166,124,82,0.06) 0%,
+    rgba(166,124,82,0.12) 50%,
+    rgba(166,124,82,0.06) 100%
   );
   background-size: 400% 100%;
   animation: skeleton-sweep 1.5s ease-in-out infinite;

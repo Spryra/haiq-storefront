@@ -163,7 +163,7 @@ export default function ContactPage() {
                 return (
                 <div key={item.label} className="flex gap-4 items-start">
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0"
-                    style={{ color: '#B8752A' }}>
+                    style={{ color: '#A67C52' }}>
                     <IconComponent />
                   </div>
                   <div>
@@ -203,7 +203,7 @@ export default function ContactPage() {
                     rel="noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all group"
                   >
-                    <span style={{ color: '#B8752A' }}><IconComponent /></span>
+                    <span style={{ color: '#A67C52' }}><IconComponent /></span>
                     <div>
                       <p className="text-xs font-bold text-dark group-hover:text-primary transition">
                         {s.platform}
@@ -234,7 +234,7 @@ export default function ContactPage() {
 
             {status === 'success' ? (
               <div className="bg-green-50 border border-green-100 rounded-2xl p-8 text-center">
-                <CheckCircle size={40} style={{ color: '#B8752A' }} className="mb-3 mx-auto" />
+                <CheckCircle size={40} style={{ color: '#A67C52' }} className="mb-3 mx-auto" />
                 <h3 className="font-serif text-xl font-bold text-dark mb-2">Message received!</h3>
                 <p className="text-gray-500 text-sm">
                   We will get back to you within a few hours on WhatsApp or email.

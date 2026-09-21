@@ -8,11 +8,11 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
-    port: 5174,
+    port: 4202,
     open: true,
     proxy: {
       '/v1': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:4200',
         changeOrigin: true,
         secure: false,
       },
