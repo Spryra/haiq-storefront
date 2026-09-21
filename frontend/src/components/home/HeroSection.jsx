@@ -31,7 +31,10 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative h-screen min-h-[640px] overflow-hidden" style={{ background: '#1A0A00' }}>
+    // Shortened from a full h-screen so the first row of the Core Collection
+    // peeks above the fold — the single highest-impact change for "how fast
+    // can I get what I'm looking for" (phase 2 priority).
+    <section className="relative h-[min(88vh,720px)] min-h-[560px] overflow-hidden" style={{ background: '#1A0A00' }}>
 
       {/* Solid dark fill */}
       <div className="absolute inset-0" style={{ background: '#1A0A00' }} />

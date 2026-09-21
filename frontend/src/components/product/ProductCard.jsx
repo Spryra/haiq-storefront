@@ -74,8 +74,11 @@ export default function ProductCard({ product, index = 0 }) {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          <div className="flex flex-col h-full bg-light rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
-            <div className="relative w-full aspect-square bg-[#F0EBE3] overflow-hidden flex-shrink-0">
+          <div
+            className="flex flex-col h-full overflow-hidden transition-colors duration-300"
+            style={{ background: '#1A0A00', border: '1px solid rgba(166,124,82,0.12)' }}
+          >
+            <div className="relative w-full aspect-square bg-dark2 overflow-hidden flex-shrink-0">
               <img
                 src={imgSrc}
                 alt={product.name}
@@ -123,7 +126,7 @@ export default function ProductCard({ product, index = 0 }) {
 
             <div className="flex flex-col flex-1 p-4">
               <div className="flex-1 mb-3">
-                <h3 className="font-serif font-bold text-dark text-[15px] leading-snug line-clamp-1 mb-0.5">
+                <h3 className="font-serif font-bold text-light text-[15px] leading-snug line-clamp-1 mb-0.5">
                   {product.name}
                 </h3>
                 <p className="text-muted text-xs line-clamp-1 mb-2">

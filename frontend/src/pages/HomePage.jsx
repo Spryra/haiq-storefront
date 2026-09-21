@@ -1,20 +1,24 @@
 import { HomeSEO } from '../components/shared/SEO'
 import HeroSection          from '../components/home/HeroSection'
-import FeaturedCollections  from '../components/home/FeaturedCollections'
+import CoreCollection       from '../components/home/CoreCollection'
+import BuildYourBoxStrip    from '../components/home/BuildYourBoxStrip'
 import ProcessSection       from '../components/home/ProcessSection'
-import CoreCollectionCarousel from '../components/home/CoreCollectionCarousel'
 import MomentsSection       from '../components/home/MomentsSection'
 import BrandStory           from '../components/home/BrandStory'
 import CTASection           from '../components/home/CTASection'
 
+// Section order per the phase 2 home-page restructure: product (Core
+// Collection) comes immediately after the hero — not buried below two
+// more sections — so a first-time visitor sees the menu without a full
+// scroll, and Build Your Box is reachable inline rather than a separate trip.
 export default function HomePage() {
   return (
     <>
       <HomeSEO />
       <HeroSection />
-      <FeaturedCollections />
+      <CoreCollection />
+      <BuildYourBoxStrip />
       <ProcessSection />
-      <CoreCollectionCarousel />
       <MomentsSection />
       <BrandStory />
       <CTASection />
