@@ -52,8 +52,14 @@ export default function HeroSection() {
       {/* Main content — pb reserves space so spec strip never overlaps */}
       <div className="relative z-10 h-full flex flex-col md:pb-[104px]">
 
-        {/* Top meta row */}
-        <div className="flex items-center justify-between px-8 md:px-20 pt-28 md:pt-32" style={show(0)}>
+        {/* Top meta row — padding-top matches the fixed nav's real measured
+            height (set as --nav-height by Navbar) instead of a guessed
+            fixed value, so it never overlaps and never sits too low
+            regardless of whether the promo banner is shown or dismissed. */}
+        <div
+          className="flex items-center justify-between px-8 md:px-20"
+          style={{ paddingTop: 'calc(var(--nav-height, 112px) + 24px)', ...show(0) }}
+        >
           <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(166,124,82,0.55)' }}>
             Kampala · Uganda
           </p>

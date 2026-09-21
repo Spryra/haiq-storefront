@@ -37,7 +37,14 @@ export default function Navbar() {
 
   const updateSpacer = useCallback(() => {
     if (fixedRef.current) {
-      setSpacerH(fixedRef.current.offsetHeight)
+      const h = fixedRef.current.offsetHeight
+      setSpacerH(h)
+      // Expose the real, measured nav height as a CSS variable so any page
+      // (e.g. the home hero, which renders under the fixed nav instead of
+      // using the spacer div below) can size its own top padding to match —
+      // instead of guessing a fixed value that breaks whenever the promo
+      // banner is shown/dismissed or the nav wraps to a different height.
+      document.documentElement.style.setProperty('--nav-height', `${h}px`)
     }
   }, [])
 
@@ -118,7 +125,7 @@ export default function Navbar() {
         )}
 
         <div className="container mx-auto px-6 md:px-16">
-          <div className="flex items-center justify-between" style={{ height: '68px' }}>
+          <div className="flex items-center justify-between" style={{ height: '84px' }}>
 
             {/* LEFT NAV */}
             <div className="hidden md:flex items-center gap-8">
@@ -149,7 +156,7 @@ export default function Navbar() {
 
             {/* LOGO */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-              <img src="/HAIQmain.png" alt="HAIQ" className="h-9 md:h-11 w-auto object-contain" />
+              <img src="/HAIQmain.png" alt="HAIQ" className="h-12 md:h-14 w-auto object-contain" />
             </Link>
 
             {/* RIGHT NAV */}
