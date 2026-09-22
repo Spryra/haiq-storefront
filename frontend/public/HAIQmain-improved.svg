@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="500" height="400">
+  <defs>
+    <!-- 3D Beige gradient for text -->
+    <linearGradient id="beigeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F4ED;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E8DCC8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D9C9B0;stop-opacity:1" />
+    </linearGradient>
+    <!-- Brown for accent -->
+    <linearGradient id="brownAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0874B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5A28;stop-opacity:1" />
+    </linearGradient>
+    <filter id="textShadow">
+      <feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- H Letter - Large and bold -->
+  <g filter="url(#textShadow)">
+    <path d="M 30 60 L 30 330 Q 30 345 45 345 L 75 345 Q 90 345 90 330 L 90 210 L 150 210 L 150 330 Q 150 345 165 345 L 195 345 Q 210 345 210 330 L 210 60 Q 210 45 195 45 L 165 45 Q 150 45 150 60 L 150 140 L 90 140 L 90 60 Q 90 45 75 45 L 45 45 Q 30 45 30 60 Z" fill="url(#beigeBg)" stroke="#C0874B" stroke-width="1.5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- A Letter -->
+  <g filter="url(#textShadow)">
+    <path d="M 220 60 Q 215 45 200 45 L 170 45 Q 155 45 150 60 L 80 330 Q 77 345 92 345 L 122 345 Q 137 345 140 330 L 165 255 L 305 255 L 330 330 Q 333 345 348 345 L 378 345 Q 393 345 390 330 Z M 170 200 L 235 90 L 300 200 Z" fill="url(#beigeBg)" stroke="#C0874B" stroke-width="1.5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- I Letter -->
+  <g filter="url(#textShadow)">
+    <rect x="335" y="45" width="60" height="300" rx="10" fill="url(#beigeBg)" stroke="#C0874B" stroke-width="1.5"/>
+  </g>
+
+  <!-- Brown colon : -->
+  <g filter="url(#textShadow)">
+    <!-- Top dot -->
+    <circle cx="420" cy="100" r="18" fill="url(#brownAccent)" stroke="#6B3F22" stroke-width="1"/>
+    <!-- Bottom dot -->
+    <circle cx="420" cy="280" r="18" fill="url(#brownAccent)" stroke="#6B3F22" stroke-width="1"/>
+  </g>
+
+  <!-- Q Letter - Styled as circular with tail -->
+  <g filter="url(#textShadow)">
+    <!-- Circle part -->
+    <circle cx="150" cy="250" r="120" fill="url(#beigeBg)" stroke="#C0874B" stroke-width="1.5"/>
+    <!-- Inner circle (white space) -->
+    <circle cx="150" cy="250" r="70" fill="white"/>
+    <!-- Q tail -->
+    <path d="M 200 310 Q 230 330 270 355" fill="none" stroke="url(#beigeBg)" stroke-width="25" stroke-linecap="round"/>
+    <path d="M 200 310 Q 230 330 270 355" fill="none" stroke="#C0874B" stroke-width="1.5" opacity="0.5"/>
+  </g>
+
+  <!-- Brown smiley face mouth -->
+  <g filter="url(#textShadow)">
+    <!-- Smile curve -->
+    <path d="M 80 300 Q 150 360 220 300" fill="none" stroke="url(#brownAccent)" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Left eye dot -->
+    <circle cx="110" cy="220" r="12" fill="url(#brownAccent)" stroke="#6B3F22" stroke-width="0.5"/>
+    <!-- Right eye dot -->
+    <circle cx="190" cy="220" r="12" fill="url(#brownAccent)" stroke="#6B3F22" stroke-width="0.5"/>
+  </g>
+
+  <!-- Text labels for clarity (can be removed if used as icon only) -->
+  <text x="250" y="50" font-family="Arial, sans-serif" font-size="14" fill="#8B5A28" opacity="0.3">HAIQ Bakery</text>
+</svg>

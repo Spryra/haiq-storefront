@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useRef, useEffect, useState } from 'react'
 import Crown from '../shared/Crown'
+import Container from '../shared/Container'
 import { UtensilsCrossed, Package, Crown as CrownIcon } from 'lucide-react'
 
 export default function CTASection() {
@@ -27,10 +28,11 @@ export default function CTASection() {
       <div className="absolute top-0 bottom-0 left-[7%] w-px bg-primary/10 hidden md:block" />
       <div className="absolute top-0 bottom-0 right-[7%] w-px bg-primary/10 hidden md:block" />
 
+      <Container>
       <div
         ref={setRef}
         className={`
-          container mx-auto px-6 md:px-16 text-center
+          text-center
           transition-all duration-700
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
         `}
@@ -87,6 +89,7 @@ export default function CTASection() {
           </Link>
         </div>
       </div>
+      </Container>
     </section>
   )
 }

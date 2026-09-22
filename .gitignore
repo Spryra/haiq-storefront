@@ -196,3 +196,15 @@ Gemfile.lock
 *.tmp
 *.bak
 *.cache
+
+# ── Database backups & one-off admin scripts (contain hashes/PII — never commit) ──
+backup-*.sql
+backend/backup-db.js
+backend/create-admin.js
+backend/update-admin.js
+backend/seed-orders.js
+
+# ── Claude Code internal state ────────────────────────────────────
+.claude/worktrees/
+
+1.txt

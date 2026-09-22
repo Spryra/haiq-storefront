@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import Crown from '../shared/Crown'
+import Container from '../shared/Container'
 
 const MOMENTS = [
   { src: '/images/moments/moment_01.jpg', caption: 'The Blackout. Undivided attention.' },
@@ -74,7 +75,7 @@ export default function MomentsSection() {
       {/* Bugatti top rule */}
       <div className="h-px bg-primary/20" />
 
-      <div className="container mx-auto px-6 md:px-16 pt-16">
+      <Container className="pt-16">
 
         {/* Header */}
         <div
@@ -140,7 +141,7 @@ export default function MomentsSection() {
             See All Moments <ArrowRight size={13} />
           </Link>
         </div>
-      </div>
+      </Container>
 
       {/* Bugatti bottom rule */}
       <div className="h-px bg-primary/20 mt-16" />

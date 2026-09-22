@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import api from '../services/api'
 import { useCart } from '../context/CartContext'
 import Crown from '../components/shared/Crown'
+import Container from '../components/shared/Container'
 import { ShopSEO } from '../components/shared/SEO'
 import { AlertTriangle, Check, ArrowRight } from 'lucide-react'
 
@@ -170,7 +171,8 @@ export default function ShopPage() {
       <ShopSEO />
 
       {/* Page header */}
-      <div className="border-b py-16 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-16 md:py-20" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <Container>
         <Crown size={20} color="#A67C52" className="mb-5 opacity-65" />
         <h1
           className="font-serif font-bold leading-tight mb-3"
@@ -182,10 +184,12 @@ export default function ShopPage() {
         <p style={{ color: 'rgba(245,234,216,0.4)' }} className="text-base max-w-sm leading-relaxed">
           Six cookies. All handcrafted. All made for you.
         </p>
+      </Container>
       </div>
 
       {/* Tabs */}
-      <div className="px-6 md:px-16 py-6 border-b" style={{ borderColor: 'rgba(166,124,82,0.15)' }}>
+      <div className="py-6 border-b" style={{ borderColor: 'rgba(166,124,82,0.15)' }}>
+      <Container>
         <div className="flex items-center gap-1 w-fit p-1" style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.2)' }}>
           {TABS.map(t => (
             <button
@@ -201,10 +205,11 @@ export default function ShopPage() {
             </button>
           ))}
         </div>
+      </Container>
       </div>
 
       {/* Content */}
-      <div className="px-6 md:px-16 py-12">
+      <Container className="py-12">
 
         {/* Build Your Box redirect */}
         {activeTab === 'build-your-box' && (
@@ -274,7 +279,7 @@ export default function ShopPage() {
             )}
           </>
         )}
-      </div>
+      </Container>
     </div>
   )
 }

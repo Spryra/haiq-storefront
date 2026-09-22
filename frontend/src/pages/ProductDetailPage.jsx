@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom'
 import api from '../services/api'
 import { useCart } from '../context/CartContext'
 import ProductImageCarousel from '../components/product/ProductImageCarousel'
@@ -9,18 +9,22 @@ import ItemListAccordion from '../components/product/ItemListAccordion'
 import RelatedProducts from '../components/product/RelatedProducts'
 import ProductReviews from '../components/product/ProductReviews'
 import { ProductSEO } from '../components/shared/SEO'
+import Container from '../components/shared/Container'
 import Button from '../components/shared/Button'
-import { Package, UtensilsCrossed, MessageCircle, Lock, AlertTriangle, Check } from 'lucide-react'
+import { Package, UtensilsCrossed, MessageCircle, Lock, AlertTriangle, Check, Share2 } from 'lucide-react'
 
 export default function ProductDetailPage() {
-  const { slug }   = useParams()
-  const navigate   = useNavigate()
+  const { slug }            = useParams()
+  const navigate            = useNavigate()
+  const [searchParams]      = useSearchParams()
+  const autoAddFired        = useRef(false)
 
   const [product,         setProduct]         = useState(null)
   const [loading,         setLoading]         = useState(true)
   const [selectedVariant, setSelectedVariant] = useState(null)
   const [quantity,        setQuantity]        = useState(1)
   const [added,           setAdded]           = useState(false)
+  const [copied,          setCopied]          = useState(false)
 
   const { addItem, openDrawer } = useCart()
 
@@ -40,6 +44,17 @@ export default function ProductDetailPage() {
       .finally(() => setLoading(false))
   }, [slug, navigate])
 
+  // ?add=1 share links: auto-add the default variant and open the drawer once.
+  useEffect(() => {
+    if (searchParams.get('add') !== '1') return
+    if (!product || !selectedVariant || autoAddFired.current) return
+    autoAddFired.current = true
+    addItem(product, selectedVariant, 1)
+    openDrawer()
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
+  }, [product, selectedVariant, searchParams, addItem, openDrawer])
+
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return
     addItem(product, selectedVariant, quantity)
@@ -56,18 +71,20 @@ export default function ProductDetailPage() {
   // ── Loading skeleton ─────────────────────────────────────────
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-12">
-        <div className="grid md:grid-cols-2 gap-12 animate-pulse">
-          <div className="aspect-square bg-gray-200 skeleton rounded-2xl" />
-          <div className="space-y-4 pt-2">
-            <div className="h-5 bg-gray-200 skeleton rounded w-1/4" />
-            <div className="h-9 bg-gray-200 skeleton rounded w-3/4" />
-            <div className="h-5 bg-gray-200 skeleton rounded w-1/2" />
-            <div className="h-7 bg-gray-200 skeleton rounded w-1/3" />
-            <div className="h-20 bg-gray-200 skeleton rounded mt-4" />
-            <div className="h-12 bg-gray-200 skeleton rounded-xl mt-4" />
+      <div style={{ background: '#0E0600', minHeight: '100vh' }}>
+        <Container className="py-12">
+          <div className="grid md:grid-cols-2 gap-12 animate-pulse">
+            <div className="aspect-square skeleton" style={{ background: 'rgba(166,124,82,0.08)' }} />
+            <div className="space-y-4 pt-2">
+              <div className="h-5 skeleton rounded" style={{ background: 'rgba(166,124,82,0.08)', width: '25%' }} />
+              <div className="h-9 skeleton rounded" style={{ background: 'rgba(166,124,82,0.08)', width: '75%' }} />
+              <div className="h-5 skeleton rounded" style={{ background: 'rgba(166,124,82,0.08)', width: '50%' }} />
+              <div className="h-7 skeleton rounded" style={{ background: 'rgba(166,124,82,0.08)', width: '33%' }} />
+              <div className="h-20 skeleton rounded mt-4" style={{ background: 'rgba(166,124,82,0.08)' }} />
+              <div className="h-12 skeleton rounded mt-4" style={{ background: 'rgba(166,124,82,0.08)' }} />
+            </div>
           </div>
-        </div>
+        </Container>
       </div>
     )
   }
@@ -75,30 +92,31 @@ export default function ProductDetailPage() {
   if (!product) return null
 
   return (
-    <div className="bg-light min-h-screen">
+    <div style={{ background: '#0E0600', minHeight: '100vh' }}>
       <ProductSEO product={product} />
 
       {/* Breadcrumb */}
-      <div className="container mx-auto px-6 pt-6 pb-2">
-        <nav className="flex items-center gap-2 text-xs text-gray-400">
-          <Link to="/" className="hover:text-primary transition">Home</Link>
+      <Container className="pt-6 pb-2">
+        <nav className="flex items-center gap-2 text-xs" style={{ color: 'rgba(166,124,82,0.5)' }}>
+          <Link to="/" className="transition hover:opacity-80" style={{ color: 'rgba(166,124,82,0.5)' }}>Home</Link>
           <span>/</span>
-          <Link to="/shop" className="hover:text-primary transition">Shop</Link>
+          <Link to="/shop" className="transition hover:opacity-80" style={{ color: 'rgba(166,124,82,0.5)' }}>Shop</Link>
           {product.category && (
             <>
               <span>/</span>
-              <Link to={`/shop/${product.category.slug}`} className="hover:text-primary transition capitalize">
+              <Link to={`/shop/${product.category.slug}`} className="transition hover:opacity-80 capitalize"
+                style={{ color: 'rgba(166,124,82,0.5)' }}>
                 {product.category.name}
               </Link>
             </>
           )}
           <span>/</span>
-          <span className="text-dark line-clamp-1">{product.name}</span>
+          <span className="line-clamp-1" style={{ color: '#F5EAD8' }}>{product.name}</span>
         </nav>
-      </div>
+      </Container>
 
       {/* Main product section */}
-      <div className="container mx-auto px-6 py-8">
+      <Container className="py-8">
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
 
           {/* ── Left: Images ── */}
@@ -111,38 +129,41 @@ export default function ProductDetailPage() {
             {/* Badges */}
             <div className="flex gap-2 flex-wrap mb-4">
               {product.is_limited && (
-                <span className="bg-dark text-primary text-[10px] font-bold px-3 py-1 rounded-full tracking-widest uppercase">
+                <span className="text-[10px] font-bold px-3 py-1 tracking-widest uppercase"
+                  style={{ background: 'rgba(168,85,247,0.85)', color: '#fff' }}>
                   Limited Edition
                 </span>
               )}
               {product.is_featured && (
-                <span className="bg-primary text-dark text-[10px] font-bold px-3 py-1 rounded-full tracking-widest uppercase">
+                <span className="text-[10px] font-bold px-3 py-1 tracking-widest uppercase"
+                  style={{ background: '#A67C52', color: '#1A0A00' }}>
                   Featured
                 </span>
               )}
               {isSoldOut && (
-                <span className="bg-gray-200 text-gray-500 text-[10px] font-bold px-3 py-1 rounded-full tracking-widest uppercase">
+                <span className="text-[10px] font-bold px-3 py-1 tracking-widest uppercase"
+                  style={{ background: 'rgba(166,124,82,0.15)', color: 'rgba(245,234,216,0.4)' }}>
                   Sold Out
                 </span>
               )}
             </div>
 
             {/* Name + subtitle */}
-            <h1 className="font-serif text-4xl font-bold text-dark leading-tight mb-1">
+            <h1 className="font-serif text-4xl font-bold leading-tight mb-1" style={{ color: '#F5EAD8' }}>
               {product.name}
             </h1>
             {product.subtitle && (
-              <p className="text-gray-400 text-lg mb-4">{product.subtitle}</p>
+              <p className="text-lg mb-4" style={{ color: 'rgba(166,124,82,0.7)' }}>{product.subtitle}</p>
             )}
 
             {/* Price */}
-            <p className="text-3xl text-primary font-bold mb-5">
+            <p className="text-3xl font-bold mb-5" style={{ color: '#A67C52' }}>
               UGX {Number(selectedVariant?.price ?? product.base_price).toLocaleString()}
             </p>
 
             {/* Description */}
             {product.description && (
-              <p className="text-gray-600 leading-relaxed mb-6 text-base">
+              <p className="leading-relaxed mb-6 text-base" style={{ color: 'rgba(245,234,216,0.55)' }}>
                 {product.description}
               </p>
             )}
@@ -163,7 +184,7 @@ export default function ProductDetailPage() {
 
             {/* Low stock */}
             {isLow && (
-              <p className="text-sm text-amber-600 font-medium mb-3 flex items-center gap-1.5">
+              <p className="text-sm font-medium mb-3 flex items-center gap-1.5" style={{ color: '#D97706' }}>
                 <AlertTriangle size={14} /> Only {stockQty} left in stock
               </p>
             )}
@@ -176,16 +197,39 @@ export default function ProductDetailPage() {
               className={`w-full rounded-2xl mb-4 text-base ${added ? 'bg-green-500 text-white hover:bg-green-500' : ''}`}
               size="lg"
             >
-              {isSoldOut ? 'Sold Out' : added ? <span className="inline-flex items-center gap-1.5"><Check size={18} strokeWidth={2.5} /> Added to Cart</span> : `Add to Cart — UGX ${Number(selectedVariant?.price ?? product.base_price).toLocaleString()}`}
+              {isSoldOut
+                ? 'Sold Out'
+                : added
+                  ? <span className="inline-flex items-center gap-1.5"><Check size={18} strokeWidth={2.5} /> Added to Cart</span>
+                  : `Add to Cart — UGX ${Number(selectedVariant?.price ?? product.base_price).toLocaleString()}`
+              }
             </Button>
+
+            {/* Share link */}
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/products/${product.slug}?add=1`
+                navigator.clipboard.writeText(url).then(() => {
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                })
+              }}
+              className="w-full flex items-center justify-center gap-2 mb-4 font-semibold text-[11px] tracking-[0.2em] uppercase py-3 transition-all"
+              style={{ border: '1px solid rgba(166,124,82,0.25)', color: copied ? '#A67C52' : 'rgba(245,234,216,0.35)' }}
+            >
+              {copied
+                ? <><Check size={13} strokeWidth={2.5} /> Link copied</>
+                : <><Share2 size={13} /> Share &amp; add to cart</>
+              }
+            </button>
 
             {/* Tasting notes */}
             {product.tasting_notes && (
-              <div className="bg-dark text-light rounded-2xl p-5 mb-5">
-                <p className="text-primary text-[10px] font-bold tracking-widest uppercase mb-2">
+              <div className="rounded-none p-5 mb-5" style={{ background: '#1A0A00', border: '1px solid rgba(166,124,82,0.2)' }}>
+                <p className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: '#A67C52' }}>
                   Tasting Notes
                 </p>
-                <p className="text-light/80 text-sm leading-relaxed italic font-serif text-base">
+                <p className="text-sm leading-relaxed italic font-serif text-base" style={{ color: 'rgba(245,234,216,0.75)' }}>
                   "{product.tasting_notes}"
                 </p>
               </div>
@@ -195,16 +239,16 @@ export default function ProductDetailPage() {
             <ItemListAccordion items={product.items} title={isDrink ? 'Ingredients' : "What's in the box"} />
 
             {/* Trust signals */}
-            <div className="mt-6 pt-5 border-t border-gray-100 grid grid-cols-2 gap-3">
+            <div className="mt-6 pt-5 grid grid-cols-2 gap-3" style={{ borderTop: '1px solid rgba(166,124,82,0.15)' }}>
               {[
-                [Package,          'Same-day delivery in Kampala'],
-                [UtensilsCrossed,  isDrink ? 'Crafted fresh daily' : 'Baked fresh daily'],
-                [MessageCircle,    'WhatsApp order updates'],
-                [Lock,             'Secure checkout'],
+                [Package,         'Same-day delivery in Kampala'],
+                [UtensilsCrossed, isDrink ? 'Crafted fresh daily' : 'Baked fresh daily'],
+                [MessageCircle,   'WhatsApp order updates'],
+                [Lock,            'Secure checkout'],
               ].map(([Icon, text]) => (
                 <div key={text} className="flex items-center gap-2">
-                  <Icon size={14} className="text-primary flex-shrink-0" />
-                  <span className="text-xs text-gray-400">{text}</span>
+                  <Icon size={14} style={{ color: '#A67C52', flexShrink: 0 }} />
+                  <span className="text-xs" style={{ color: 'rgba(245,234,216,0.4)' }}>{text}</span>
                 </div>
               ))}
             </div>
@@ -216,7 +260,7 @@ export default function ProductDetailPage() {
 
         {/* Reviews */}
         <ProductReviews productSlug={product.slug} />
-      </div>
+      </Container>
     </div>
   )
 }

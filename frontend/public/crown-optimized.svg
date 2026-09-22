@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="crownBrown" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A2511;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3D1F0A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2B1608;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="crownHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6B3D1F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A2511;stop-opacity:1" />
+    </linearGradient>
+    <filter id="crownShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Crown base line -->
+  <g filter="url(#crownShadow)">
+    <path d="M 50 380 Q 100 360 256 360 Q 412 360 462 380 L 462 420 Q 462 460 420 460 L 92 460 Q 50 460 50 420 Z"
+          fill="url(#crownBrown)" stroke="#2B1608" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Left side curve -->
+  <g filter="url(#crownShadow)">
+    <path d="M 80 380 Q 60 320 80 260 Q 100 200 140 150 Q 160 140 180 150 Q 170 200 160 260 Q 150 320 140 380"
+          fill="url(#crownHighlight)" stroke="#2B1608" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Accent line -->
+    <path d="M 85 380 Q 70 330 85 270 Q 100 210 135 160"
+          fill="none" stroke="#6B3D1F" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Left-center curve -->
+  <g filter="url(#crownShadow)">
+    <path d="M 160 380 Q 140 300 160 220 Q 180 140 220 80 Q 240 60 260 80 Q 240 140 220 220 Q 200 300 190 380"
+          fill="url(#crownBrown)" stroke="#2B1608" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Accent line -->
+    <path d="M 165 380 Q 150 310 165 235 Q 180 155 215 100"
+          fill="none" stroke="#6B3D1F" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Center tall point (crown peak) -->
+  <g filter="url(#crownShadow)">
+    <path d="M 220 380 Q 200 260 220 140 Q 240 60 256 20 Q 272 60 292 140 Q 310 260 292 380"
+          fill="url(#crownHighlight)" stroke="#2B1608" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Accent line -->
+    <path d="M 225 380 Q 210 270 225 155 Q 240 80 256 30"
+          fill="none" stroke="#6B3D1F" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Center dot/jewel at peak -->
+  <g filter="url(#crownShadow)">
+    <circle cx="256" cy="20" r="20" fill="url(#crownHighlight)" stroke="#2B1608" stroke-width="2"/>
+    <circle cx="256" cy="20" r="12" fill="#8B5030" opacity="0.7"/>
+    <circle cx="254" cy="18" r="4" fill="#FFFFFF" opacity="0.4"/>
+  </g>
+
+  <!-- Right-center curve -->
+  <g filter="url(#crownShadow)">
+    <path d="M 352 380 Q 372 300 352 220 Q 332 140 292 80 Q 272 60 252 80 Q 272 140 292 220 Q 312 300 322 380"
+          fill="url(#crownBrown)" stroke="#2B1608" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Accent line -->
+    <path d="M 347 380 Q 362 310 347 235 Q 332 155 297 100"
+          fill="none" stroke="#6B3D1F" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right side curve -->
+  <g filter="url(#crownShadow)">
+    <path d="M 432 380 Q 452 320 432 260 Q 412 200 372 150 Q 352 140 332 150 Q 342 200 352 260 Q 362 320 372 380"
+          fill="url(#crownHighlight)" stroke="#2B1608" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Accent line -->
+    <path d="M 427 380 Q 442 330 427 270 Q 412 210 377 160"
+          fill="none" stroke="#6B3D1F" stroke-width="1.5" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Decorative connecting curves between peaks -->
+  <g filter="url(#crownShadow)" opacity="0.8">
+    <path d="M 140 380 Q 160 340 190 340 Q 200 360 190 380"
+          fill="none" stroke="#6B3D1F" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 322 380 Q 340 340 372 340 Q 382 360 372 380"
+          fill="none" stroke="#6B3D1F" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Base shine/reflection -->
+  <g opacity="0.3">
+    <ellipse cx="256" cy="420" rx="200" ry="20" fill="white"/>
+  </g>
+</svg>

@@ -19,8 +19,11 @@ const SITE_URL  = typeof window !== 'undefined'
   ? window.location.origin
   : 'https://haiq-frontend.vercel.app'
 const SITE_NAME = 'HAIQ Bakery'
-const SITE_DESC = 'Premium handcrafted cookies baked fresh every morning in Kampala, Uganda. Made For You.'
-const DEFAULT_IMAGE = `${SITE_URL}/HAIQmain.png`
+// ≤155 chars for Facebook og:description, ≤200 for Twitter
+const SITE_DESC = 'Handcrafted cookies baked fresh every morning in Kampala. Six flavours. Order online. Made For You.'
+// OG image: 1200×630 social card at /og-card.svg
+// When the client provides a proper JPG, swap this to /og-card.jpg
+const DEFAULT_IMAGE = `${SITE_URL}/og-card.svg`
 
 // JSON-LD for the bakery organization
 const ORG_SCHEMA = {
@@ -113,14 +116,16 @@ export default function SEO({
       <link rel="canonical"          href={pageUrl} />
 
       {/* ── Open Graph ── */}
-      <meta property="og:type"        content={type} />
-      <meta property="og:title"       content={pageTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image"       content={pageImage} />
-      <meta property="og:image:alt"   content={title || SITE_NAME} />
-      <meta property="og:url"         content={pageUrl} />
-      <meta property="og:site_name"   content={SITE_NAME} />
-      <meta property="og:locale"      content="en_UG" />
+      <meta property="og:type"         content={type} />
+      <meta property="og:title"        content={pageTitle} />
+      <meta property="og:description"  content={description} />
+      <meta property="og:image"        content={pageImage} />
+      <meta property="og:image:width"  content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt"    content={title || SITE_NAME} />
+      <meta property="og:url"          content={pageUrl} />
+      <meta property="og:site_name"    content={SITE_NAME} />
+      <meta property="og:locale"       content="en_UG" />
 
       {/* ── Twitter / X ── */}
       <meta name="twitter:card"        content="summary_large_image" />
@@ -146,8 +151,10 @@ export default function SEO({
 export function HomeSEO() {
   return (
     <SEO
-      title="Made For You — Premium Cookies Baked Fresh in Kampala"
-      description="HAIQ Bakery — handcrafted cookies baked fresh every morning in Muyenga, Kampala. Venom, Blackout, Crimson Sin, Campfire After Dark, Coconut. Order now."
+      // title: 55 chars (Twitter ≤70, Facebook ≤60)
+      title="HAIQ Bakery — Handcrafted Cookies, Kampala"
+      // description: 133 chars (≤155 Facebook, ≤200 Twitter)
+      description="Fresh-baked cookies delivered in Kampala. Six flavours — Crimson Sin, Blackout, Campfire After Dark and more. Order now from UGX 5,000."
       url="/"
       breadcrumbs={[{ name: 'HAIQ Bakery', url: '/' }]}
     />

@@ -1,5 +1,6 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Crown from '../shared/Crown'
+import Container from '../shared/Container'
 
 const STEPS = [
   {
@@ -44,7 +45,7 @@ const STEPS = [
   },
 ]
 
-function useVisible(ref, threshold = 0.15) {
+function useVisible(ref, threshold = 0.1) {
   const [visible, setVisible] = useState(false)
   useEffect(() => {
     if (!ref) return
@@ -58,23 +59,91 @@ function useVisible(ref, threshold = 0.15) {
   return visible
 }
 
-export default function ProcessSection() {
-  const [activeStep, setActiveStep]   = useState(null)
-  const [headerRef,  setHeaderRef]    = useState(null)
-  const headerVisible = useVisible(headerRef, 0.1)
-
-  const toggleStep = (idx) => setActiveStep(prev => prev === idx ? null : idx)
+function StepCard({ step, idx }) {
+  const [ref, setRef] = useState(null)
+  const visible = useVisible(ref, 0.08)
+  const isEven = idx % 2 === 0
 
   return (
-    <section style={{ background: '#140800' }} className="py-24 md:py-32">
+    <div
+      ref={setRef}
+      className="grid md:grid-cols-2 gap-8 md:gap-12 items-center py-12 md:py-16"
+      style={{
+        borderTop:       ' 1px solid rgba(166,124,82,0.15)',
+        opacity:         visible ? 1 : 0,
+        transform:       visible ? 'translateY(0)' : 'translateY(28px)',
+        transition:      `opacity 0.7s ease ${idx * 100}ms, transform 0.7s ease ${idx * 100}ms`,
+      }}
+    >
+      {/* Copy — alternates left/right on desktop */}
+      <div className={isEven ? 'md:order-1' : 'md:order-2'}>
+        <div className="flex items-center gap-4 mb-4">
+          <span
+            className="font-serif font-bold leading-none select-none"
+            style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)', color: 'rgba(166,124,82,0.2)' }}
+          >
+            {step.number}
+          </span>
+          <span
+            className="text-[9px] font-bold uppercase tracking-[0.28em] px-2 py-0.5"
+            style={{ color: '#1A0A00', background: step.color }}
+          >
+            {step.tag}
+          </span>
+        </div>
+
+        <h3
+          className="font-serif font-bold leading-tight mb-3"
+          style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#F5EAD8' }}
+        >
+          {step.title}
+        </h3>
+
+        <p className="text-sm leading-relaxed mb-4" style={{ color: 'rgba(245,234,216,0.6)' }}>
+          {step.body}
+        </p>
+
+        <p
+          className="text-sm leading-relaxed pl-4 border-l-2"
+          style={{ color: 'rgba(245,234,216,0.4)', borderColor: step.color }}
+        >
+          {step.detail}
+        </p>
+      </div>
+
+      {/* Photo — always visible */}
+      <div
+        className={`overflow-hidden ${isEven ? 'md:order-2' : 'md:order-1'}`}
+        style={{ aspectRatio: '4/3', border: '1px solid rgba(166,124,82,0.15)' }}
+      >
+        <img
+          src={step.img}
+          alt={step.imgAlt}
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
+          style={{ filter: 'brightness(0.88)' }}
+          onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(1)' }}
+          onMouseLeave={e => { e.currentTarget.style.filter = 'brightness(0.88)' }}
+        />
+      </div>
+    </div>
+  )
+}
+
+export default function ProcessSection() {
+  const [headerRef, setHeaderRef] = useState(null)
+  const headerVisible = useVisible(headerRef, 0.1)
+
+  return (
+    <section style={{ background: '#140800' }} className="py-16 md:py-24">
       <div style={{ height: '1px', background: 'rgba(166,124,82,0.2)' }} />
 
-      <div className="container mx-auto px-6 md:px-16 pt-16">
+      <Container className="pt-16">
 
         {/* Header */}
         <div
           ref={setHeaderRef}
-          className="mb-16 transition-all duration-700"
+          className="mb-4 transition-all duration-700"
           style={{ opacity: headerVisible ? 1 : 0, transform: headerVisible ? 'translateY(0)' : 'translateY(20px)' }}
         >
           <div className="flex items-center gap-3 mb-4">
@@ -90,27 +159,20 @@ export default function ProcessSection() {
             How We Make It.
           </h2>
           <p style={{ color: 'rgba(245,234,216,0.4)', maxWidth: '36rem' }} className="text-base leading-relaxed">
-            No shortcuts. No compromise. Tap any step to go deeper.
+            No shortcuts. No compromise.
           </p>
         </div>
 
-        {/* Step list */}
-        <div className="space-y-0">
+        {/* Steps — each one always shows its photo */}
+        <div>
           {STEPS.map((step, idx) => (
-            <StepRow
-              key={step.number}
-              step={step}
-              idx={idx}
-              isActive={activeStep === idx}
-              onToggle={() => toggleStep(idx)}
-              isLast={idx === STEPS.length - 1}
-            />
+            <StepCard key={step.number} step={step} idx={idx} />
           ))}
         </div>
 
         {/* Bottom quote */}
         <div
-          className="mt-20 text-center transition-all duration-700"
+          className="mt-16 text-center transition-all duration-700"
           style={{ opacity: headerVisible ? 1 : 0 }}
         >
           <Crown size={20} color="#A67C52" className="mx-auto mb-5 opacity-35" />
@@ -122,169 +184,9 @@ export default function ProcessSection() {
             — HAIQ Bakery
           </p>
         </div>
-      </div>
+      </Container>
 
       <div style={{ height: '1px', background: 'rgba(166,124,82,0.2)', marginTop: '80px' }} />
     </section>
-  )
-}
-
-function StepRow({ step, idx, isActive, onToggle, isLast }) {
-  const [rowRef, setRowRef]   = useState(null)
-  const isVisible = useVisible(rowRef, 0.08)
-  const contentRef = useRef(null)
-  const [contentH, setContentH] = useState(0)
-
-  useEffect(() => {
-    if (contentRef.current) {
-      setContentH(isActive ? contentRef.current.scrollHeight : 0)
-    }
-  }, [isActive])
-
-  return (
-    <div
-      ref={setRowRef}
-      className="transition-all duration-700"
-      style={{
-        opacity:         isVisible ? 1 : 0,
-        transform:       isVisible ? 'translateY(0)' : 'translateY(24px)',
-        transitionDelay: `${idx * 80}ms`,
-      }}
-    >
-      {/* Top border */}
-      <div style={{ height: '1px', background: isActive ? 'rgba(166,124,82,0.5)' : 'rgba(166,124,82,0.15)', transition: 'background 0.3s' }} />
-
-      {/* Main clickable row */}
-      <button
-        onClick={onToggle}
-        className="w-full text-left transition-all duration-300"
-        style={{
-          background:   isActive ? 'rgba(166,124,82,0.06)' : 'transparent',
-          padding:      '28px 0',
-          cursor:       'pointer',
-        }}
-      >
-        <div className="flex items-start gap-6 md:gap-10">
-
-          {/* Step number */}
-          <div
-            className="flex-shrink-0 font-serif font-bold leading-none select-none"
-            style={{
-              fontSize:   'clamp(2.4rem, 5vw, 4.5rem)',
-              color:      isActive ? step.color : 'rgba(166,124,82,0.18)',
-              transition: 'color 0.3s',
-              minWidth:   '72px',
-              textAlign:  'right',
-            }}
-          >
-            {step.number}
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0 flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <span
-                  className="text-[9px] font-bold uppercase tracking-[0.28em] px-2 py-0.5"
-                  style={{
-                    color:      isActive ? '#1A0A00' : step.color,
-                    background: isActive ? step.color : 'rgba(166,124,82,0.1)',
-                    transition: 'all 0.3s',
-                  }}
-                >
-                  {step.tag}
-                </span>
-              </div>
-              <h3
-                className="font-serif font-bold leading-tight"
-                style={{
-                  fontSize:   'clamp(1.6rem, 3.5vw, 2.8rem)',
-                  color:      isActive ? '#F5EAD8' : 'rgba(245,234,216,0.65)',
-                  transition: 'color 0.3s',
-                }}
-              >
-                {step.title}
-              </h3>
-              <p
-                className="text-sm leading-relaxed mt-2 max-w-lg"
-                style={{ color: isActive ? 'rgba(245,234,216,0.7)' : 'rgba(245,234,216,0.35)', transition: 'color 0.3s' }}
-              >
-                {step.body}
-              </p>
-            </div>
-
-            {/* Expand indicator */}
-            <div
-              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300"
-              style={{
-                border:     `1px solid ${isActive ? step.color : 'rgba(166,124,82,0.25)'}`,
-                background: isActive ? step.color : 'transparent',
-              }}
-            >
-              <span
-                className="font-bold text-sm transition-transform duration-300"
-                style={{
-                  color:     isActive ? '#1A0A00' : '#A67C52',
-                  transform: isActive ? 'rotate(45deg)' : 'rotate(0deg)',
-                  display:   'block',
-                }}
-              >
-                +
-              </span>
-            </div>
-          </div>
-        </div>
-      </button>
-
-      {/* Expandable detail area */}
-      <div
-        style={{
-          maxHeight:  `${contentH}px`,
-          overflow:   'hidden',
-          transition: 'max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      >
-        <div ref={contentRef}>
-          <div
-            className="flex flex-col md:flex-row gap-6 pb-10"
-            style={{ paddingLeft: 'calc(72px + 2.5rem)' }}
-          >
-            {/* Extra copy */}
-            <div className="flex-1">
-              <p
-                className="text-sm leading-relaxed border-l-2 pl-4"
-                style={{
-                  color:       'rgba(245,234,216,0.55)',
-                  borderColor: step.color,
-                }}
-              >
-                {step.detail}
-              </p>
-            </div>
-
-            {/* Photo */}
-            <div
-              className="flex-shrink-0 overflow-hidden"
-              style={{ width: '100%', maxWidth: '280px', aspectRatio: '4/3' }}
-            >
-              <img
-                src={step.img}
-                alt={step.imgAlt}
-                loading="lazy"
-                className="w-full h-full object-cover"
-                style={{
-                  filter: 'brightness(0.85)',
-                  transition: 'filter 0.4s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(1)' }}
-                onMouseLeave={e => { e.currentTarget.style.filter = 'brightness(0.85)' }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isLast && <div style={{ height: '1px', background: 'rgba(166,124,82,0.15)' }} />}
-    </div>
   )
 }

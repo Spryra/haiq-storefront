@@ -3,6 +3,8 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../product/ProductCard'
 import ProductCardSkeleton from '../product/ProductCardSkeleton'
+import Container from '../shared/Container'
+import Section from '../shared/Section'
 import api from '../../services/api'
 
 // Replaces FeaturedCollections + CoreCollectionCarousel (phase 2 — merge
@@ -21,8 +23,8 @@ export default function CoreCollection() {
   }, [])
 
   return (
-    <section className="py-16 md:py-20" style={{ background: '#0E0600' }} id="core-collection">
-      <div className="container mx-auto px-6 md:px-16">
+    <Section style={{ background: '#0E0600' }} id="core-collection">
+      <Container>
 
         {/* Section header */}
         <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
@@ -60,7 +62,7 @@ export default function CoreCollection() {
             View all products <ArrowRight size={15} />
           </Link>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

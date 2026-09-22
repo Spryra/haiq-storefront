@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import Crown from '../shared/Crown'
+import Container from '../shared/Container'
+import Section from '../shared/Section'
 
 const PICKS = ['Crimson Sin', 'Campfire After Dark', 'Blackout']
 
@@ -8,8 +10,8 @@ const PICKS = ['Crimson Sin', 'Campfire After Dark', 'Blackout']
 // "single page feel", fewer clicks to the thing a customer wants).
 export default function BuildYourBoxStrip() {
   return (
-    <section className="py-16 md:py-20" style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.15)', borderBottom: '1px solid rgba(166,124,82,0.15)' }}>
-      <div className="container mx-auto px-6 md:px-16">
+    <Section tight style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.15)', borderBottom: '1px solid rgba(166,124,82,0.15)' }}>
+      <Container>
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div>
             <div className="flex items-center gap-3 mb-3">
@@ -55,7 +57,7 @@ export default function BuildYourBoxStrip() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
