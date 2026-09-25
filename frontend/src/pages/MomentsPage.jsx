@@ -1,4 +1,5 @@
 import Crown from '../components/shared/Crown'
+import Container from '../components/shared/Container'
 import { MomentsSEO } from '../components/shared/SEO'
 
 const ALL_MOMENTS = [
@@ -40,7 +41,8 @@ export default function MomentsPage() {
       <MomentsSEO />
 
       {/* Hero header */}
-      <div className="border-b border-primary/20 py-20 md:py-28 px-6 md:px-16">
+      <div className="border-b border-primary/20 py-20 md:py-28">
+        <Container>
         <Crown size={22} color="#A67C52" className="mb-5 opacity-65" />
         <p className="text-primary text-[10px] font-semibold tracking-[0.3em] uppercase mb-3">
           Made For You
@@ -55,16 +57,17 @@ export default function MomentsPage() {
         <p className="text-light/45 max-w-xs text-base leading-relaxed">
           Real people. Real cookies. Real Kampala.
         </p>
+        </Container>
       </div>
 
       {/* Masonry grid */}
-      <div className="px-6 md:px-16 py-14">
+      <Container className="py-14">
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3">
           {ALL_MOMENTS.map((m, i) => (
             <MomentCard key={i} moment={m} />
           ))}
         </div>
-      </div>
+      </Container>
 
       {/* Bottom CTA */}
       <div className="border-t border-primary/20 py-16 px-6 text-center">

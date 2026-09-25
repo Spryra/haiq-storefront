@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import api from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import Crown from '../components/shared/Crown'
+import Container from '../components/shared/Container'
 import Button from '../components/shared/Button'
 import { ClipboardList, Bike, Sparkles, XCircle, AlertTriangle, Phone } from 'lucide-react'
 
@@ -289,16 +290,19 @@ export default function TrackOrderPage() {
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
 
       {/* Header */}
-      <div className="border-b py-14 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-14 md:py-20" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Container>
         <Crown size={20} color="#A67C52" className="mb-4 opacity-65" />
         <h1 className="font-serif font-bold mb-2"
           style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', color: '#F5EAD8' }}>
           Your Orders.
         </h1>
         <div className="w-10 h-px" style={{ background: '#A67C52' }} />
+        </Container>
       </div>
 
-      <div className="px-6 md:px-16 py-8 max-w-2xl">
+      <Container className="py-8">
+      <div className="max-w-2xl">
 
         {/* If showing order detail */}
         {selected && orderDetail ? (
@@ -403,6 +407,7 @@ export default function TrackOrderPage() {
           </>
         )}
       </div>
+      </Container>
     </div>
   )
 }

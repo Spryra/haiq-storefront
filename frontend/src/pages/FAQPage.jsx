@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import Crown from '../components/shared/Crown'
+import Container from '../components/shared/Container'
 import { FAQSeo } from '../components/shared/SEO'
 
 const FAQ_SECTIONS = [
@@ -131,7 +132,8 @@ export default function FAQPage() {
       <FAQSeo />
 
       {/* Page header */}
-      <div className="border-b py-20 md:py-28 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-20 md:py-28" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Container>
         <Crown size={22} color="#A67C52" className="mb-5 opacity-65" />
         <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: '#A67C52' }}>
           Questions
@@ -146,10 +148,12 @@ export default function FAQPage() {
         <p className="mt-5 text-base leading-relaxed max-w-md" style={{ color: 'rgba(245,234,216,0.35)' }}>
           The things people ask most. Answered plainly.
         </p>
+        </Container>
       </div>
 
       {/* Sections */}
-      <div className="px-6 md:px-16 py-12 max-w-3xl">
+      <Container className="py-12">
+      <div className="max-w-3xl">
         {FAQ_SECTIONS.map((section, si) => (
           <div key={section.section} className={si > 0 ? 'mt-14' : ''}>
 
@@ -194,6 +198,7 @@ export default function FAQPage() {
           </a>
         </div>
       </div>
+      </Container>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import api from '../services/api'
 import Button from '../components/shared/Button'
 import { ContactSEO } from '../components/shared/SEO'
 import { CheckCircle, ArrowRight } from 'lucide-react'
+import Container from '../components/shared/Container'
 
 // SVG Icons
 const PhoneIcon = () => (
@@ -141,15 +142,15 @@ export default function ContactPage() {
 
       {/* Hero bar */}
       <div className="bg-dark text-light py-16">
-        <div className="container mx-auto px-6 text-center">
+        <Container className="text-center">
           <p className="text-primary text-xs font-semibold tracking-[0.25em] uppercase mb-3">
             We would love to hear from you
           </p>
           <h1 className="font-serif text-5xl md:text-6xl font-bold">Contact Us</h1>
-        </div>
+        </Container>
       </div>
 
-      <div className="container mx-auto px-6 py-16">
+      <Container className="py-16">
         <div className="grid lg:grid-cols-2 gap-16">
 
           {/* ── Left: Contact info ── */}
@@ -323,7 +324,7 @@ export default function ContactPage() {
             )}
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }

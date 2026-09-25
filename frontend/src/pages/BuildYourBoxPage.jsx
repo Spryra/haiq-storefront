@@ -6,6 +6,7 @@ import Button from '../components/shared/Button'
 import { BuildYourBoxSEO } from '../components/shared/SEO'
 import TimeWarning from '../components/TimeWarning'
 import { Check, AlertTriangle } from 'lucide-react'
+import Container from '../components/shared/Container'
 import {
   getServerTime,
   getClientTime,
@@ -167,7 +168,8 @@ export default function BuildYourBoxPage() {
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
       <BuildYourBoxSEO />
 
-      <div className="border-b py-14 md:py-20 px-6 md:px-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-14 md:py-20" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Container>
         <div className="flex items-center gap-3 mb-4">
           <Crown size={20} color="#A67C52" />
           <p className="text-[10px] font-semibold tracking-[0.3em] uppercase" style={{ color: '#A67C52' }}>
@@ -200,11 +202,12 @@ export default function BuildYourBoxPage() {
             )}
           </div>
         )}
+        </Container>
       </div>
 
       <div className="sticky top-0 z-30 border-b"
         style={{ background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(166,124,82,0.2)', backdropFilter: 'blur(8px)' }}>
-        <div className="container mx-auto px-6 md:px-16 py-3">
+        <Container className="py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-4">
               <span className="font-bold text-sm" style={{ color: isFull ? '#E8D9C3' : '#F5EAD8' }}>
@@ -241,10 +244,10 @@ export default function BuildYourBoxPage() {
               {boxError}
             </div>
           )}
-        </div>
+        </Container>
       </div>
 
-      <div className="container mx-auto px-6 md:px-16 py-12">
+      <Container className="py-12">
         {/* Time Validation Warning */}
         <TimeWarning
           skewSeconds={clockSkew}
@@ -326,7 +329,7 @@ export default function BuildYourBoxPage() {
             })}
           </div>
         )}
-      </div>
+      </Container>
 
       {isFull && (
         <div className="fixed bottom-0 left-0 right-0 z-40 py-4 px-6"

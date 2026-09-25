@@ -6,6 +6,7 @@ import api from '../services/api'
 import Crown from '../components/shared/Crown'
 import Button from '../components/shared/Button'
 import { AlertTriangle } from 'lucide-react'
+import Container from '../components/shared/Container'
 
 // ── Profile Tab ───────────────────────────────────────────────
 function ProfileTab({ user, onUpdated }) {
@@ -271,14 +272,16 @@ export default function AccountPage() {
 
   return (
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
-      <div className="border-b px-6 md:px-16 py-12 md:py-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-12 md:py-16" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+        <Container>
         <p className="text-[10px] font-semibold uppercase tracking-[0.3em] mb-2" style={{ color: '#A67C52' }}>Made For You</p>
         <h1 className="font-serif font-bold" style={{ fontSize: 'clamp(2rem,5vw,4rem)', color: '#F5EAD8' }}>
           {firstName}.
         </h1>
+        </Container>
       </div>
 
-      <div className="px-6 md:px-16 py-8">
+      <Container className="py-8">
         <div className="flex border-b mb-8 overflow-x-auto scrollbar-hide" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
           {TABS.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
@@ -296,7 +299,7 @@ export default function AccountPage() {
         {tab === 'profile'  && <ProfileTab user={user} onUpdated={() => {}} />}
         {tab === 'orders'   && <OrdersTab />}
         {tab === 'loyalty'  && <LoyaltyTab user={user} />}
-      </div>
+      </Container>
     </div>
   )
 }
