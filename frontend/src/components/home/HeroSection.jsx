@@ -53,7 +53,7 @@ export default function HeroSection() {
     // Shortened from a full h-screen so the first row of the Core Collection
     // peeks above the fold — the single highest-impact change for "how fast
     // can I get what I'm looking for" (phase 2 priority).
-    <section className="relative h-[min(88vh,720px)] min-h-[560px] overflow-hidden" style={{ background: '#1A0A00' }}>
+    <section className="relative min-h-[max(560px,min(88vh,720px))] overflow-hidden" style={{ background: '#1A0A00' }}>
 
       {/* Solid dark fill */}
       <div className="absolute inset-0" style={{ background: '#1A0A00' }} />
@@ -72,7 +72,7 @@ export default function HeroSection() {
       <div className="absolute top-0 left-0 right-0 z-20" style={{ height: '1px', background: 'rgba(166,124,82,0.3)' }} />
 
       {/* Main content — pb reserves space so spec strip never overlaps */}
-      <div className="relative z-10 h-full flex flex-col md:pb-[104px]">
+      <div className="relative z-10 min-h-[inherit] flex flex-col pb-10 md:pb-[148px]">
 
         {/* Top meta row — padding-top matches the fixed nav's real measured
             height (set as --nav-height by Navbar) instead of a guessed
@@ -106,7 +106,7 @@ export default function HeroSection() {
             <h1
               className="font-serif font-bold leading-[0.93] mb-6"
               style={{
-                fontSize: 'clamp(3rem, min(9.5vw, 13vh), 8.5rem)',
+                fontSize: 'clamp(3rem, min(9.5vw, 11vh), 8.5rem)',
                 color: '#F5EAD8',
                 ...show(100),
               }}
