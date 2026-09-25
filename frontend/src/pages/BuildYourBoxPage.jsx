@@ -168,7 +168,7 @@ export default function BuildYourBoxPage() {
     <div style={{ background: '#0E0600', minHeight: '100vh' }}>
       <BuildYourBoxSEO />
 
-      <div className="border-b py-14 md:py-20" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
+      <div className="border-b py-8 md:py-20" style={{ borderColor: 'rgba(166,124,82,0.2)' }}>
         <Container>
         <div className="flex items-center gap-3 mb-4">
           <Crown size={20} color="#A67C52" />
@@ -205,8 +205,8 @@ export default function BuildYourBoxPage() {
         </Container>
       </div>
 
-      <div className="sticky top-0 z-30 border-b"
-        style={{ background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(166,124,82,0.2)', backdropFilter: 'blur(8px)' }}>
+      <div className="sticky z-30 border-b"
+        style={{ top: 'var(--nav-height, 0px)', background: 'rgba(14,6,0,0.97)', borderColor: 'rgba(166,124,82,0.2)', backdropFilter: 'blur(8px)' }}>
         <Container className="py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-4">
@@ -218,22 +218,6 @@ export default function BuildYourBoxPage() {
               </span>}
               {isFull && <span className="text-xs font-semibold" style={{ color: '#E8D9C3' }}>Box complete</span>}
             </div>
-            {isFull && (
-              <button
-                onClick={handleAddToCart}
-                disabled={!isFull || confirmed}
-                className="px-6 py-2 font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300"
-                style={{
-                  background: confirmed ? '#16a34a' : '#A67C52',
-                  color: confirmed ? '#FFFFFF' : '#1A0A00',
-                  borderRadius: '2px',
-                  opacity: !isFull ? 0.5 : 1,
-                  cursor: !isFull ? 'not-allowed' : 'pointer',
-                  border: 'none',
-                }}>
-                {confirmed ? <span className="inline-flex items-center gap-1.5"><Check size={16} strokeWidth={2.5} /> Added to Cart</span> : 'Add to Cart'}
-              </button>
-            )}
           </div>
           <div className="h-px overflow-hidden" style={{ background: 'rgba(166,124,82,0.15)' }}>
             <div className="h-full transition-all duration-300"
@@ -284,43 +268,48 @@ export default function BuildYourBoxPage() {
             </button>
           </div>
         ) : loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {Array(5).fill(null).map((_,i) => (
-              <div key={i} className="aspect-square skeleton" style={{ background: 'rgba(166,124,82,0.06)' }} />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {Array(3).fill(null).map((_,i) => (
+              <div key={i} className="h-32 sm:h-auto sm:aspect-[4/5] skeleton" style={{ background: 'rgba(166,124,82,0.06)' }} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {products.map(p => {
               const count   = selections[p.id] || 0
               const soldOut = (p.variants?.[0]?.stock_qty ?? 1) === 0
               return (
                 <div key={p.id}
-                  className="group relative overflow-hidden transition-all duration-200"
+                  className="group relative overflow-hidden transition-all duration-200 flex sm:flex-col"
                   style={{
                     background: '#1A0A00',
                     border:     `1px solid ${count > 0 ? '#A67C52' : 'rgba(166,124,82,0.15)'}`,
                     boxShadow:  count > 0 ? '0 0 20px rgba(166,124,82,0.15)' : 'none',
                     opacity:    soldOut ? 0.4 : 1,
                   }}>
-                  <div className="overflow-hidden" style={{ aspectRatio: '1' }}>
+                  <div className="overflow-hidden flex-shrink-0 w-32 sm:w-full" style={{ aspectRatio: '1' }}>
                     <img src={LOCAL_IMGS[p.slug] || '/HAIQmain.png'} alt={p.name} loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                   {count > 0 && (
-                    <div className="absolute top-2 right-2 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center"
+                    <div className="absolute top-2 left-2 sm:left-auto sm:right-2 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center"
                       style={{ background: '#A67C52', color: '#1A0A00' }}>{count}</div>
                   )}
-                  <div className="p-3">
-                    <p className="font-serif font-bold text-sm leading-tight mb-0.5" style={{ color: '#F5EAD8' }}>{p.name}</p>
-                    <p className="text-[10px] mb-3 line-clamp-1" style={{ color: '#8C7355' }}>{p.subtitle}</p>
-                    <div className="flex items-center justify-between">
-                      <button onClick={() => rem(p.id)} disabled={count===0}
-                        className="w-8 h-8 flex items-center justify-center text-lg transition disabled:opacity-20"
+                  <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col justify-center">
+                    <p className="font-serif font-bold text-base leading-tight mb-0.5" style={{ color: '#F5EAD8' }}>{p.name}</p>
+                    <p className="text-[11px] mb-1.5 line-clamp-1" style={{ color: '#8C7355' }}>{p.subtitle}</p>
+                    {p.tasting_notes && (
+                      <p className="text-[11px] leading-snug mb-3 line-clamp-2" style={{ color: 'rgba(245,234,216,0.45)' }}>
+                        {p.tasting_notes}
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between mt-auto sm:mt-2 max-w-[9rem] sm:max-w-none">
+                      <button onClick={() => rem(p.id)} disabled={count===0} aria-label={`Remove one ${p.name}`}
+                        className="w-9 h-9 flex items-center justify-center text-lg transition disabled:opacity-20"
                         style={{ border: '1px solid rgba(166,124,82,0.3)', color: '#F5EAD8' }}>-</button>
                       <span className="font-bold text-sm w-8 text-center" style={{ color: '#F5EAD8' }}>{count}</span>
-                      <button onClick={() => add(p.id)} disabled={isFull || soldOut}
-                        className="w-8 h-8 flex items-center justify-center text-lg transition disabled:opacity-20"
+                      <button onClick={() => add(p.id)} disabled={isFull || soldOut} aria-label={`Add one ${p.name}`}
+                        className="w-9 h-9 flex items-center justify-center text-lg transition disabled:opacity-20"
                         style={{ background: 'rgba(166,124,82,0.2)', border: '1px solid rgba(166,124,82,0.5)', color: '#A67C52' }}>+</button>
                     </div>
                   </div>
@@ -333,9 +322,9 @@ export default function BuildYourBoxPage() {
 
       {isFull && (
         <div className="fixed bottom-0 left-0 right-0 z-40 py-4 px-6"
-          style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.4)' }}>
-          <div className="container mx-auto max-w-2xl flex items-center justify-between gap-4">
-            <div>
+          style={{ background: '#1A0A00', borderTop: '1px solid rgba(166,124,82,0.4)', paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+          <div className="container mx-auto max-w-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="min-w-0">
               <p className="font-bold text-sm" style={{ color: '#F5EAD8' }}>Your Box Office is ready.</p>
               <p className="text-xs mt-0.5 line-clamp-1" style={{ color: '#8C7355' }}>
                 {Object.entries(selections).map(([id,count]) => {
@@ -344,13 +333,16 @@ export default function BuildYourBoxPage() {
                 }).filter(Boolean).join(' · ')}
               </p>
             </div>
-            <Button onClick={handleAddToCart} variant="primary" size="md" className="px-8 whitespace-nowrap">
-              Add to Cart · UGX {boxPrice.toLocaleString()}
+            <Button onClick={handleAddToCart} disabled={confirmed} variant="primary" size="md"
+              className={`w-full sm:w-auto px-8 whitespace-nowrap ${confirmed ? '!bg-green-600 !text-white' : ''}`}>
+              {confirmed
+                ? <span className="inline-flex items-center gap-1.5"><Check size={16} strokeWidth={2.5} /> Added to Cart</span>
+                : `Add to Cart · UGX ${boxPrice.toLocaleString()}`}
             </Button>
           </div>
         </div>
       )}
-      {isFull && <div style={{ height: '80px' }} />}
+      {isFull && <div style={{ height: '150px' }} />}
     </div>
   )
 }
