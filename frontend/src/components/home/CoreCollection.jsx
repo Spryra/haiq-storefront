@@ -23,7 +23,7 @@ export default function CoreCollection() {
   }, [])
 
   return (
-    <Section style={{ background: '#0E0600' }} id="core-collection">
+    <Section style={{ background: '#0E0600', scrollMarginTop: 'var(--nav-height, 112px)' }} id="core-collection">
       <Container>
 
         {/* Section header */}

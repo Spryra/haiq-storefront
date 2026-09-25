@@ -127,9 +127,16 @@ export default function HeroSection() {
             {/* CTAs */}
             <div className="flex items-center gap-6 flex-wrap" style={show(280)}>
 
-              <Link
-                to="/shop"
-                onClick={handlePress}
+              <a
+                href="#core-collection"
+                onClick={e => {
+                  handlePress()
+                  const target = document.getElementById('core-collection')
+                  if (target) {
+                    e.preventDefault()
+                    target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' })
+                  }
+                }}
                 className="relative inline-flex items-center justify-center overflow-hidden font-bold text-[11px] tracking-[0.28em] uppercase"
                 style={{
                   padding:    '14px 36px',
@@ -161,7 +168,7 @@ export default function HeroSection() {
                     style={{ background: 'rgba(232,217,195,0.3)' }}
                   />
                 )}
-              </Link>
+              </a>
 
               <Link
                 to="/build-your-box"

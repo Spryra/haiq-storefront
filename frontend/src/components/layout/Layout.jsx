@@ -1,5 +1,6 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
+import MobileCartBar from '../cart/MobileCartBar'
 
 // PromoBanner is now rendered INSIDE the Navbar fixed block
 // so it doesn't overlap. Do not add it here.
@@ -12,6 +13,7 @@ export default function Layout({ children }) {
         {children}
       </main>
       <Footer />
+      <MobileCartBar />
     </div>
   )
 }
