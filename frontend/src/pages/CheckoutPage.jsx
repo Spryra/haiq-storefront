@@ -229,6 +229,21 @@ export default function CheckoutPage() {
     delivery_address: '',
     delivery_note:    '',
   })
+  // A signed-in user's profile can arrive after first render (e.g. on refresh):
+  // fill only the fields still empty so anything already typed is kept.
+  useEffect(() => {
+    if (!user) return
+    setDetails(d => ({
+      ...d,
+      first_name: d.first_name || user.first_name || (user.full_name?.split(' ')[0] ?? ''),
+      last_name:  d.last_name  || user.last_name  || (user.full_name?.split(' ').slice(1).join(' ') ?? ''),
+      email:      d.email      || user.email      || '',
+      phone:      d.phone      || user.phone      || '',
+    }))
+  }, [user])
+  // Only flag a field as invalid once the customer has left it, not on first view.
+  const [touched, setTouched] = useState({})
+  const [attempted, setAttempted] = useState(false)
   const [payMethod,   setPayMethod]   = useState('')
   const [consent,     setConsent]     = useState(false)
   const [submitting,  setSubmitting]  = useState(false)
@@ -296,15 +311,11 @@ export default function CheckoutPage() {
   }, [])
 
   useEffect(() => {
-    // Wait for auth to finish loading, then redirect if not authenticated
+    // Guests can check out (the order API accepts them); wait for auth to
+    // settle so a signed-in user's saved details pre-fill, then guard the cart.
     if (loading) return
-    if (!user) {
-      navigate('/login', { replace: true })
-      return
-    }
-    // Redirect if cart is empty
     if (items.length === 0) navigate('/shop', { replace: true })
-  }, [items, loading, navigate, user])
+  }, [items, loading, navigate])
 
   const detailsFields = [
     details.first_name,
@@ -342,7 +353,8 @@ export default function CheckoutPage() {
   const validationErrors = getValidationErrors()
 
   // Helper to check if a specific field is invalid
-  const isFieldInvalid = (field) => {
+  const isFieldInvalid = (field) => !!touched[field] && isFieldEmptyOrBad(field)
+  const isFieldEmptyOrBad = (field) => {
     switch(field) {
       case 'first_name': return !details.first_name.trim()
       case 'last_name': return !details.last_name.trim()
@@ -352,6 +364,15 @@ export default function CheckoutPage() {
       case 'delivery_address': return details.delivery_address.trim().length < 5
       default: return false
     }
+  }
+
+  const goToPayment = () => {
+    if (!detailsValid) {
+      setAttempted(true)
+      setTouched({ first_name: true, last_name: true, email: true, phone: true, delivery_zone: true, delivery_address: true })
+      return
+    }
+    setStep(3)
   }
 
   const deliveryFee = selectedZone ? parseFloat(selectedZone.price) : 0
@@ -525,8 +546,25 @@ export default function CheckoutPage() {
             {/* Step 2 - Details */}
             {step === 2 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Your Details</h2>
-                <div className="space-y-4">
+                <h2 className="font-serif font-bold text-2xl mb-2" style={{ color: '#F5EAD8' }}>Your Details</h2>
+                {user ? (
+                  <div className="mb-6" />
+                ) : (
+                  <p className="text-xs mb-6" style={{ color: '#8C7355' }}>
+                    Ordering as a guest.{' '}
+                    <Link to="/login" state={{ from: { pathname: '/checkout' } }} className="underline" style={{ color: '#A67C52' }}>
+                      Sign in
+                    </Link>{' '}
+                    to pre-fill your details and keep your order history.
+                  </p>
+                )}
+                <div
+                  className="space-y-4"
+                  onBlur={e => {
+                    const field = e.target.name
+                    if (field) setTouched(t => (t[field] ? t : { ...t, [field]: true }))
+                  }}
+                >
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       {lbl('First Name',true,'checkout-first-name')}
@@ -605,15 +643,13 @@ export default function CheckoutPage() {
                       <>
                         <select
                           id={zoneSelectId}
+                          name="delivery_zone"
                           className={inputCls}
-                          size={Math.min(7, Math.max(3, zones.length))}
                           style={{
                             ...inputSty,
                             borderColor: isFieldInvalid('delivery_zone') ? '#f87171' : inputSty.borderColor,
                             cursor: 'pointer',
                             transition: 'all 150ms ease-in-out',
-                            paddingRight: '8px',
-                            minHeight: '120px',
                           }}
                           value={selectedZone?.id || ''}
                           onChange={e => {
@@ -640,9 +676,10 @@ export default function CheckoutPage() {
                           aria-invalid={isFieldInvalid('delivery_zone')}
                           aria-describedby={`${zoneHelperId} ${isFieldInvalid('delivery_zone') ? zoneErrorId : ''}`}
                         >
+                          <option value="" disabled>Choose your area…</option>
                           {zones.map(zone => (
                             <option key={zone.id} value={zone.id}>
-                              {zone.name} — UGX {zone.price.toLocaleString()}
+                              {zone.name} — UGX {Number(zone.price).toLocaleString()}
                             </option>
                           ))}
                         </select>
@@ -661,7 +698,7 @@ export default function CheckoutPage() {
                             </p>
                             <p className="text-xs font-semibold flex items-center gap-1.5" style={{ color: '#A67C52' }}>
                               <Banknote size={12} style={{ flexShrink: 0 }} />
-                              Delivery Fee: UGX {selectedZone.price.toLocaleString()}
+                              Delivery Fee: UGX {Number(selectedZone.price).toLocaleString()}
                             </p>
                             <p className="text-[10px] mt-1.5 flex items-center gap-1.5" style={{ color: '#8C7355' }}>
                               <Info size={11} style={{ flexShrink: 0 }} />
@@ -670,7 +707,7 @@ export default function CheckoutPage() {
                           </div>
                         )}
 
-                        {!selectedZone && validationErrors.length > 0 && validationErrors.find(e => e.includes('delivery zone')) && (
+                        {!selectedZone && touched.delivery_zone && validationErrors.find(e => e.includes('delivery zone')) && (
                           <p
                             id={zoneErrorId}
                             className="text-[10px] mt-3 px-3 py-2 rounded flex items-center gap-1.5"
@@ -716,7 +753,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
-                {validationErrors.length > 0 && (
+                {attempted && validationErrors.length > 0 && (
                   <div className="mb-4 p-4 rounded" style={{ background: 'rgba(248,113,113,0.15)', border: '2px solid #f87171' }}>
                     <p className="text-sm font-semibold mb-2 flex items-center gap-1.5" style={{ color: '#f87171' }}>
                       <AlertTriangle size={15} /> Please complete the following:
@@ -734,7 +771,7 @@ export default function CheckoutPage() {
                   <Button onClick={() => setStep(1)} variant="secondary" className="flex-1" size="md">
                     Back
                   </Button>
-                  <Button onClick={() => setStep(3)} disabled={!detailsValid} variant="primary" className="flex-1" size="md">
+                  <Button onClick={goToPayment} variant="primary" className="flex-1" size="md">
                     Continue to Payment
                   </Button>
                 </div>

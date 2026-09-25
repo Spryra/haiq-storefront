@@ -1,13 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ShoppingBag } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
+
+const HIDDEN_ON = ['/login', '/register', '/forgot-password', '/reset-password']
 
 // Persistent phone/tablet cart bar: once something is in the cart, checkout is
 // always one tap away while browsing. The spacer keeps it from covering the footer.
 export default function MobileCartBar() {
   const { itemCount, subtotal, drawerOpen, openDrawer } = useCart()
+  const { pathname } = useLocation()
 
-  if (itemCount === 0) return null
+  if (itemCount === 0 || HIDDEN_ON.includes(pathname)) return null
 
   return (
     <div className="lg:hidden">
