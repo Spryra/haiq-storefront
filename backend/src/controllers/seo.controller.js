@@ -12,7 +12,8 @@ const STATIC_ROUTES = [
   { path: '/shop',           changefreq: 'weekly',  priority: '0.9' },
   { path: '/build-your-box', changefreq: 'weekly',  priority: '0.9' },
   { path: '/moments',        changefreq: 'monthly', priority: '0.6' },
-  { path: '/faq',            changefreq: 'monthly', priority: '0.7' },
+  { path: '/events',         changefreq: 'weekly',  priority: '0.6' },
+  { path: '/faq',           changefreq: 'monthly', priority: '0.7' },
   { path: '/contact',        changefreq: 'yearly',  priority: '0.6' },
   { path: '/privacy',        changefreq: 'yearly',  priority: '0.3' },
   { path: '/terms',          changefreq: 'yearly',  priority: '0.3' },
@@ -101,6 +102,7 @@ ${productLines || '- See the live shop for current availability.'}
 
 - [Home](${SITE_URL}/): Brand overview and featured collections.
 - [Moments](${SITE_URL}/moments): Customer photos and stories.
+- [Events](${SITE_URL}/events): Upcoming pop-ups and tastings in Kampala.
 - [FAQ](${SITE_URL}/faq): Delivery, pricing, ingredients, and ordering questions.
 - [Contact](${SITE_URL}/contact): How to reach HAIQ Bakery.
 
