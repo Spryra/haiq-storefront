@@ -97,3 +97,21 @@ a { color: inherit; }
 .btn-primary:hover {
   @apply bg-secondary;
 }
+/* ── Product card hover (matches the Moments card treatment) ─────────────
+   Caption slides up, photo zooms, frame tints. Hover-capable devices only,
+   so touch screens never get a stuck hover state after a tap. */
+.product-shade   { opacity: 0; transition: opacity 0.3s ease; }
+.product-caption { transform: translateY(100%); transition: transform 0.3s ease; }
+.product-zoom    { transition: transform 0.7s ease, opacity 0.5s ease; }
+
+@media (hover: hover) {
+  .group:hover .product-shade   { opacity: 1; }
+  .group:hover .product-caption { transform: translateY(0); }
+  .group:hover .product-zoom    { transform: scale(1.06); }
+  .group:hover .product-frame   { border-color: rgba(166, 124, 82, 0.45) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-caption, .product-zoom { transition: none; }
+  .group:hover .product-zoom { transform: none; }
+}

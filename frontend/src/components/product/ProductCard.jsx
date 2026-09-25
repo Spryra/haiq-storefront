@@ -75,7 +75,7 @@ export default function ProductCard({ product, index = 0 }) {
           onMouseLeave={() => setHovered(false)}
         >
           <div
-            className="flex flex-col h-full overflow-hidden transition-colors duration-300"
+            className="product-frame flex flex-col h-full overflow-hidden transition-colors duration-300"
             style={{ background: '#1A0A00', border: '1px solid rgba(166,124,82,0.12)' }}
           >
             <div className="relative w-full aspect-square bg-dark2 overflow-hidden flex-shrink-0">
@@ -83,11 +83,10 @@ export default function ProductCard({ product, index = 0 }) {
                 src={imgSrc}
                 alt={product.name}
                 onError={() => { if (!imgFailed) { setImgSrc(LOGO_FALLBACK); setImgFailed(true); } }}
-                className={`absolute inset-0 w-full h-full transition-all duration-500 ${
+                className={`product-zoom absolute inset-0 w-full h-full ${
                   imgFailed ? 'object-contain p-8 opacity-40' : 'object-cover'
                 }`}
                 style={{
-                  transform: hovered && imgSrc2 ? 'scale(1.03)' : 'scale(1)',
                   opacity: hovered && imgSrc2 ? 0 : (imgFailed ? 0.4 : 1),
                 }}
                 loading="lazy"
@@ -103,6 +102,16 @@ export default function ProductCard({ product, index = 0 }) {
                   }}
                   loading="lazy"
                 />
+              )}
+              {!imgFailed && (product.tasting_notes || product.subtitle) && (
+                <>
+                  <div className="product-shade absolute inset-0 z-[5] pointer-events-none bg-gradient-to-t from-dark/85 via-dark/10 to-transparent" />
+                  <div className={`product-caption absolute bottom-0 left-0 right-0 z-[5] px-4 pointer-events-none ${isLow ? 'pb-10' : 'pb-4'}`}>
+                    <p className="text-light text-xs font-medium tracking-wide leading-snug line-clamp-2">
+                      {product.tasting_notes || product.subtitle}
+                    </p>
+                  </div>
+                </>
               )}
               <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                 {product.is_limited && (
