@@ -21,9 +21,10 @@ const SITE_URL  = typeof window !== 'undefined'
 const SITE_NAME = 'HAIQ Bakery'
 // ≤155 chars for Facebook og:description, ≤200 for Twitter
 const SITE_DESC = 'Handcrafted cookies baked fresh every morning in Kampala. Six flavours. Order online. Made For You.'
-// OG image: 1200×630 social card at /og-card.svg
-// When the client provides a proper JPG, swap this to /og-card.jpg
-const DEFAULT_IMAGE = `${SITE_URL}/og-card.svg`
+// OG image: 1200×630 JPEG (crawlers don't render SVG). og-card.svg is the
+// editable source; re-render it to JPG after changing the design.
+const DEFAULT_IMAGE = `${SITE_URL}/og-card.jpg`
+const LOGO_IMAGE    = `${SITE_URL}/HAIQmain.png`
 
 // JSON-LD for the bakery organization
 const ORG_SCHEMA = {
@@ -32,7 +33,7 @@ const ORG_SCHEMA = {
   name: 'HAIQ Bakery',
   description: SITE_DESC,
   url: SITE_URL,
-  logo: DEFAULT_IMAGE,
+  logo: LOGO_IMAGE,
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Muyenga',
@@ -120,8 +121,9 @@ export default function SEO({
       <meta property="og:title"        content={pageTitle} />
       <meta property="og:description"  content={description} />
       <meta property="og:image"        content={pageImage} />
-      <meta property="og:image:width"  content="1200" />
-      <meta property="og:image:height" content="630" />
+      {pageImage === DEFAULT_IMAGE && <meta property="og:image:type" content="image/jpeg" />}
+      {pageImage === DEFAULT_IMAGE && <meta property="og:image:width" content="1200" />}
+      {pageImage === DEFAULT_IMAGE && <meta property="og:image:height" content="630" />}
       <meta property="og:image:alt"    content={title || SITE_NAME} />
       <meta property="og:url"          content={pageUrl} />
       <meta property="og:site_name"    content={SITE_NAME} />
