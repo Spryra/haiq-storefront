@@ -16,6 +16,7 @@ import AccountPage           from './pages/AccountPage'
 import ContactPage           from './pages/ContactPage'
 import FAQPage               from './pages/FAQPage'
 import MomentsPage           from './pages/MomentsPage'
+import EventsPage            from './pages/EventsPage'
 import LoginPage             from './pages/LoginPage'
 import RegisterPage          from './pages/RegisterPage'
 import { ForgotPasswordPage, ResetPasswordPage } from './pages/PasswordResetPages'
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/shop/:category"  element={withLayout(ShopPage)} />
             <Route path="/products/:slug"  element={withLayout(ProductDetailPage)} />
             <Route path="/moments"         element={withLayout(MomentsPage)} />
+            <Route path="/events"          element={withLayout(EventsPage)} />
             <Route path="/faq"             element={withLayout(FAQPage)} />
             <Route path="/contact"         element={withLayout(ContactPage)} />
             <Route path="/build-your-box"  element={withLayout(BuildYourBoxPage)} />

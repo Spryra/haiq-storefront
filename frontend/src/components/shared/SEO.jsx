@@ -224,6 +224,17 @@ export function MomentsSEO() {
   )
 }
 
+export function EventsSEO() {
+  return (
+    <SEO
+      title="Events — Pop-Ups & Tastings in Kampala"
+      description="Upcoming HAIQ Bakery pop-ups, tastings and events in Kampala. Come try the cookies fresh from the oven."
+      url="/events"
+      breadcrumbs={[{ name: 'HAIQ Bakery', url: '/' }, { name: 'Events', url: '/events' }]}
+    />
+  )
+}
+
 export function BuildYourBoxSEO() {
   return (
     <SEO

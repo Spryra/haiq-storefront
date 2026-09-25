@@ -13,6 +13,7 @@ import {
   Mail,
   CalendarHeart,
   MapPin,
+  CalendarDays,
   Users,
   LogOut,
   X,
@@ -29,7 +30,8 @@ const NAV = [
   { to: '/newsletter',     label: 'Newsletter',     Icon: Mail },
   { to: '/special-days',   label: 'Special Days',   Icon: CalendarHeart },
   { to: '/delivery-zones', label: 'Delivery Zones', Icon: MapPin },
-  { to: '/staff',          label: 'Staff',          Icon: Users, superadminOnly: true },
+  { to: '/events',         label: 'Events',         Icon: CalendarDays },
+  { to: '/staff',         label: 'Staff',          Icon: Users, superadminOnly: true },
 ]
 
 const PAGE_TITLES = {
@@ -42,7 +44,8 @@ const PAGE_TITLES = {
   '/newsletter':     'Newsletter',
   '/special-days':   'Special Days',
   '/delivery-zones': 'Delivery Zones',
-  '/staff':          'Staff',
+  '/events':         'Events',
+  '/staff':         'Staff',
 }
 
 export default function AdminLayout({ children }) {

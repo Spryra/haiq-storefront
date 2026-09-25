@@ -4,6 +4,7 @@ import CoreCollection       from '../components/home/CoreCollection'
 import BuildYourBoxStrip    from '../components/home/BuildYourBoxStrip'
 import ProcessSection       from '../components/home/ProcessSection'
 import MomentsSection       from '../components/home/MomentsSection'
+import EventsSection        from '../components/home/EventsSection'
 import BrandStory           from '../components/home/BrandStory'
 import CTASection           from '../components/home/CTASection'
 
@@ -19,6 +20,7 @@ export default function HomePage() {
       <CoreCollection />
       <BuildYourBoxStrip />
       <ProcessSection />
+      <EventsSection />
       <MomentsSection />
       <BrandStory />
       <CTASection />

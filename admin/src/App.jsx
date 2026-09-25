@@ -11,6 +11,7 @@ import LoyaltyPage     from './pages/LoyaltyPage'
 import NewsletterPage  from './pages/NewsletterPage'
 import SpecialDaysPage from './pages/SpecialDaysPage'
 import DeliveryZonesPage from './pages/DeliveryZonesPage'
+import EventsPage from './pages/EventsPage'
 import AnalyticsPage   from './pages/AnalyticsPage'
 import StaffPage        from './pages/StaffPage'
 
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="/newsletter"   element={<ProtectedLayout><NewsletterPage /></ProtectedLayout>} />
           <Route path="/special-days" element={<ProtectedLayout><SpecialDaysPage /></ProtectedLayout>} />
           <Route path="/delivery-zones" element={<ProtectedLayout><DeliveryZonesPage /></ProtectedLayout>} />
+          <Route path="/events" element={<ProtectedLayout><EventsPage /></ProtectedLayout>} />
           <Route path="/staff"         element={<SuperAdminLayout><StaffPage /></SuperAdminLayout>} />
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

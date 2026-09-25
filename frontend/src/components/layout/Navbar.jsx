@@ -128,7 +128,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between" style={{ height: '84px' }}>
 
             {/* LEFT NAV */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-8">
               {[
                 ['/', 'Home'], // ✅ ADDED
                 ['/shop', 'Shop'],
@@ -160,7 +160,7 @@ export default function Navbar() {
             </Link>
 
             {/* RIGHT NAV */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6">
               {[
                 ['/contact', 'Contact'],
                 [user ? '/account' : '/login', user ? 'Account' : 'Sign In'],
@@ -204,7 +204,7 @@ export default function Navbar() {
             </div>
 
             {/* MOBILE */}
-            <div className="flex md:hidden items-center gap-4 ml-auto">
+            <div className="flex lg:hidden items-center gap-4 ml-auto">
               <button onClick={openDrawer} className="relative"
                 style={{ color: 'rgba(245,234,216,0.7)' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -233,7 +233,7 @@ export default function Navbar() {
 
         {/* MOBILE MENU */}
         <div
-          className="md:hidden overflow-hidden transition-all duration-300"
+          className="lg:hidden overflow-hidden transition-all duration-300"
           style={{
             maxHeight: menuOpen ? '360px' : '0',
             opacity: menuOpen ? 1 : 0,
@@ -245,6 +245,7 @@ export default function Navbar() {
               ['/', 'Home'], // ✅ ADDED
               ['/shop', 'Shop'],
               ['/build-your-box', 'Build Your Box'],
+              ['/events', 'Events'],
               ['/faq', 'FAQ'],
               ['/contact', 'Contact'],
               [user ? '/account' : '/login', user ? 'Account' : 'Sign In'],
@@ -259,7 +260,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {!isHomePage && <div style={{ height: `${spacerH}px` }} />}
+      {!isHomePage && <div style={{ height: `${spacerH}px`, background: '#1A0A00' }} />}
 
       <CartDrawer isOpen={drawerOpen} onClose={closeDrawer} />
     </>

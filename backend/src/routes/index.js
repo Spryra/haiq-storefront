@@ -38,6 +38,9 @@ router.use('/special-days', require('./specialdays.routes'));
 // GET /v1/delivery-zones — returns active zones for checkout
 router.use('/delivery-zones', require('./deliveryzones.routes'));
 
+// ── Public events feed (no auth) ─────────────────────────────────────────
+router.use('/events', require('./events.routes'));
+
 // ── All admin routes (protected inside each router) ───────────────────────
 router.use('/admin', require('./admin'));
 
