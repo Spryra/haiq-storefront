@@ -67,6 +67,8 @@ export default function LoginPage() {
               placeholder="you@example.com"
               required
               autoComplete="email"
+              inputMode="email"
+              autoFocus
               className="w-full px-4 py-3 text-sm focus:outline-none"
               style={{ background: '#2A1200', border: '1px solid rgba(166,124,82,0.25)', color: '#F5EAD8' }}
               onFocus={e => e.target.style.borderColor = '#A67C52'}
@@ -116,7 +118,7 @@ export default function LoginPage() {
 
         <p className="text-xs text-center mt-6" style={{ color: 'rgba(245,234,216,0.35)' }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: '#A67C52' }} className="hover:underline">Create one</Link>
+          <Link to="/register" state={location.state} style={{ color: '#A67C52' }} className="hover:underline">Create one</Link>
         </p>
 
         {/* One email per account notice */}

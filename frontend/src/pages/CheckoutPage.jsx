@@ -311,11 +311,16 @@ export default function CheckoutPage() {
   }, [])
 
   useEffect(() => {
-    // Guests can check out (the order API accepts them); wait for auth to
-    // settle so a signed-in user's saved details pre-fill, then guard the cart.
+    // Accounts are required before checkout (client decision — keeps order
+    // history and loyalty tracking simple). Wait for auth to finish loading
+    // before redirecting so a signed-in user isn't bounced during the check.
     if (loading) return
+    if (!user) {
+      navigate('/login', { replace: true, state: { from: { pathname: '/checkout' } } })
+      return
+    }
     if (items.length === 0) navigate('/shop', { replace: true })
-  }, [items, loading, navigate])
+  }, [items, loading, navigate, user])
 
   const detailsFields = [
     details.first_name,
@@ -546,18 +551,7 @@ export default function CheckoutPage() {
             {/* Step 2 - Details */}
             {step === 2 && (
               <div>
-                <h2 className="font-serif font-bold text-2xl mb-2" style={{ color: '#F5EAD8' }}>Your Details</h2>
-                {user ? (
-                  <div className="mb-6" />
-                ) : (
-                  <p className="text-xs mb-6" style={{ color: '#8C7355' }}>
-                    Ordering as a guest.{' '}
-                    <Link to="/login" state={{ from: { pathname: '/checkout' } }} className="underline" style={{ color: '#A67C52' }}>
-                      Sign in
-                    </Link>{' '}
-                    to pre-fill your details and keep your order history.
-                  </p>
-                )}
+                <h2 className="font-serif font-bold text-2xl mb-6" style={{ color: '#F5EAD8' }}>Your Details</h2>
                 <div
                   className="space-y-4"
                   onBlur={e => {

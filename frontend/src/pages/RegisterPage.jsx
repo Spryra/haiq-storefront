@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 import Crown from '../components/shared/Crown'
@@ -8,7 +8,9 @@ import Button from '../components/shared/Button'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login } = useAuth()
+  const from = location.state?.from?.pathname || '/account'
 
   const [form,    setForm]    = useState({ full_name: '', phone: '', email: '', password: '' })
   const [error,   setError]   = useState(null)
@@ -57,10 +59,10 @@ export default function RegisterPage() {
       // Auto-login after register with the credentials just used
       try {
         await login(form.email.trim().toLowerCase(), form.password)
-        navigate('/account')
+        navigate(from, { replace: true })
       } catch (_) {
         // Login failed (unlikely) — user can manually sign in
-        navigate('/login')
+        navigate('/login', { state: location.state })
       }
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || 'Could not create account. Please try again.'
@@ -97,6 +99,8 @@ export default function RegisterPage() {
               value={form.full_name}
               onChange={upd('full_name')}
               placeholder="Amara Nakato"
+              autoComplete="name"
+              autoFocus
               required
               className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
             />
@@ -113,6 +117,8 @@ export default function RegisterPage() {
               value={form.phone}
               onChange={upd('phone')}
               placeholder="+256 700 000 000"
+              autoComplete="tel"
+              inputMode="tel"
               required
               className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
             />
@@ -128,6 +134,8 @@ export default function RegisterPage() {
               value={form.email}
               onChange={upd('email')}
               placeholder="you@example.com"
+              autoComplete="email"
+              inputMode="email"
               required
               className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
             />
@@ -143,6 +151,7 @@ export default function RegisterPage() {
               value={form.password}
               onChange={upd('password')}
               placeholder="Min 6 characters, 1 special character"
+              autoComplete="new-password"
               required
               className="w-full bg-dark2 border border-primary/20 px-4 py-3 text-sm text-light placeholder:text-light/20 focus:outline-none focus:border-primary transition-colors"
             />
@@ -176,7 +185,7 @@ export default function RegisterPage() {
 
         <p className="text-light/30 text-xs text-center mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-primary hover:text-secondary transition-colors">
+          <Link to="/login" state={location.state} className="text-primary hover:text-secondary transition-colors">
             Sign in
           </Link>
         </p>
