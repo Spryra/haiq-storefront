@@ -45,8 +45,9 @@ The history there was rewritten to remove committed secrets, so the two historie
 
 ## Behaviour changes to tell the client about
 
-- **Guest checkout** is now allowed (no forced login). Guests have no order history; their
-  tracking link is the only way back to an order.
+- **Accounts are required before checkout.** Customers must register or sign in before placing an
+  order. The sign-up flow is fast (autoComplete/autoFocus on all fields) and threads back to the
+  checkout page so they don't lose their cart.
 - Build Your Box no longer includes Coconut or Venom (fixed packs only).
 - Tablets now use the hamburger menu; Events tab appears on phone/tablet, Events section on desktop home.
 
@@ -56,5 +57,5 @@ The history there was rewritten to remove committed secrets, so the two historie
   cloud credentials. They remain active until revoked.
 - Add `haiq-storefront` to the Vercel GitHub App at github.com/settings/installations, then create
   the two staging Vercel projects.
-- Open question: what a Build Your Box contains and costs (UGX 80,000, or 40,000 on special days,
-  vs a UGX 5,000 single-flavour pack on the shop).
+- Build Your Box pricing is confirmed: UGX 80,000 standard, UGX 40,000 on special days. Single
+  4-pack on the shop remains UGX 5,000. No action needed.
