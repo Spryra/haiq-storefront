@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Crown from '../shared/Crown'
 import Container from '../shared/Container'
+import LazyImage from '../shared/LazyImage'
 
 const STEPS = [
   {
@@ -9,8 +10,9 @@ const STEPS = [
     tag:     'Ingredients',
     body:    'Every ingredient chosen deliberately. Real butter. Real cocoa. Nothing artificial, nothing skipped. What goes in determines everything that comes out.',
     detail:  'We source locally where possible — coconut from Ugandan suppliers, cocoa from trusted East African networks. Every batch starts with a decision, not a shortcut.',
-    img:     '/images/process/process_05.jpg',
-    imgAlt:  'HAIQ Coconut cookies through packaging window',
+    img:     '/images/process/process-ingredients.jpg',
+    imgAlt:  'Lyons Maid milk compound and Dairyland white compound chocolate blocks — the real ingredients behind every HAIQ cookie',
+    imgPos:  'center center',
     color:   '#A67C52',
   },
   {
@@ -20,7 +22,8 @@ const STEPS = [
     body:    "Dough built by hand. Each batch mixed to a precise texture — never rushed, never cut short.",
     detail:  'The marshmallow is toasted separately. The chocolate is measured by weight, not eye. Every cookie type has its own mixing sequence — the Campfire After Dark takes longest.',
     img:     '/images/process/process_02.jpg',
-    imgAlt:  'Campfire cookies fresh on cooling rack',
+    imgAlt:  'Campfire After Dark cookies fresh from mixing, before the oven',
+    imgPos:  'center center',
     color:   '#D4C4A8',
   },
   {
@@ -30,7 +33,8 @@ const STEPS = [
     body:    'Fresh every morning. We pull them at the exact moment — edges set, centre still moving.',
     detail:  'That window is everything. Twelve minutes is not the same as eleven. The Blackout goes in at a different temperature than the Crimson Sin. We do not mix batches.',
     img:     '/images/process/process_03.jpg',
-    imgAlt:  'Fresh cookie batch on cooling rack',
+    imgAlt:  'Fresh cookie batch cooling — edges set, centre still soft',
+    imgPos:  'center center',
     color:   '#E8D9C3',
   },
   {
@@ -39,8 +43,9 @@ const STEPS = [
     tag:     'Dispatch',
     body:    'Sealed immediately. Branded. Ready to travel from our kitchen to your hands.',
     detail:  'Still warm enough to matter. Every pouch is sealed by hand, labelled with the batch time, and checked before it leaves. We bake to order — nothing sits on a shelf.',
-    img:     '/images/process/process_01.jpg',
-    imgAlt:  'HAIQ cookies in branded pouches on marble',
+    img:     '/images/process/process-dispatch.jpg',
+    imgAlt:  'Stacked HAIQ branded cookie pouches showing cookies through the clear window — sealed and ready to dispatch',
+    imgPos:  'center 30%',
     color:   '#A67C52',
   },
 ]
@@ -111,21 +116,16 @@ function StepCard({ step, idx }) {
         </p>
       </div>
 
-      {/* Photo — always visible */}
-      <div
-        className={`overflow-hidden ${isEven ? 'md:order-2' : 'md:order-1'}`}
+      {/* Photo — always visible, lazy-loaded with shimmer skeleton */}
+      <LazyImage
+        src={step.img}
+        alt={step.imgAlt}
+        objectPosition={step.imgPos}
+        className={`${isEven ? 'md:order-2' : 'md:order-1'}`}
         style={{ aspectRatio: '4/3', border: '1px solid rgba(166,124,82,0.15)' }}
-      >
-        <img
-          src={step.img}
-          alt={step.imgAlt}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
-          style={{ filter: 'brightness(0.88)' }}
-          onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(1)' }}
-          onMouseLeave={e => { e.currentTarget.style.filter = 'brightness(0.88)' }}
-        />
-      </div>
+        imgStyle={{ filter: 'brightness(0.88)', transition: 'transform 0.7s ease, filter 0.3s ease' }}
+        imgClassName="hover:scale-[1.03] hover:brightness-100"
+      />
     </div>
   )
 }

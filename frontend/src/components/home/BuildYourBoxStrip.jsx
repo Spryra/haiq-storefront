@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Crown from '../shared/Crown'
 import Container from '../shared/Container'
 import Section from '../shared/Section'
+import LazyImage from '../shared/LazyImage'
 
 const PICKS = ['Crimson Sin', 'Campfire After Dark', 'Blackout']
 
@@ -46,16 +47,13 @@ export default function BuildYourBoxStrip() {
             </Link>
           </div>
 
-          <div className="aspect-[4/3] relative overflow-hidden" style={{ border: '1px solid rgba(166,124,82,0.2)', background: '#0E0600' }}>
-            <div className="absolute inset-6 grid grid-cols-2 gap-3">
-              <div className="rounded-full" style={{ background: 'radial-gradient(circle at 35% 35%, #9c3b2e, #3d0d0d 75%)' }} />
-              <div className="rounded-full" style={{ background: 'radial-gradient(circle at 35% 35%, #B78D63, #A67C52 75%)' }} />
-              <div className="rounded-full" style={{ background: 'radial-gradient(circle at 35% 35%, #6a5947, #161616 75%)' }} />
-              <div className="flex items-center justify-center text-2xl font-bold" style={{ border: '1.5px dashed rgba(166,124,82,0.4)', color: 'rgba(166,124,82,0.5)' }}>
-                +
-              </div>
-            </div>
-          </div>
+          <LazyImage
+            src="/images/products/byb-pouches.jpg"
+            alt="Two HAIQ cookie pouches — Chocolate and Coconut — ready to build your box"
+            className="aspect-[4/3]"
+            style={{ border: '1px solid rgba(166,124,82,0.2)' }}
+            objectPosition="center 40%"
+          />
         </div>
       </Container>
     </Section>

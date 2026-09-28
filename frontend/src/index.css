@@ -69,6 +69,12 @@ h1,h2,h3,h4,h5,h6 {
   100% { background-position: -100% 0; }
 }
 
+/* ── LazyImage brand shimmer ── */
+@keyframes haiqShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ── Scroll dot animation (hero) ── */
 @keyframes scrollDot {
   0%   { transform: translateY(-100%); opacity: 0; }

@@ -58,22 +58,22 @@ export default function HeroSection() {
       {/* Solid dark fill */}
       <div className="absolute inset-0" style={{ background: '#1A0A00' }} />
 
-      {/* Hero background photo — the HAIQ unboxing shot, already reading
-          "Made For You" on the box itself. Biased right so the left side
-          (where the headline sits) stays dark and legible on its own. */}
-      <div
-        className="absolute inset-0 hidden sm:block"
-        style={{
-          backgroundImage: 'url(/images/products/unboxing.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'right center',
-          opacity: 0.55,
-        }}
+      {/* Hero background — HAIQ Chocolate pouch held against dark backdrop.
+          Priority-loaded (above-fold) via <img fetchpriority=high>.
+          Biased right so the left headline stays fully legible. */}
+      <img
+        src="/images/products/hero-pouch.jpg"
+        alt=""
+        aria-hidden="true"
+        fetchpriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover hidden sm:block"
+        style={{ objectPosition: 'right center', opacity: 0.52 }}
       />
       {/* Left-to-right fade so body copy stays readable regardless of viewport width */}
       <div
         className="absolute inset-0 hidden sm:block"
-        style={{ background: 'linear-gradient(90deg, #1A0A00 0%, #1A0A00 38%, rgba(26,10,0,0.35) 68%, rgba(26,10,0,0.15) 100%)' }}
+        style={{ background: 'linear-gradient(90deg, #1A0A00 0%, #1A0A00 40%, rgba(26,10,0,0.4) 68%, rgba(26,10,0,0.1) 100%)' }}
       />
 
       {/* Subtle noise grain */}

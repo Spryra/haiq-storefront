@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import Crown from '../shared/Crown'
 import Container from '../shared/Container'
+import LazyImage from '../shared/LazyImage'
 
 const MOMENTS = [
-  { src: '/images/moments/moment_01.jpg', caption: 'The Blackout. Undivided attention.' },
-  { src: '/images/moments/moment_02.jpg', caption: 'Every bite, deliberate.' },
-  { src: '/images/moments/moment_03.jpg', caption: 'Made for moments like this.' },
+  { src: '/images/moments/moment_11.jpg', caption: 'Two pouches. One decision.' },
+  { src: '/images/moments/moment_12.jpg', caption: 'Night run. HAIQ in hand.' },
+  { src: '/images/moments/moment_13.jpg', caption: 'Coconut. On home turf.' },
   { src: '/images/moments/moment_04.jpg', caption: 'Venom. Everywhere she goes.' },
   { src: '/images/moments/moment_05.jpg', caption: 'Slow down. Taste it.' },
-  { src: '/images/moments/moment_06.jpg', caption: 'She came for one. Stayed for four.' },
+  { src: '/images/moments/moment_14.jpg', caption: 'Kampala garden. Coconut pouch.' },
   { src: '/images/moments/moment_07.jpg', caption: 'Kampala tastes better now.' },
 ]
 
@@ -37,11 +38,12 @@ function MomentCard({ moment, className = '' }) {
         ${className}
       `}
     >
-      <img
+      <LazyImage
         src={moment.src}
         alt={moment.caption}
-        loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="w-full h-full"
+        imgClassName="group-hover:scale-105"
+        imgStyle={{ transition: 'transform 0.7s ease' }}
       />
 
       {/* Bugatti caption overlay — slides up on hover */}
