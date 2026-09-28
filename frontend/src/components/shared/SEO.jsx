@@ -237,6 +237,23 @@ export function EventsSEO() {
   )
 }
 
+export function EventDetailSEO({ event }) {
+  if (!event) return null
+  return (
+    <SEO
+      title={`${event.title} — HAIQ Events`}
+      description={event.description || `Join HAIQ Bakery for ${event.title} in Kampala.`}
+      image={event.image_url || DEFAULT_IMAGE}
+      url={`/events/${event.id}`}
+      breadcrumbs={[
+        { name: 'HAIQ Bakery', url: '/' },
+        { name: 'Events',      url: '/events' },
+        { name: event.title,   url: `/events/${event.id}` },
+      ]}
+    />
+  )
+}
+
 export function BuildYourBoxSEO() {
   return (
     <SEO

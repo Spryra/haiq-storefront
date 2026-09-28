@@ -1,7 +1,18 @@
 'use strict';
 const router = require('express').Router();
+const multer = require('multer');
 const { query } = require('../../config/db');
 const { requireStaff } = require('../../middleware/adminAuth');
+const cloudinary = require('../../config/cloudinary');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const ok = ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype);
+    cb(ok ? null : new Error('Only JPEG, PNG, and WebP images are allowed.'), ok);
+  },
+});
 
 const clean = (v) => (typeof v === 'string' ? v.trim() || null : v ?? null);
 
@@ -76,6 +87,67 @@ router.delete('/:id', requireStaff, async (req, res, next) => {
   try {
     await query('DELETE FROM events WHERE id = $1', [req.params.id]);
     res.json({ success: true });
+  } catch (err) { next(err); }
+});
+
+// ── Gallery images (a few photos per event, shown on its detail page) ────────
+
+// GET /v1/admin/events/:id/images
+router.get('/:id/images', requireStaff, async (req, res, next) => {
+  try {
+    const { rows } = await query(
+      'SELECT * FROM event_images WHERE event_id = $1 ORDER BY sort_order ASC, created_at ASC',
+      [req.params.id]
+    );
+    res.json({ success: true, images: rows });
+  } catch (err) { next(err); }
+});
+
+// POST /v1/admin/events/:id/images — multipart, one file per request
+router.post('/:id/images', requireStaff, upload.single('image'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, error: 'No image file provided.' });
+    const b64 = req.file.buffer.toString('base64');
+    const result = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${b64}`,
+      { folder: 'haiq/events', transformation: [{ width: 1400, quality: 80, fetch_format: 'webp' }] }
+    );
+    const { rows: [{ next_sort }] } = await query(
+      'SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_sort FROM event_images WHERE event_id = $1',
+      [req.params.id]
+    );
+    const { rows: [image] } = await query(
+      `INSERT INTO event_images (event_id, url, public_id, alt_text, sort_order) VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+      [req.params.id, result.secure_url, result.public_id, req.body.alt_text || null, next_sort]
+    );
+    res.status(201).json({ success: true, image });
+  } catch (err) { next(err); }
+});
+
+// DELETE /v1/admin/events/:id/images/:imageId
+router.delete('/:id/images/:imageId', requireStaff, async (req, res, next) => {
+  try {
+    const { rows: [image] } = await query(
+      'DELETE FROM event_images WHERE id = $1 AND event_id = $2 RETURNING public_id',
+      [req.params.imageId, req.params.id]
+    );
+    if (image?.public_id) {
+      cloudinary.uploader.destroy(image.public_id).catch(() => {});
+    }
+    res.json({ success: true });
+  } catch (err) { next(err); }
+});
+
+// ── Bookings (read-only — name, phone, email, booked at) ─────────────────────
+
+// GET /v1/admin/events/:id/bookings
+router.get('/:id/bookings', requireStaff, async (req, res, next) => {
+  try {
+    const { rows } = await query(
+      'SELECT id, name, phone, email, created_at FROM event_bookings WHERE event_id = $1 ORDER BY created_at DESC',
+      [req.params.id]
+    );
+    res.json({ success: true, bookings: rows });
   } catch (err) { next(err); }
 });
 

@@ -307,6 +307,41 @@ async function sendInquiryReply({ toEmail, toName, subject, originalMessage, rep
   });
 }
 
+// ── Event booking confirmation ─────────────────────────────────────────────────
+async function sendEventBookingConfirmation({ email, name, event, bookingId }) {
+  const eventUrl = `${process.env.FRONTEND_URL || 'https://haiq.ug'}/events/${event.id}`;
+  const when = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Africa/Kampala', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true,
+  }).format(new Date(event.starts_at));
+  const ref = bookingId.split('-')[0].toUpperCase();
+
+  return send({
+    to:      email,
+    subject: `You're In — ${event.title}`,
+    html:    baseLayout(`
+      ${heading("You're Confirmed.")}
+      ${para(`${name}, your place at <strong style="color:${BRAND.gold};">${event.title}</strong> is booked.`)}
+      <table cellpadding="0" cellspacing="0" style="margin:0 0 20px;border:1px solid ${BRAND.border};width:100%;">
+        <tr><td style="padding:12px 16px;border-bottom:1px solid ${BRAND.border};">
+          <span style="color:${BRAND.muted};font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-family:'Arial',sans-serif;">When</span><br>
+          <span style="color:${BRAND.light};font-size:14px;font-weight:bold;font-family:'Georgia',serif;">${when}</span>
+        </td></tr>
+        ${event.location ? `<tr><td style="padding:12px 16px;border-bottom:1px solid ${BRAND.border};">
+          <span style="color:${BRAND.muted};font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-family:'Arial',sans-serif;">Where</span><br>
+          <span style="color:${BRAND.light};font-size:14px;font-weight:bold;font-family:'Georgia',serif;">${event.location}</span>
+        </td></tr>` : ''}
+        <tr><td style="padding:12px 16px;">
+          <span style="color:${BRAND.muted};font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-family:'Arial',sans-serif;">Booking Reference</span><br>
+          <span style="color:${BRAND.primary};font-size:14px;font-weight:bold;font-family:'Arial',sans-serif;letter-spacing:0.05em;">HAIQ-${ref}</span>
+        </td></tr>
+      </table>
+      ${para('We\'ll see you there. Save this email as your confirmation — no ticket needed, just show up.')}
+      ${ctaBtn('View Event', eventUrl)}
+    `),
+  });
+}
+
 module.exports = {
   send,
   sendWelcome,
@@ -320,4 +355,5 @@ module.exports = {
   sendLoyaltyRejected,
   sendLoyaltyDispatched,
   sendInquiryReply,
+  sendEventBookingConfirmation,
 };
