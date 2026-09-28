@@ -58,6 +58,24 @@ export default function HeroSection() {
       {/* Solid dark fill */}
       <div className="absolute inset-0" style={{ background: '#1A0A00' }} />
 
+      {/* Hero background photo — the HAIQ unboxing shot, already reading
+          "Made For You" on the box itself. Biased right so the left side
+          (where the headline sits) stays dark and legible on its own. */}
+      <div
+        className="absolute inset-0 hidden sm:block"
+        style={{
+          backgroundImage: 'url(/images/products/unboxing.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'right center',
+          opacity: 0.55,
+        }}
+      />
+      {/* Left-to-right fade so body copy stays readable regardless of viewport width */}
+      <div
+        className="absolute inset-0 hidden sm:block"
+        style={{ background: 'linear-gradient(90deg, #1A0A00 0%, #1A0A00 38%, rgba(26,10,0,0.35) 68%, rgba(26,10,0,0.15) 100%)' }}
+      />
+
       {/* Subtle noise grain */}
       <div
         className="absolute inset-0 pointer-events-none"
