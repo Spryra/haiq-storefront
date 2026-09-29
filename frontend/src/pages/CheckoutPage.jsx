@@ -839,8 +839,8 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <label className="flex items-start gap-3 mb-6 cursor-pointer">
-                  <div onClick={() => setConsent(c => !c)}
+                <label className="flex items-start gap-3 mb-6 cursor-pointer" onClick={() => setConsent(c => !c)}>
+                  <div
                     className="w-5 h-5 flex-shrink-0 mt-0.5 flex items-center justify-center transition-all"
                     style={{ background: consent ? '#A67C52' : 'transparent', border: `2px solid ${consent ? '#A67C52' : '#3D2000'}` }}>
                     {consent && <span style={{ color: '#1A0A00', fontSize: '11px', fontWeight: 'bold' }}>v</span>}
