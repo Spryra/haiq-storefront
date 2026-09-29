@@ -62,7 +62,7 @@ export default function HeroSection() {
           Priority-loaded (above-fold) via <img fetchpriority=high>.
           Biased right so the left headline stays fully legible. */}
       <img
-        src="/images/products/hero-pouch.jpg"
+        src="/images/products/hero-pouches.jpg"
         alt=""
         aria-hidden="true"
         fetchpriority="high"

@@ -6,12 +6,12 @@ import Container from '../shared/Container'
 import LazyImage from '../shared/LazyImage'
 
 const MOMENTS = [
-  { src: '/images/moments/moment_11.jpg', caption: 'Two pouches. One decision.' },
-  { src: '/images/moments/moment_12.jpg', caption: 'Night run. HAIQ in hand.' },
-  { src: '/images/moments/moment_13.jpg', caption: 'Coconut. On home turf.' },
+  { src: '/images/moments/moment_11.jpg', caption: 'Night city. Chocolate in hand.' },
+  { src: '/images/moments/moment_12.jpg', caption: 'Coconut. On home turf.' },
+  { src: '/images/moments/moment_13.jpg', caption: 'Kampala garden. Coconut pouch.' },
   { src: '/images/moments/moment_04.jpg', caption: 'Venom. Everywhere she goes.' },
   { src: '/images/moments/moment_05.jpg', caption: 'Slow down. Taste it.' },
-  { src: '/images/moments/moment_14.jpg', caption: 'Kampala garden. Coconut pouch.' },
+  { src: '/images/moments/moment_14.jpg', caption: 'Two pouches. One decision.' },
   { src: '/images/moments/moment_07.jpg', caption: 'Kampala tastes better now.' },
 ]
 

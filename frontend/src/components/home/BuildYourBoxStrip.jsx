@@ -48,11 +48,11 @@ export default function BuildYourBoxStrip() {
           </div>
 
           <LazyImage
-            src="/images/products/byb-pouches.jpg"
-            alt="Two HAIQ cookie pouches — Chocolate and Coconut — ready to build your box"
+            src="/images/products/byb-box.jpg"
+            alt="Three HAIQ cookies nestled in a branded black box — Chocolate Chip, Coconut and White Chocolate — ready to build your own box"
             className="aspect-[4/3]"
             style={{ border: '1px solid rgba(166,124,82,0.2)' }}
-            objectPosition="center 40%"
+            objectPosition="center center"
           />
         </div>
       </Container>
