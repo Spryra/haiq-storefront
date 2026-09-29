@@ -156,17 +156,17 @@ export default function Footer() {
       <div className="px-6 md:px-16 py-5" style={{ borderTop: '1px solid rgba(166,124,82,0.12)' }}>
         <div className="container mx-auto flex items-center justify-between gap-4 flex-wrap">
           <p className="text-[10px] tracking-wide" style={{ color: 'rgba(245,234,216,0.2)' }}>
-            © {new Date().getFullYear()} HAIQ Bakery. Made For You.{' '}
-            <a
-              href="https://jrcom.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-opacity hover:opacity-100"
-              style={{ color: 'rgba(245,234,216,0.2)', textDecoration: 'none' }}
-            >
-              Built by Junior Reactive Solutions.
-            </a>
+            © {new Date().getFullYear()} HAIQ Bakery. Made For You.
           </p>
+          <a
+            href="https://jrcom.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] tracking-[0.12em] transition-opacity hover:opacity-100 flex-shrink-0"
+            style={{ color: 'rgba(245,234,216,0.42)', textDecoration: 'none' }}
+          >
+            Built by <span style={{ color: '#A67C52' }}>Junior Reactive Solutions</span>
+          </a>
           <div className="flex items-center gap-5 flex-wrap">
             <div className="flex gap-6 flex-wrap">
               <Link to="/privacy" style={{ color: '#8C7355' }} className="text-xs hover:opacity-70 transition">
